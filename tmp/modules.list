@@ -1,0 +1,11 @@
+modules/10_network_discovery.sh
+modules/20_portscan_nmap.sh
+modules/30_vuln_nmap_nse.sh
+modules/40_service_enum.sh
+modules/50_snmp_enum.sh
+modules/60_smb_enum.sh
+modules/70_http_enum.sh
+modules/80_zeek.sh
+modules/81_suricata.sh
+modules/90_report_pack.sh
+modules/_TEMPLATE.module.sh
