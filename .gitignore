@@ -1,0 +1,21 @@
+# Artefacts d'exécution
+logs/
+output/
+tmp/
+AUDIT_RESEAU_*/
+*.pcap*
+*.pcapng
+*.log
+*.tmp
+*.sqlite
+*.db
+reports/
+artifacts/
+
+# Environnements / IDE
+.vscode/
+.idea/
+__pycache__/
+.venv/
+.env
+.env.*
