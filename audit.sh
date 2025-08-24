@@ -1,34 +1,75 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-cd "$SCRIPT_DIR"
-source core/lib_logging.sh
-source core/lib_detect.sh
-source core/lib_menu.sh
-source core/lib_runner.sh
-source etc/defaults.env
 
-./bin/check_deps.sh || true
-detect_env
+# --- CLI ---
+TARGETS=""
+DURATION="600"
+PROFILE="fast"
 
-# UI
-PROFILE="$(ui_pick_profile || echo "${PROFILE:-fast}")"
-TARGETS_INPUT="$(ui_enter_targets || true)"; TARGETS="${TARGETS_INPUT:-${DEF_CIDR:-}}"
-CATS="$(ui_pick_categories || echo discovery,portscan,report)"
-OPTS="$(ui_confirm_opts || echo "OPTS_NO_UDP=0,OPTS_NO_ZEEK=1,OPTS_NO_SURICATA=1")"
+usage() {
+  cat <<USAGE
+Usage: $0 -t "CIDR[,CIDR]" [-d seconds] [-p fast|full|stealth]
+USAGE
+}
 
-# RUN
-RUN_ID="$(date +%Y%m%d_%H%M%S)"
-RUN_DIR="output/$RUN_ID"; mkdir -p "$RUN_DIR"
-init_logging "$RUN_ID"
-./ui/ui_tmux_logger.sh "$RUN_ID" || true
+while getopts ":t:d:p:h" opt; do
+  case "$opt" in
+    t) TARGETS="$OPTARG" ;;
+    d) DURATION="$OPTARG" ;;
+    p) PROFILE="$OPTARG" ;;
+    h) usage; exit 0 ;;
+    *) usage; exit 1 ;;
+  esac
+done
 
-# Export env standard
-export RUN_ID RUN_DIR PROFILE TARGETS
-for kv in ${OPTS//,/ }; do export "$kv"; done
+[[ -z "${TARGETS}" ]] && { echo "[-] -t requis (ex: 192.168.1.0/24)"; exit 1; }
+[[ "${PROFILE}" =~ ^(fast|full|stealth)$ ]] || { echo "[-] profil invalide: ${PROFILE}"; exit 1; }
 
-emit INFO "launcher" "targets=$TARGETS profile=$PROFILE opts=$OPTS"
-run_modules
-write_manifest_json
-emit INFO "launcher" "done"
-echo "Résultats: $RUN_DIR / Logs: logs/$RUN_ID"
+# --- chemins ---
+ROOT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+ETC_DIR="${ROOT_DIR}/etc"
+MOD_DIR="${ROOT_DIR}/modules"
+LOG_ROOT="${ROOT_DIR}/logs"
+OUT_ROOT="${ROOT_DIR}/output"
+
+TS="${TS:-$(date +%Y%m%d_%H%M%S)}"
+RUN_DIR="${LOG_ROOT}/${TS}"
+mkdir -p "${RUN_DIR}" "${OUT_ROOT}"
+
+COMBINED="${RUN_DIR}/combined.log"
+touch "${COMBINED}"
+
+# --- env par défaut + profil ---
+# etc/defaults.env (générique) puis etc/profiles/${PROFILE}.env (spécifique)
+if [[ -f "${ETC_DIR}/defaults.env" ]]; then
+  # shellcheck disable=SC1090
+  source "${ETC_DIR}/defaults.env"
+fi
+if [[ -f "${ETC_DIR}/profiles/${PROFILE}.env" ]]; then
+  # shellcheck disable=SC1090
+  source "${ETC_DIR}/profiles/${PROFILE}.env"
+else
+  echo "[-] Profil introuvable: ${ETC_DIR}/profiles/${PROFILE}.env" | tee -a "${COMBINED}"
+  exit 1
+fi
+
+# Variables d’environnement transmises aux modules
+export TS TARGETS DURATION PROFILE ROOT_DIR ETC_DIR OUT_ROOT RUN_DIR
+
+# --- utilitaires ---
+log() { echo "[$(date +%H:%M:%S)] $*" | tee -a "${COMBINED}"; }
+run_module() {
+  local mod="$1"
+  [[ -x "${mod}" ]] || { log "skip $(basename "$mod") (non exécutable)"; return 0; }
+  log ">>> START $(basename "$mod")"
+  if ! "${mod}" 2>&1 | tee -a "${COMBINED}"; then
+    log "!!! FAIL  $(basename "$mod")"
+    return 1
+  fi
+  log "<<< DONE  $(basename "$mod")"
+}
+
+# --- prévol ---
+log "[i] audit-suite :: profile=${PROFILE} targets=${TARGETS} duration=${D
+
+OEF

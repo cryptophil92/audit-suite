@@ -25,3 +25,14 @@ __pycache__/
 *.jsonl
 *.pcap
 *.pcapng
+# === audit-suite standard ignore ===
+/logs/
+/tmp/
+*.log
+*.jsonl
+*.pcap
+*.pcapng
+*.cache
+*.tmp
+*.swp
+# === /audit-suite standard ignore ===
