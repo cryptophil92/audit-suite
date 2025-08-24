@@ -19,3 +19,9 @@ __pycache__/
 .venv/
 .env
 .env.*
+/logs/
+/tmp/
+*.log
+*.jsonl
+*.pcap
+*.pcapng
