@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+# core/lib_menu.sh
+# @version 0.1.1
+set -Eeuo pipefail
+
+_has() { command -v "$1" >/dev/null 2>&1; }
+_is_x11() { [[ -n "${DISPLAY:-}" ]]; }
+use_zenity() { _has zenity && _is_x11; }
+use_whiptail() { _has whiptail; }
+use_fzf() { _has fzf; }
+
+ui_pick_profile() {
+  if use_zenity; then
+    zenity --list --title="Profil d'audit" --column="Profil" fast full stealth
+  elif use_whiptail; then
+    local choice
+    choice=$(whiptail --title "Profil d'audit" --menu "Choisir un profil" 15 60 3 \
+      "fast" "Rapide" "full" "Complet" "stealth" "Discret" 3>&1 1>&2 2>&3) || return 1
+    echo "$choice"
+  elif use_fzf; then
+    printf "fast\nfull\nstealth\n" | fzf --prompt="Profil> " --height=10
+  else
+    echo "fast"
+  fi
+}
+
+ui_enter_targets() {
+  if use_zenity; then
+    zenity --entry --title="Cibles" --text="CIDR multiples séparés par des virgules" --entry-text="192.168.1.0/24"
+  elif use_whiptail; then
+    local t
+    t=$(whiptail --inputbox "CIDR séparés par virgules" 10 70 "192.168.1.0/24" 3>&1 1>&2 2>&3) || return 1
+    echo "$t"
+  else
+    echo "192.168.1.0/24"
+  fi
+}
+
+ui_pick_categories() {
+  local list
+  list="$(printf "%s\n" modules/*.sh 2>/dev/null | sed 's#modules/##' | sort)"
+  if use_whiptail; then
+    local items=()
+    while IFS= read -r m; do
+      items+=("$m" "" ON)
+    done <<< "$list"
+    local out
+    out=$(whiptail --checklist "Catégories d'audit" 20 80 10 "${items[@]}" 3>&1 1>&2 2>&3) || return 1
+    # espaces -> virgules
+    echo "$out" | tr -d '"' | tr ' ' ','
+  elif use_zenity; then
+    echo "$list" | tr '\n' ',' | sed 's/,$//'
+  else
+    echo "$list" | tr '\n' ',' | sed 's/,$//'
+  fi
+}
+
+ui_confirm_opts() {
+  if use_whiptail; then
+    local out
+    out=$(whiptail --checklist "Options" 15 70 5 \
+      "no-udp" "Désactiver UDP" OFF \
+      "no-zeek" "Désactiver Zeek" ON \
+      "no-suricata" "Désactiver Suricata" ON 3>&1 1>&2 2>&3) || true
+    echo "$out" | tr -d '"' | tr ' ' ','
+  else
+    echo "no-zeek,no-suricata"
+  fi
+}

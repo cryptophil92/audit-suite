@@ -1,0 +1,6 @@
+2025-08-24T16:26:31-04:00 [INFO] [launcher] Start profile=fast targets=192.168.1.0/24 opts=no-udp:1,no-zeek:1,no-suricata:1
+2025-08-24T16:26:31-04:00 [INFO] [40_service_enum] start: Énumération services
+2025-08-24T16:30:54-04:00 [INFO] [40_service_enum] success
+2025-08-24T16:30:54-04:00 [INFO] [50_snmp_enum] start: SNMP enum (si présent)
+2025-08-24T16:30:54-04:00 [INFO] [50_snmp_enum] success
+2025-08-24T16:30:54-04:00 [INFO] [launcher] Terminé. Dossier: output/AUDIT_20250824T202631Z

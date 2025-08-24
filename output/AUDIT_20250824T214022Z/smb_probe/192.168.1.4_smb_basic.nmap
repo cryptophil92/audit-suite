@@ -1,0 +1,17 @@
+# Nmap 7.95 scan initiated Sun Aug 24 17:41:19 2025 as: /usr/lib/nmap/nmap --privileged -Pn -p445 --script smb-os-discovery,smb2-security-mode,smb2-time -oN output/AUDIT_20250824T214022Z/smb_probe/192.168.1.4_smb_basic.nmap 192.168.1.4
+Nmap scan report for 192.168.1.4
+Host is up (0.00035s latency).
+
+PORT    STATE SERVICE
+445/tcp open  microsoft-ds
+MAC Address: 00:90:A9:EA:4B:CB (Western Digital)
+
+Host script results:
+| smb2-security-mode: 
+|   3:1:1: 
+|_    Message signing enabled but not required
+| smb2-time: 
+|   date: 2025-08-24T21:42:13
+|_  start_date: N/A
+
+# Nmap done at Sun Aug 24 17:41:20 2025 -- 1 IP address (1 host up) scanned in 0.27 seconds

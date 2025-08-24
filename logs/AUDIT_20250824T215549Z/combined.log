@@ -1,0 +1,4 @@
+2025-08-24T17:55:49-04:00 [INFO] [launcher] Start profile=fast targets=192.168.1.0/24 opts=no-udp:1,no-zeek:1,no-suricata:1
+2025-08-24T17:55:50-04:00 [INFO] [90_report_pack] start: Pack rapport
+2025-08-24T17:55:50-04:00 [ERROR] [90_report_pack] failed rc=1
+2025-08-24T17:55:50-04:00 [INFO] [launcher] Terminé. Dossier: output/AUDIT_20250824T215549Z

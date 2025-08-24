@@ -1,0 +1,4 @@
+2025-08-24T17:40:22-04:00 [INFO] [launcher] Start profile=fast targets=192.168.1.0/24 opts=no-udp:1,no-zeek:1,no-suricata:1
+2025-08-24T17:40:22-04:00 [INFO] [60_smb_enum] start: SMB enum (si présent)
+2025-08-24T17:40:26-04:00 [INFO] [60_smb_enum] success
+2025-08-24T17:40:26-04:00 [INFO] [launcher] Terminé. Dossier: output/AUDIT_20250824T214022Z

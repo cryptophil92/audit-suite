@@ -1,0 +1,18 @@
+# Nmap 7.95 scan initiated Sun Aug 24 17:44:58 2025 as: /usr/lib/nmap/nmap --privileged -Pn -p445 --script smb-protocols -oN output/AUDIT_20250824T214022Z/smb_probe/192.168.1.254_smb_protocols.nmap 192.168.1.254
+Nmap scan report for 192.168.1.254
+Host is up (0.00041s latency).
+
+PORT    STATE SERVICE
+445/tcp open  microsoft-ds
+MAC Address: 00:24:D4:A5:A7:BF (Freebox SAS)
+
+Host script results:
+| smb-protocols: 
+|   dialects: 
+|     NT LM 0.12 (SMBv1) [dangerous, but default]
+|     2:1:0
+|     3:0:0
+|     3:0:2
+|_    3:1:1
+
+# Nmap done at Sun Aug 24 17:44:59 2025 -- 1 IP address (1 host up) scanned in 0.90 seconds

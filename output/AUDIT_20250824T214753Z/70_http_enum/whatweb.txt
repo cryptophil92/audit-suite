@@ -1,0 +1,819 @@
+[+] Simple hostname detected: Nmap. Testing both HTTP and HTTPS.
+[+] Simple hostname detected: 192.168.1.4. Testing both HTTP and HTTPS.
+[+] Simple hostname detected: 192.168.1.100. Testing both HTTP and HTTPS.
+[+] Simple hostname detected: 192.168.1.101. Testing both HTTP and HTTPS.
+[+] Simple hostname detected: 192.168.1.102. Testing both HTTP and HTTPS.
+[+] Simple hostname detected: 192.168.1.103. Testing both HTTP and HTTPS.
+[+] Simple hostname detected: 192.168.1.104. Testing both HTTP and HTTPS.
+[+] Simple hostname detected: 192.168.1.105. Testing both HTTP and HTTPS.
+[+] Simple hostname detected: 192.168.1.108. Testing both HTTP and HTTPS.
+[+] Simple hostname detected: 192.168.1.148. Testing both HTTP and HTTPS.
+[+] Simple hostname detected: 192.168.1.254. Testing both HTTP and HTTPS.
+WhatWeb report for http://192.168.1.100
+Status    : 404 Not Found
+Title     : <None>
+IP        : 192.168.1.100
+Country   : RESERVED, ZZ
+
+Summary   : 
+
+Detected Plugins:
+HTTP Headers:
+	HTTP/1.1 404 Not Found
+	CONNECTION: close
+	CONTENT-LENGTH: 48
+	CONTENT-TYPE: text/html
+	
+WhatWeb report for http://192.168.1.4
+Status    : 403 Forbidden
+Title     : 403 Forbidden
+IP        : 192.168.1.4
+Country   : RESERVED, ZZ
+
+Summary   : X-Frame-Options[sameorigin]
+
+Detected Plugins:
+[ X-Frame-Options ]
+	This plugin retrieves the X-Frame-Options value from the 
+	HTTP header. - More Info: 
+	http://msdn.microsoft.com/en-us/library/cc288472%28VS.85%29.
+	aspx
+
+	String       : sameorigin
+
+HTTP Headers:
+	HTTP/1.1 403 Forbidden
+	Content-Length: 199
+	Content-Type: text/html; charset=iso-8859-1
+	Date: Sun, 24 Aug 2025 21:48:50 GMT
+	X-Frame-Options: sameorigin
+	Connection: close
+	
+WhatWeb report for http://192.168.1.103
+Status    : 200 OK
+Title     : <None>
+IP        : 192.168.1.103
+Country   : RESERVED, ZZ
+
+Summary   : Frame, HTML5, JQuery, PasswordField[newpwd,newpwd2,newpwdcfm], Script[text/javascript,text/template], X-Frame-Options[SAMEORIGIN], X-UA-Compatible[IE=edge]
+
+Detected Plugins:
+[ Frame ]
+	This plugin detects instances of frame and iframe HTML 
+	elements. 
+
+
+[ HTML5 ]
+	HTML version 5, detected by the doctype declaration 
+
+
+[ JQuery ]
+	A fast, concise, JavaScript that simplifies how to traverse 
+	HTML documents, handle events, perform animations, and add 
+	AJAX. 
+
+	Website     : http://jquery.com/
+
+[ PasswordField ]
+	find password fields 
+
+	String       : newpwd (from field name)
+	String       : newpwdcfm (from field name)
+	String       : newpwd (from field name)
+	String       : newpwd2 (from field name)
+
+[ Script ]
+	This plugin detects instances of script HTML elements and 
+	returns the script language/type. 
+
+	String       : text/javascript,text/template
+
+[ X-Frame-Options ]
+	This plugin retrieves the X-Frame-Options value from the 
+	HTTP header. - More Info: 
+	http://msdn.microsoft.com/en-us/library/cc288472%28VS.85%29.
+	aspx
+
+	String       : SAMEORIGIN
+
+[ X-UA-Compatible ]
+	This plugin retrieves the X-UA-Compatible value from the 
+	HTTP header and meta http-equiv tag. - More Info: 
+	http://msdn.microsoft.com/en-us/library/cc817574.aspx 
+
+	String       : IE=edge
+
+HTTP Headers:
+	HTTP/1.1 200 OK
+	CONNECTION: close
+	Date: Sat, 23 Aug 2025 23:49:31 GMT
+	Last-Modified: Mon, 13 Aug 2018 11:46:47 GMT
+	Etag: "1534160807:7127"
+	CONTENT-LENGTH: 28967
+	CACHE-CONTROL: max-age=0
+	X-Frame-Options: SAMEORIGIN
+	CONTENT-TYPE: text/html
+	
+WhatWeb report for http://192.168.1.102
+Status    : 200 OK
+Title     : <None>
+IP        : 192.168.1.102
+Country   : RESERVED, ZZ
+
+Summary   : Frame, HTML5, JQuery, PasswordField[newpwd,newpwd2,newpwdcfm], Script[text/javascript,text/template], UncommonHeaders[content-security-policy,x-content-type-options], X-Frame-Options[DENY], X-UA-Compatible[IE=edge], X-XSS-Protection[1;mode=block]
+
+Detected Plugins:
+[ Frame ]
+	This plugin detects instances of frame and iframe HTML 
+	elements. 
+
+
+[ HTML5 ]
+	HTML version 5, detected by the doctype declaration 
+
+
+[ JQuery ]
+	A fast, concise, JavaScript that simplifies how to traverse 
+	HTML documents, handle events, perform animations, and add 
+	AJAX. 
+
+	Website     : http://jquery.com/
+
+[ PasswordField ]
+	find password fields 
+
+	String       : newpwd (from field name)
+	String       : newpwdcfm (from field name)
+	String       : newpwd (from field name)
+	String       : newpwd2 (from field name)
+
+[ Script ]
+	This plugin detects instances of script HTML elements and 
+	returns the script language/type. 
+
+	String       : text/javascript,text/template
+
+[ UncommonHeaders ]
+	Uncommon HTTP server headers. The blacklist includes all 
+	the standard headers and many non standard but common ones. 
+	Interesting but fairly common headers should have their own 
+	plugins, eg. x-powered-by, server and x-aspnet-version. 
+	Info about headers can be found at www.http-stats.com 
+
+	String       : content-security-policy,x-content-type-options (from headers)
+
+[ X-Frame-Options ]
+	This plugin retrieves the X-Frame-Options value from the 
+	HTTP header. - More Info: 
+	http://msdn.microsoft.com/en-us/library/cc288472%28VS.85%29.
+	aspx
+
+	String       : DENY
+
+[ X-UA-Compatible ]
+	This plugin retrieves the X-UA-Compatible value from the 
+	HTTP header and meta http-equiv tag. - More Info: 
+	http://msdn.microsoft.com/en-us/library/cc817574.aspx 
+
+	String       : IE=edge
+
+[ X-XSS-Protection ]
+	This plugin retrieves the X-XSS-Protection value from the 
+	HTTP header. - More Info: 
+	http://msdn.microsoft.com/en-us/library/cc288472%28VS.85%29.
+	aspx
+
+	String       : 1;mode=block
+
+HTTP Headers:
+	HTTP/1.1 200 OK
+	CONNECTION: close
+	Date: Sat, 23 Aug 2025 23:49:32 GMT
+	Last-Modified: Wed, 07 Jul 2021 07:14:30 GMT
+	Etag: "1625642070:8255"
+	CONTENT-LENGTH: 33365
+	CACHE-CONTROL: max-age=0
+	X-Frame-Options: DENY
+	X-XSS-Protection: 1;mode=block
+	Content-Security-Policy: script-src 'self' 'unsafe-inline' 'unsafe-eval'
+	X-Content-Type-Options: nosniff
+	CONTENT-TYPE: text/html
+	
+[+] Skipping duplicate target: https://192.168.1.148/ADVANCED/COMMON/TOP (already queued or similar)
+WhatWeb report for http://192.168.1.104
+Status    : 200 OK
+Title     : <None>
+IP        : 192.168.1.104
+Country   : RESERVED, ZZ
+
+Summary   : Frame, HTML5, JQuery, PasswordField[newpwd,newpwd2], Script[text/javascript,text/template], X-UA-Compatible[IE=edge]
+
+Detected Plugins:
+[ Frame ]
+	This plugin detects instances of frame and iframe HTML 
+	elements. 
+
+
+[ HTML5 ]
+	HTML version 5, detected by the doctype declaration 
+
+
+[ JQuery ]
+	A fast, concise, JavaScript that simplifies how to traverse 
+	HTML documents, handle events, perform animations, and add 
+	AJAX. 
+
+	Website     : http://jquery.com/
+
+[ PasswordField ]
+	find password fields 
+
+	String       : newpwd (from field name)
+	String       : newpwd2 (from field name)
+
+[ Script ]
+	This plugin detects instances of script HTML elements and 
+	returns the script language/type. 
+
+	String       : text/javascript,text/template
+
+[ X-UA-Compatible ]
+	This plugin retrieves the X-UA-Compatible value from the 
+	HTTP header and meta http-equiv tag. - More Info: 
+	http://msdn.microsoft.com/en-us/library/cc817574.aspx 
+
+	String       : IE=edge
+
+HTTP Headers:
+	HTTP/1.1 200 OK
+	CONNECTION: close
+	Date: Mon, 25 Aug 2025 00:21:16 GMT
+	Last-Modified: Wed, 15 Jun 2016 02:07:46 GMT
+	Etag: "1465956466:33ba"
+	CONTENT-LENGTH: 13242
+	CACHE-CONTROL: max-age=0
+	CONTENT-TYPE: text/html
+	
+WhatWeb report for http://192.168.1.105
+Status    : 200 OK
+Title     : <None>
+IP        : 192.168.1.105
+Country   : RESERVED, ZZ
+
+Summary   : Frame, HTML5, JQuery, PasswordField[newpwd,newpwd2], Script[text/javascript,text/template], X-UA-Compatible[IE=edge]
+
+Detected Plugins:
+[ Frame ]
+	This plugin detects instances of frame and iframe HTML 
+	elements. 
+
+
+[ HTML5 ]
+	HTML version 5, detected by the doctype declaration 
+
+
+[ JQuery ]
+	A fast, concise, JavaScript that simplifies how to traverse 
+	HTML documents, handle events, perform animations, and add 
+	AJAX. 
+
+	Website     : http://jquery.com/
+
+[ PasswordField ]
+	find password fields 
+
+	String       : newpwd (from field name)
+	String       : newpwd2 (from field name)
+
+[ Script ]
+	This plugin detects instances of script HTML elements and 
+	returns the script language/type. 
+
+	String       : text/javascript,text/template
+
+[ X-UA-Compatible ]
+	This plugin retrieves the X-UA-Compatible value from the 
+	HTTP header and meta http-equiv tag. - More Info: 
+	http://msdn.microsoft.com/en-us/library/cc817574.aspx 
+
+	String       : IE=edge
+
+HTTP Headers:
+	HTTP/1.1 200 OK
+	CONNECTION: close
+	Date: Sat, 23 Aug 2025 23:49:32 GMT
+	Last-Modified: Wed, 15 Jun 2016 02:07:46 GMT
+	Etag: "1465956466:33ba"
+	CONTENT-LENGTH: 13242
+	CACHE-CONTROL: max-age=0
+	CONTENT-TYPE: text/html
+	
+WhatWeb report for http://192.168.1.108
+Status    : 200 OK
+Title     : <None>
+IP        : 192.168.1.108
+Country   : RESERVED, ZZ
+
+Summary   : Frame, HTML5, JQuery, PasswordField[newpwd,newpwd2,newpwdcfm], Script[text/javascript,text/template], X-Frame-Options[SAMEORIGIN], X-UA-Compatible[IE=edge]
+
+Detected Plugins:
+[ Frame ]
+	This plugin detects instances of frame and iframe HTML 
+	elements. 
+
+
+[ HTML5 ]
+	HTML version 5, detected by the doctype declaration 
+
+
+[ JQuery ]
+	A fast, concise, JavaScript that simplifies how to traverse 
+	HTML documents, handle events, perform animations, and add 
+	AJAX. 
+
+	Website     : http://jquery.com/
+
+[ PasswordField ]
+	find password fields 
+
+	String       : newpwd (from field name)
+	String       : newpwdcfm (from field name)
+	String       : newpwd (from field name)
+	String       : newpwd2 (from field name)
+
+[ Script ]
+	This plugin detects instances of script HTML elements and 
+	returns the script language/type. 
+
+	String       : text/javascript,text/template
+
+[ X-Frame-Options ]
+	This plugin retrieves the X-Frame-Options value from the 
+	HTTP header. - More Info: 
+	http://msdn.microsoft.com/en-us/library/cc288472%28VS.85%29.
+	aspx
+
+	String       : SAMEORIGIN
+
+[ X-UA-Compatible ]
+	This plugin retrieves the X-UA-Compatible value from the 
+	HTTP header and meta http-equiv tag. - More Info: 
+	http://msdn.microsoft.com/en-us/library/cc817574.aspx 
+
+	String       : IE=edge
+
+HTTP Headers:
+	HTTP/1.1 200 OK
+	CONNECTION: close
+	Date: Mon, 25 Aug 2025 05:46:49 GMT
+	Last-Modified: Tue, 22 Jan 2019 02:32:10 GMT
+	Etag: "1548124330:7bb8"
+	CONTENT-LENGTH: 31672
+	CACHE-CONTROL: max-age=0
+	X-Frame-Options: SAMEORIGIN
+	CONTENT-TYPE: text/html
+	
+WhatWeb report for http://192.168.1.148
+Status    : 307 Temporary Redirect
+Title     : <None>
+IP        : 192.168.1.148
+Country   : RESERVED, ZZ
+
+Summary   : HTTPServer[EPSON HTTP Server], RedirectLocation[https://192.168.1.148/]
+
+Detected Plugins:
+[ HTTPServer ]
+	HTTP server header string. This plugin also attempts to 
+	identify the operating system from the server header. 
+
+	String       : EPSON HTTP Server (from server string)
+
+[ RedirectLocation ]
+	HTTP Server string location. used with http-status 301 and 
+	302 
+
+	String       : https://192.168.1.148/ (from location)
+
+HTTP Headers:
+	HTTP/1.1 307 Temporary Redirect
+	Location: https://192.168.1.148/
+	Server: EPSON HTTP Server
+	Connection: close
+	
+WhatWeb report for http://192.168.1.254
+Status    : 200 OK
+Title     : Freebox OS
+IP        : 192.168.1.254
+Country   : RESERVED, ZZ
+
+Summary   : HTML5, HTTPServer[nginx], JQuery, nginx, Script[text/javascript]
+
+Detected Plugins:
+[ HTML5 ]
+	HTML version 5, detected by the doctype declaration 
+
+
+[ HTTPServer ]
+	HTTP server header string. This plugin also attempts to 
+	identify the operating system from the server header. 
+
+	String       : nginx (from server string)
+
+[ JQuery ]
+	A fast, concise, JavaScript that simplifies how to traverse 
+	HTML documents, handle events, perform animations, and add 
+	AJAX. 
+
+	Website     : http://jquery.com/
+
+[ Script ]
+	This plugin detects instances of script HTML elements and 
+	returns the script language/type. 
+
+	String       : text/javascript
+
+[ nginx ]
+	Nginx (Engine-X) is a free, open-source, high-performance 
+	HTTP server and reverse proxy, as well as an IMAP/POP3 
+	proxy server. 
+
+	Website     : http://nginx.net/
+
+HTTP Headers:
+	HTTP/1.1 200 OK
+	Server: nginx
+	Date: Sun, 24 Aug 2025 21:47:56 GMT
+	Content-Type: text/html; charset=utf-8
+	Transfer-Encoding: chunked
+	Connection: close
+	Expires: Sun, 24 Aug 2025 21:47:55 GMT
+	Cache-Control: no-cache
+	Cache-Control: must-revalidate,no-store
+	Content-Encoding: gzip
+	
+WhatWeb report for https://192.168.1.101
+Status    : 200 OK
+Title     : <None>
+IP        : 192.168.1.101
+Country   : RESERVED, ZZ
+
+Summary   : Frame, HTML5, JQuery, PasswordField[newpwd,newpwd2], Script[text/javascript,text/template], X-UA-Compatible[IE=edge]
+
+Detected Plugins:
+[ Frame ]
+	This plugin detects instances of frame and iframe HTML 
+	elements. 
+
+
+[ HTML5 ]
+	HTML version 5, detected by the doctype declaration 
+
+
+[ JQuery ]
+	A fast, concise, JavaScript that simplifies how to traverse 
+	HTML documents, handle events, perform animations, and add 
+	AJAX. 
+
+	Website     : http://jquery.com/
+
+[ PasswordField ]
+	find password fields 
+
+	String       : newpwd (from field name)
+	String       : newpwd2 (from field name)
+
+[ Script ]
+	This plugin detects instances of script HTML elements and 
+	returns the script language/type. 
+
+	String       : text/javascript,text/template
+
+[ X-UA-Compatible ]
+	This plugin retrieves the X-UA-Compatible value from the 
+	HTTP header and meta http-equiv tag. - More Info: 
+	http://msdn.microsoft.com/en-us/library/cc817574.aspx 
+
+	String       : IE=edge
+
+HTTP Headers:
+	HTTP/1.1 200 OK
+	CONNECTION: close
+	Date: Sat, 23 Aug 2025 23:49:32 GMT
+	Last-Modified: Wed, 15 Jun 2016 02:07:46 GMT
+	Etag: "1465956466:33ba"
+	CONTENT-LENGTH: 13242
+	CACHE-CONTROL: max-age=0
+	CONTENT-TYPE: text/html
+	
+WhatWeb report for https://192.168.1.254
+Status    : 200 OK
+Title     : Freebox OS
+IP        : 192.168.1.254
+Country   : RESERVED, ZZ
+
+Summary   : HTML5, HTTPServer[nginx], JQuery, nginx, Script[text/javascript]
+
+Detected Plugins:
+[ HTML5 ]
+	HTML version 5, detected by the doctype declaration 
+
+
+[ HTTPServer ]
+	HTTP server header string. This plugin also attempts to 
+	identify the operating system from the server header. 
+
+	String       : nginx (from server string)
+
+[ JQuery ]
+	A fast, concise, JavaScript that simplifies how to traverse 
+	HTML documents, handle events, perform animations, and add 
+	AJAX. 
+
+	Website     : http://jquery.com/
+
+[ Script ]
+	This plugin detects instances of script HTML elements and 
+	returns the script language/type. 
+
+	String       : text/javascript
+
+[ nginx ]
+	Nginx (Engine-X) is a free, open-source, high-performance 
+	HTTP server and reverse proxy, as well as an IMAP/POP3 
+	proxy server. 
+
+	Website     : http://nginx.net/
+
+HTTP Headers:
+	HTTP/1.1 200 OK
+	Server: nginx
+	Date: Sun, 24 Aug 2025 21:47:57 GMT
+	Content-Type: text/html; charset=utf-8
+	Transfer-Encoding: chunked
+	Connection: close
+	Expires: Sun, 24 Aug 2025 21:47:56 GMT
+	Cache-Control: no-cache
+	Cache-Control: must-revalidate,no-store
+	Content-Encoding: gzip
+	
+WhatWeb report for https://192.168.1.148
+Status    : 200 OK
+Title     : <None>
+IP        : 192.168.1.148
+Country   : RESERVED, ZZ
+
+Summary   : HTTPServer[Linux][EPSON_Linux UPnP/1.0 Epson UPnP SDK/1.0], Meta-Author[SEIKO EPSON], Meta-Refresh-Redirect[./ADVANCED/COMMON/TOP], Script[text/javascript], UncommonHeaders[x-content-type-options], X-Frame-Options[SAMEORIGIN], X-UA-Compatible[IE=edge], X-XSS-Protection[1; mode=block]
+
+Detected Plugins:
+[ HTTPServer ]
+	HTTP server header string. This plugin also attempts to 
+	identify the operating system from the server header. 
+
+	OS           : Linux
+	String       : EPSON_Linux UPnP/1.0 Epson UPnP SDK/1.0 (from server string)
+
+[ Meta-Author ]
+	This plugin retrieves the author name from the meta name 
+	tag - info: 
+	http://www.webmarketingnow.com/tips/meta-tags-uncovered.html
+	#author
+
+	String       : SEIKO EPSON
+
+[ Meta-Refresh-Redirect ]
+	Meta refresh tag is a deprecated URL element that can be 
+	used to optionally wait x seconds before reloading the 
+	current page or loading a new page. More info: 
+	https://secure.wikimedia.org/wikipedia/en/wiki/Meta_refresh 
+
+	String       : ./ADVANCED/COMMON/TOP
+
+[ Script ]
+	This plugin detects instances of script HTML elements and 
+	returns the script language/type. 
+
+	String       : text/javascript
+
+[ UncommonHeaders ]
+	Uncommon HTTP server headers. The blacklist includes all 
+	the standard headers and many non standard but common ones. 
+	Interesting but fairly common headers should have their own 
+	plugins, eg. x-powered-by, server and x-aspnet-version. 
+	Info about headers can be found at www.http-stats.com 
+
+	String       : x-content-type-options (from headers)
+
+[ X-Frame-Options ]
+	This plugin retrieves the X-Frame-Options value from the 
+	HTTP header. - More Info: 
+	http://msdn.microsoft.com/en-us/library/cc288472%28VS.85%29.
+	aspx
+
+	String       : SAMEORIGIN
+
+[ X-UA-Compatible ]
+	This plugin retrieves the X-UA-Compatible value from the 
+	HTTP header and meta http-equiv tag. - More Info: 
+	http://msdn.microsoft.com/en-us/library/cc817574.aspx 
+
+	String       : IE=edge
+
+[ X-XSS-Protection ]
+	This plugin retrieves the X-XSS-Protection value from the 
+	HTTP header. - More Info: 
+	http://msdn.microsoft.com/en-us/library/cc288472%28VS.85%29.
+	aspx
+
+	String       : 1; mode=block
+
+HTTP Headers:
+	HTTP/1.1 200 OK
+	X-Content-type-Options: nosniff
+	X-XSS-Protection: 1; mode=block
+	CACHE-CONTROL: private, no-store, no-cache, must-revalidate
+	Pragma: no-cache
+	CONTENT-TYPE: text/html
+	CONTENT-LENGTH: 954
+	SERVER: EPSON_Linux UPnP/1.0 Epson UPnP SDK/1.0
+	Connection: close
+	X-FRAME-OPTIONS: SAMEORIGIN
+	
+WhatWeb report for https://192.168.1.148/
+Status    : 200 OK
+Title     : <None>
+IP        : 192.168.1.148
+Country   : RESERVED, ZZ
+
+Summary   : HTTPServer[Linux][EPSON_Linux UPnP/1.0 Epson UPnP SDK/1.0], Meta-Author[SEIKO EPSON], Meta-Refresh-Redirect[./ADVANCED/COMMON/TOP], Script[text/javascript], UncommonHeaders[x-content-type-options], X-Frame-Options[SAMEORIGIN], X-UA-Compatible[IE=edge], X-XSS-Protection[1; mode=block]
+
+Detected Plugins:
+[ HTTPServer ]
+	HTTP server header string. This plugin also attempts to 
+	identify the operating system from the server header. 
+
+	OS           : Linux
+	String       : EPSON_Linux UPnP/1.0 Epson UPnP SDK/1.0 (from server string)
+
+[ Meta-Author ]
+	This plugin retrieves the author name from the meta name 
+	tag - info: 
+	http://www.webmarketingnow.com/tips/meta-tags-uncovered.html
+	#author
+
+	String       : SEIKO EPSON
+
+[ Meta-Refresh-Redirect ]
+	Meta refresh tag is a deprecated URL element that can be 
+	used to optionally wait x seconds before reloading the 
+	current page or loading a new page. More info: 
+	https://secure.wikimedia.org/wikipedia/en/wiki/Meta_refresh 
+
+	String       : ./ADVANCED/COMMON/TOP
+
+[ Script ]
+	This plugin detects instances of script HTML elements and 
+	returns the script language/type. 
+
+	String       : text/javascript
+
+[ UncommonHeaders ]
+	Uncommon HTTP server headers. The blacklist includes all 
+	the standard headers and many non standard but common ones. 
+	Interesting but fairly common headers should have their own 
+	plugins, eg. x-powered-by, server and x-aspnet-version. 
+	Info about headers can be found at www.http-stats.com 
+
+	String       : x-content-type-options (from headers)
+
+[ X-Frame-Options ]
+	This plugin retrieves the X-Frame-Options value from the 
+	HTTP header. - More Info: 
+	http://msdn.microsoft.com/en-us/library/cc288472%28VS.85%29.
+	aspx
+
+	String       : SAMEORIGIN
+
+[ X-UA-Compatible ]
+	This plugin retrieves the X-UA-Compatible value from the 
+	HTTP header and meta http-equiv tag. - More Info: 
+	http://msdn.microsoft.com/en-us/library/cc817574.aspx 
+
+	String       : IE=edge
+
+[ X-XSS-Protection ]
+	This plugin retrieves the X-XSS-Protection value from the 
+	HTTP header. - More Info: 
+	http://msdn.microsoft.com/en-us/library/cc288472%28VS.85%29.
+	aspx
+
+	String       : 1; mode=block
+
+HTTP Headers:
+	HTTP/1.1 200 OK
+	X-Content-type-Options: nosniff
+	X-XSS-Protection: 1; mode=block
+	CACHE-CONTROL: private, no-store, no-cache, must-revalidate
+	Pragma: no-cache
+	CONTENT-TYPE: text/html
+	CONTENT-LENGTH: 954
+	SERVER: EPSON_Linux UPnP/1.0 Epson UPnP SDK/1.0
+	Connection: close
+	X-FRAME-OPTIONS: SAMEORIGIN
+	
+WhatWeb report for https://192.168.1.148/ADVANCED/COMMON/TOP
+Status    : 404 Not Found
+Title     : <None>
+IP        : 192.168.1.148
+Country   : RESERVED, ZZ
+
+Summary   : HTTPServer[Linux][EPSON_Linux UPnP/1.0 Epson UPnP SDK/1.0], UncommonHeaders[x-content-type-options], X-XSS-Protection[1; mode=block]
+
+Detected Plugins:
+[ HTTPServer ]
+	HTTP server header string. This plugin also attempts to 
+	identify the operating system from the server header. 
+
+	OS           : Linux
+	String       : EPSON_Linux UPnP/1.0 Epson UPnP SDK/1.0 (from server string)
+
+[ UncommonHeaders ]
+	Uncommon HTTP server headers. The blacklist includes all 
+	the standard headers and many non standard but common ones. 
+	Interesting but fairly common headers should have their own 
+	plugins, eg. x-powered-by, server and x-aspnet-version. 
+	Info about headers can be found at www.http-stats.com 
+
+	String       : x-content-type-options (from headers)
+
+[ X-XSS-Protection ]
+	This plugin retrieves the X-XSS-Protection value from the 
+	HTTP header. - More Info: 
+	http://msdn.microsoft.com/en-us/library/cc288472%28VS.85%29.
+	aspx
+
+	String       : 1; mode=block
+
+HTTP Headers:
+	HTTP/1.1 404 Not Found
+	X-Content-type-Options: nosniff
+	X-XSS-Protection: 1; mode=block
+	CACHE-CONTROL: private, no-store, no-cache, must-revalidate
+	Pragma: no-cache
+	CONTENT-LENGTH: 0
+	SERVER: EPSON_Linux UPnP/1.0 Epson UPnP SDK/1.0
+	Connection: close
+	
+WhatWeb report for http://192.168.1.101
+Status    : 200 OK
+Title     : <None>
+IP        : 192.168.1.101
+Country   : RESERVED, ZZ
+
+Summary   : Frame, HTML5, JQuery, PasswordField[newpwd,newpwd2], Script[text/javascript,text/template], X-UA-Compatible[IE=edge]
+
+Detected Plugins:
+[ Frame ]
+	This plugin detects instances of frame and iframe HTML 
+	elements. 
+
+
+[ HTML5 ]
+	HTML version 5, detected by the doctype declaration 
+
+
+[ JQuery ]
+	A fast, concise, JavaScript that simplifies how to traverse 
+	HTML documents, handle events, perform animations, and add 
+	AJAX. 
+
+	Website     : http://jquery.com/
+
+[ PasswordField ]
+	find password fields 
+
+	String       : newpwd (from field name)
+	String       : newpwd2 (from field name)
+
+[ Script ]
+	This plugin detects instances of script HTML elements and 
+	returns the script language/type. 
+
+	String       : text/javascript,text/template
+
+[ X-UA-Compatible ]
+	This plugin retrieves the X-UA-Compatible value from the 
+	HTTP header and meta http-equiv tag. - More Info: 
+	http://msdn.microsoft.com/en-us/library/cc817574.aspx 
+
+	String       : IE=edge
+
+HTTP Headers:
+	HTTP/1.1 200 OK
+	CONNECTION: close
+	Date: Sat, 23 Aug 2025 23:49:32 GMT
+	Last-Modified: Wed, 15 Jun 2016 02:07:46 GMT
+	Etag: "1465956466:33ba"
+	CONTENT-LENGTH: 13242
+	CACHE-CONTROL: max-age=0
+	CONTENT-TYPE: text/html
+	

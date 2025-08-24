@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-source "core/lib_logging.sh"
 # modules/90_report_pack.sh
 # @version 0.1.0
 set -Eeuo pipefail

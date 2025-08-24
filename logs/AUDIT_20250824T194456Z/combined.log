@@ -1,0 +1,2 @@
+2025-08-24T15:44:56-04:00 [INFO] [launcher] Start profile=fast targets=192.168.1.0/24 opts=no-udp:1,no-zeek:1,no-suricata:1
+2025-08-24T15:44:56-04:00 [INFO] [30_vuln_nmap_nse] start: Nmap NSE Vuln

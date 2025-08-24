@@ -8,4 +8,3 @@ modules/70_http_enum.sh
 modules/80_zeek.sh
 modules/81_suricata.sh
 modules/90_report_pack.sh
-modules/_TEMPLATE.module.sh

@@ -1,0 +1,40 @@
+# Nmap 7.95 scan initiated Sun Aug 24 15:25:48 2025 as: /usr/lib/nmap/nmap --privileged -sn -oA output/AUDIT_20250824T192548Z/10_network_discovery/pingsweep 192.168.1.0/24
+Nmap scan report for 192.168.1.4
+Host is up (0.00026s latency).
+MAC Address: 00:90:A9:EA:4B:CB (Western Digital)
+Nmap scan report for 192.168.1.100
+Host is up (0.00068s latency).
+MAC Address: 4C:11:BF:6F:C6:4E (Zhejiang Dahua Technology)
+Nmap scan report for 192.168.1.101
+Host is up (0.067s latency).
+MAC Address: E0:50:8B:13:79:7C (Zhejiang Dahua Technology)
+Nmap scan report for 192.168.1.102
+Host is up (0.0024s latency).
+MAC Address: 14:A7:8B:C5:5A:C0 (Zhejiang Dahua Technology)
+Nmap scan report for 192.168.1.103
+Host is up (0.00020s latency).
+MAC Address: 9C:14:63:19:58:39 (Zhejiang Dahua Technology)
+Nmap scan report for 192.168.1.104
+Host is up (0.067s latency).
+MAC Address: E0:50:8B:13:79:50 (Zhejiang Dahua Technology)
+Nmap scan report for 192.168.1.105
+Host is up (0.00025s latency).
+MAC Address: E0:50:8B:13:79:49 (Zhejiang Dahua Technology)
+Nmap scan report for 192.168.1.108
+Host is up (0.0012s latency).
+MAC Address: 9C:14:63:81:9C:63 (Zhejiang Dahua Technology)
+Nmap scan report for 192.168.1.110
+Host is up (0.00028s latency).
+MAC Address: B2:19:21:C3:EC:2B (Unknown)
+Nmap scan report for 192.168.1.143
+Host is up (0.00015s latency).
+MAC Address: FC:34:97:A6:BE:6C (ASUSTek Computer)
+Nmap scan report for 192.168.1.148
+Host is up (0.018s latency).
+MAC Address: DC:CD:2F:86:3F:77 (Seiko Epson)
+Nmap scan report for 192.168.1.254
+Host is up (0.00055s latency).
+MAC Address: 00:24:D4:A5:A7:BF (Freebox SAS)
+Nmap scan report for 192.168.1.216
+Host is up.
+# Nmap done at Sun Aug 24 15:25:50 2025 -- 256 IP addresses (13 hosts up) scanned in 1.89 seconds

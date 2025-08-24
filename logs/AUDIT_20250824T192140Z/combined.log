@@ -1,0 +1,24 @@
+2025-08-24T15:21:40-04:00 [INFO] [launcher] Start profile=fast targets=192.168.1.0/24 opts=no-udp:0,no-zeek:1,no-suricata:1
+2025-08-24T15:21:40-04:00 [INFO] [10_network_discovery] start: Découverte réseau
+2025-08-24T15:21:40-04:00 [ERROR] [10_network_discovery] failed rc=127
+2025-08-24T15:21:40-04:00 [INFO] [20_portscan_nmap] start: Portscan Nmap
+2025-08-24T15:21:40-04:00 [ERROR] [20_portscan_nmap] failed rc=127
+2025-08-24T15:21:40-04:00 [INFO] [30_vuln_nmap_nse] start: Nmap NSE Vuln
+2025-08-24T15:21:40-04:00 [ERROR] [30_vuln_nmap_nse] failed rc=127
+2025-08-24T15:21:40-04:00 [INFO] [40_service_enum] start: Énumération services
+2025-08-24T15:21:40-04:00 [ERROR] [40_service_enum] failed rc=127
+2025-08-24T15:21:40-04:00 [INFO] [50_snmp_enum] start: SNMP enum (si présent)
+2025-08-24T15:21:40-04:00 [ERROR] [50_snmp_enum] failed rc=127
+2025-08-24T15:21:40-04:00 [INFO] [60_smb_enum] start: SMB enum (si présent)
+2025-08-24T15:21:40-04:00 [ERROR] [60_smb_enum] failed rc=127
+2025-08-24T15:21:40-04:00 [INFO] [70_http_enum] start: HTTP enum
+2025-08-24T15:21:40-04:00 [ERROR] [70_http_enum] failed rc=127
+2025-08-24T15:21:40-04:00 [INFO] [80_zeek] start: Zeek PCAP (option)
+2025-08-24T15:21:40-04:00 [ERROR] [80_zeek] failed rc=127
+2025-08-24T15:21:40-04:00 [INFO] [81_suricata] start: Suricata IDS (option)
+2025-08-24T15:21:40-04:00 [ERROR] [81_suricata] failed rc=127
+2025-08-24T15:21:40-04:00 [INFO] [90_report_pack] start: Pack rapport
+2025-08-24T15:21:40-04:00 [ERROR] [90_report_pack] failed rc=127
+2025-08-24T15:21:40-04:00 [INFO] [XX_name] start: Name
+2025-08-24T15:21:40-04:00 [ERROR] [XX_name] failed rc=127
+2025-08-24T15:21:40-04:00 [INFO] [launcher] Terminé. Dossier: output/AUDIT_20250824T192140Z

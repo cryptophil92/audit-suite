@@ -1,0 +1,8 @@
+{
+  "run_id": "AUDIT_20250824T220008Z",
+  "created_at": "2025-08-24T18:00:08-04:00",
+  "profile": "fast",
+  "targets": "192.168.1.0/24",
+  "options": { "no_udp": 1, "no_zeek": 1, "no_suricata": 1 },
+  "selected_modules": "90_report_pack.sh"
+}

@@ -1,0 +1,17 @@
+# Nmap 7.95 scan initiated Sun Aug 24 17:41:20 2025 as: /usr/lib/nmap/nmap --privileged -Pn -p445 --script smb-os-discovery,smb2-security-mode,smb2-time -oN output/AUDIT_20250824T214022Z/smb_probe/192.168.1.254_smb_basic.nmap 192.168.1.254
+Nmap scan report for 192.168.1.254
+Host is up (0.00046s latency).
+
+PORT    STATE SERVICE
+445/tcp open  microsoft-ds
+MAC Address: 00:24:D4:A5:A7:BF (Freebox SAS)
+
+Host script results:
+| smb2-security-mode: 
+|   3:1:1: 
+|_    Message signing enabled but not required
+| smb2-time: 
+|   date: 2025-08-24T21:41:21
+|_  start_date: N/A
+
+# Nmap done at Sun Aug 24 17:41:21 2025 -- 1 IP address (1 host up) scanned in 0.52 seconds

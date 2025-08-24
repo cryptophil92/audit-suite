@@ -1,0 +1,9 @@
+2025-08-24T15:25:48-04:00 [INFO] [launcher] Start profile=fast targets=192.168.1.0/24 opts=no-udp:1,no-zeek:1,no-suricata:1
+2025-08-24T15:25:48-04:00 [INFO] [10_network_discovery] start: Découverte réseau
+2025-08-24T15:25:50-04:00 [INFO] [10_network_discovery] success
+2025-08-24T15:25:50-04:00 [INFO] [20_portscan_nmap] start: Portscan Nmap
+2025-08-24T15:28:54-04:00 [ERROR] [launcher] interrupted
+2025-08-24T15:28:54-04:00 [INFO] [20_portscan_nmap] success
+2025-08-24T15:28:54-04:00 [INFO] [XX_name] start: Name
+2025-08-24T15:28:54-04:00 [ERROR] [XX_name] failed rc=127
+2025-08-24T15:28:54-04:00 [INFO] [launcher] Terminé. Dossier: output/AUDIT_20250824T192548Z

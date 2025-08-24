@@ -1,0 +1,2 @@
+2025-08-24T15:17:59-04:00 [INFO] [launcher] Start profile=fast targets=192.168.1.0/24 opts=no-udp:0,no-zeek:1,no-suricata:1
+2025-08-24T15:17:59-04:00 [INFO] [10_network_discovery] start: Découverte réseau

@@ -1,0 +1,8 @@
+# Nmap 7.95 scan initiated Sun Aug 24 17:40:22 2025 as: /usr/lib/nmap/nmap --privileged -Pn -p 139,445 --open -oG output/AUDIT_20250824T214022Z/60_smb_enum/smb.gnmap 192.168.1.0/24
+Host: 192.168.1.4 ()	Status: Up
+Host: 192.168.1.4 ()	Ports: 139/open/tcp//netbios-ssn///, 445/open/tcp//microsoft-ds///
+Host: 192.168.1.143 ()	Status: Up
+Host: 192.168.1.143 ()	Ports: 139/open/tcp//netbios-ssn///, 445/open/tcp//microsoft-ds///
+Host: 192.168.1.254 ()	Status: Up
+Host: 192.168.1.254 ()	Ports: 445/open/tcp//microsoft-ds///	Ignored State: closed (1)
+# Nmap done at Sun Aug 24 17:40:26 2025 -- 256 IP addresses (13 hosts up) scanned in 3.21 seconds

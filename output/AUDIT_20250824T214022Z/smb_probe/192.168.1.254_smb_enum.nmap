@@ -1,0 +1,9 @@
+# Nmap 7.95 scan initiated Sun Aug 24 17:45:10 2025 as: /usr/lib/nmap/nmap --privileged -Pn -p445 --script smb-enum-shares,smb-enum-users -oN output/AUDIT_20250824T214022Z/smb_probe/192.168.1.254_smb_enum.nmap 192.168.1.254
+Nmap scan report for 192.168.1.254
+Host is up (0.00044s latency).
+
+PORT    STATE SERVICE
+445/tcp open  microsoft-ds
+MAC Address: 00:24:D4:A5:A7:BF (Freebox SAS)
+
+# Nmap done at Sun Aug 24 17:45:10 2025 -- 1 IP address (1 host up) scanned in 0.63 seconds

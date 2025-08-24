@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE nmaprun>
+<?xml-stylesheet href="file:///usr/share/nmap/nmap.xsl" type="text/xsl"?>
+<!-- Nmap 7.95 scan initiated Sun Aug 24 15:25:48 2025 as: /usr/lib/nmap/nmap -&#45;privileged -sn -oA output/AUDIT_20250824T192548Z/10_network_discovery/pingsweep 192.168.1.0/24 -->
+<nmaprun scanner="nmap" args="/usr/lib/nmap/nmap -&#45;privileged -sn -oA output/AUDIT_20250824T192548Z/10_network_discovery/pingsweep 192.168.1.0/24" start="1756063548" startstr="Sun Aug 24 15:25:48 2025" version="7.95" xmloutputversion="1.05">
+<verbose level="0"/>
+<debugging level="0"/>
+<host><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="192.168.1.4" addrtype="ipv4"/>
+<address addr="00:90:A9:EA:4B:CB" addrtype="mac" vendor="Western Digital"/>
+<hostnames>
+</hostnames>
+<times srtt="261" rttvar="3858" to="100000"/>
+</host>
+<host><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="192.168.1.100" addrtype="ipv4"/>
+<address addr="4C:11:BF:6F:C6:4E" addrtype="mac" vendor="Zhejiang Dahua Technology"/>
+<hostnames>
+</hostnames>
+<times srtt="678" rttvar="5000" to="100000"/>
+</host>
+<host><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="192.168.1.101" addrtype="ipv4"/>
+<address addr="E0:50:8B:13:79:7C" addrtype="mac" vendor="Zhejiang Dahua Technology"/>
+<hostnames>
+</hostnames>
+<times srtt="66811" rttvar="66811" to="334055"/>
+</host>
+<host><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="192.168.1.102" addrtype="ipv4"/>
+<address addr="14:A7:8B:C5:5A:C0" addrtype="mac" vendor="Zhejiang Dahua Technology"/>
+<hostnames>
+</hostnames>
+<times srtt="2409" rttvar="5000" to="100000"/>
+</host>
+<host><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="192.168.1.103" addrtype="ipv4"/>
+<address addr="9C:14:63:19:58:39" addrtype="mac" vendor="Zhejiang Dahua Technology"/>
+<hostnames>
+</hostnames>
+<times srtt="205" rttvar="5000" to="100000"/>
+</host>
+<host><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="192.168.1.104" addrtype="ipv4"/>
+<address addr="E0:50:8B:13:79:50" addrtype="mac" vendor="Zhejiang Dahua Technology"/>
+<hostnames>
+</hostnames>
+<times srtt="66691" rttvar="66691" to="333455"/>
+</host>
+<host><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="192.168.1.105" addrtype="ipv4"/>
+<address addr="E0:50:8B:13:79:49" addrtype="mac" vendor="Zhejiang Dahua Technology"/>
+<hostnames>
+</hostnames>
+<times srtt="254" rttvar="5000" to="100000"/>
+</host>
+<host><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="192.168.1.108" addrtype="ipv4"/>
+<address addr="9C:14:63:81:9C:63" addrtype="mac" vendor="Zhejiang Dahua Technology"/>
+<hostnames>
+</hostnames>
+<times srtt="1215" rttvar="5000" to="100000"/>
+</host>
+<host><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="192.168.1.110" addrtype="ipv4"/>
+<address addr="B2:19:21:C3:EC:2B" addrtype="mac"/>
+<hostnames>
+</hostnames>
+<times srtt="283" rttvar="5000" to="100000"/>
+</host>
+<host><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="192.168.1.143" addrtype="ipv4"/>
+<address addr="FC:34:97:A6:BE:6C" addrtype="mac" vendor="ASUSTek Computer"/>
+<hostnames>
+</hostnames>
+<times srtt="150" rttvar="5000" to="100000"/>
+</host>
+<host><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="192.168.1.148" addrtype="ipv4"/>
+<address addr="DC:CD:2F:86:3F:77" addrtype="mac" vendor="Seiko Epson"/>
+<hostnames>
+</hostnames>
+<times srtt="17813" rttvar="17813" to="100000"/>
+</host>
+<host><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="192.168.1.254" addrtype="ipv4"/>
+<address addr="00:24:D4:A5:A7:BF" addrtype="mac" vendor="Freebox SAS"/>
+<hostnames>
+</hostnames>
+<times srtt="547" rttvar="2218" to="100000"/>
+</host>
+<host><status state="up" reason="localhost-response" reason_ttl="0"/>
+<address addr="192.168.1.216" addrtype="ipv4"/>
+<hostnames>
+</hostnames>
+</host>
+<runstats><finished time="1756063550" timestr="Sun Aug 24 15:25:50 2025" summary="Nmap done at Sun Aug 24 15:25:50 2025; 256 IP addresses (13 hosts up) scanned in 1.89 seconds" elapsed="1.89" exit="success"/><hosts up="13" down="243" total="256"/>
+</runstats>
+</nmaprun>

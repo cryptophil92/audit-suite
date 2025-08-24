@@ -1,0 +1,30 @@
+# Nmap 7.95 scan initiated Sun Aug 24 15:33:04 2025 as: /usr/lib/nmap/nmap --privileged -Pn -T4 --top-ports 200 -sV -oA output/AUDIT_20250824T193302Z/20_portscan_nmap/fast 192.168.1.0/24
+Host: 192.168.1.4 ()	Status: Up
+Host: 192.168.1.4 ()	Ports: 80/open/tcp//http//Golang net|http server/, 139/open/tcp//netbios-ssn//Samba smbd 4/, 445/open/tcp//netbios-ssn//Samba smbd 4/, 5357/open/tcp//http//BaseHTTPServer 0.6 (Python 3.9.2)/, 8002/open/tcp//http//Golang net|http server/, 49154/open/tcp//upnp//Portable SDK for UPnP devices 1.8.4 (Linux 4.14.22-armada-18.09.3; UPnP 1.0)/	Ignored State: closed (194)
+Host: 192.168.1.100 ()	Status: Up
+Host: 192.168.1.100 ()	Ports: 80/open/tcp//http///, 554/open/tcp//rtsp///, 49152/open/tcp/////	Ignored State: closed (197)
+Host: 192.168.1.101 ()	Status: Up
+Host: 192.168.1.101 ()	Ports: 80/open/tcp//http///, 443/open/tcp//ssl|https///, 554/open/tcp//rtsp//Lorex IP camera rtspd/, 5000/open/tcp//upnp?///, 49152/open/tcp//upnp///	Ignored State: closed (195)
+Host: 192.168.1.102 ()	Status: Up
+Host: 192.168.1.102 ()	Ports: 80/open/tcp//http///, 554/open/tcp//rtsp///	Ignored State: closed (198)
+Host: 192.168.1.103 ()	Status: Up
+Host: 192.168.1.103 ()	Ports: 80/open/tcp//http///, 554/open/tcp//rtsp//Lorex IP camera rtspd/, 5000/open/tcp//upnp?///	Ignored State: closed (197)
+Host: 192.168.1.104 ()	Status: Up
+Host: 192.168.1.104 ()	Ports: 80/open/tcp//http///, 554/open/tcp//rtsp//Lorex IP camera rtspd/, 5000/open/tcp//upnp?///, 49152/open/tcp//upnp///	Ignored State: closed (196)
+Host: 192.168.1.105 ()	Status: Up
+Host: 192.168.1.105 ()	Ports: 80/open/tcp//http///, 554/open/tcp//rtsp//Lorex IP camera rtspd/, 5000/open/tcp//upnp?///, 49152/open/tcp//upnp///	Ignored State: closed (196)
+Host: 192.168.1.108 ()	Status: Up
+Host: 192.168.1.108 ()	Ports: 80/open/tcp//http///, 554/open/tcp//rtsp//Lorex IP camera rtspd/, 1935/open/tcp//rtmp?///, 5000/open/tcp//upnp?///	Ignored State: closed (196)
+Host: 192.168.1.110 ()	Status: Up
+Host: 192.168.1.110 ()	Ports: 	Ignored State: filtered (200)
+Host: 192.168.1.143 ()	Status: Up
+Host: 192.168.1.143 ()	Ports: 135/open/tcp//msrpc//Microsoft Windows RPC/, 139/open/tcp//netbios-ssn//Microsoft Windows netbios-ssn/, 445/open/tcp//microsoft-ds?///, 902/open/tcp//ssl|vmware-auth//VMware Authentication Daemon 1.10 (Uses VNC, SOAP)/, 5357/open/tcp//http//Microsoft HTTPAPI httpd 2.0 (SSDP|UPnP)/	Ignored State: closed (195)
+Host: 192.168.1.148 ()	Status: Up
+Host: 192.168.1.148 ()	Ports: 80/open/tcp//tcpwrapped///, 443/open/tcp//tcpwrapped///, 515/open/tcp//printer///, 631/open/tcp//tcpwrapped///, 9100/open/tcp//jetdirect?///	Ignored State: closed (195)
+Host: 192.168.1.175 ()	Status: Up
+Host: 192.168.1.175 ()	Ports: 80/open/tcp//http//LinkTap Gateway/	Ignored State: closed (199)
+Host: 192.168.1.254 ()	Status: Up
+Host: 192.168.1.254 ()	Ports: 53/open/tcp//domain//dnsmasq 2.91/, 80/open/tcp//http//nginx/, 443/open/tcp//ssl|http//nginx/, 445/open/tcp//microsoft-ds///, 554/open/tcp//rtsp//Freebox rtspd 1.2/, 5000/open/tcp//rtsp///, 5357/open/tcp//http//nginx/	Ignored State: closed (193)
+Host: 192.168.1.216 ()	Status: Up
+Host: 192.168.1.216 ()	Ports: 	Ignored State: closed (200)
+# Nmap done at Sun Aug 24 15:36:15 2025 -- 256 IP addresses (14 hosts up) scanned in 190.65 seconds

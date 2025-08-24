@@ -1,0 +1,90 @@
+#!/usr/bin/env bash
+# core/lib_runner.sh
+# @version 0.1.2
+set -Eeuo pipefail
+
+discover_modules_sorted() {
+  ls -1 modules/*.sh 2>/dev/null | sort -V
+}
+
+_get_var() {
+  local var="$1"
+  printf '%s' "${!var-}"
+}
+
+run_modules() {
+  local selected="${1:-}"
+  local -a list=()
+  if [[ -n "$selected" ]]; then
+    # accepte séparateurs espaces OU virgules
+    # shellcheck disable=SC2206
+    list=($selected)
+    for i in "${!list[@]}"; do
+      [[ "${list[$i]}" == modules/* ]] || list[$i]="modules/${list[$i]}"
+    done
+  else
+    mapfile -t list < <(discover_modules_sorted)
+  fi
+
+  for m in "${list[@]}"; do
+    [[ -f "$m" ]] || { emit WARN "runner" "skip missing $m"; continue; }
+
+    # Lire métadonnées en sourçant côté parent (pour le log "start")
+    # shellcheck disable=SC1090
+    source "$m"
+    unset MOD_REQUIRES 2>/dev/null || true
+    declare -a MOD_REQUIRES=()
+    : "${MOD_TIMEOUT:=1800}"
+    : "${MOD_ID:=unknown_module}"
+    : "${MOD_NAME:=Unknown}"
+
+    local id name timeout
+    id="$MOD_ID"; name="$MOD_NAME"; timeout="$MOD_TIMEOUT"
+    emit INFO "$id" "start: $name"
+
+    # Dépendances requises
+    if (( ${#MOD_REQUIRES[@]} > 0 )); then
+      for dep in "${MOD_REQUIRES[@]}"; do
+        if ! command -v "$dep" >/dev/null 2>&1; then
+          emit WARN "$id" "missing dep: $dep -> skipping module"
+          continue 2
+        fi
+      done
+    fi
+
+    # Exécution réelle: sourcer le module DANS le sous-shell appelé par timeout
+    # pour que mod_pre/mod_run/mod_post soient visibles.
+    set +e
+    timeout "$timeout" bash -c '
+      set -Eeuo pipefail
+      # $1 = chemin du module
+      # shellcheck disable=SC1090
+      source "$1"
+      mod_pre && mod_run && mod_post
+    ' _ "$m"
+    rc=$?
+    set -e
+
+    if [[ $rc -eq 0 ]]; then
+      emit INFO "$id" "success"
+    else
+      emit ERROR "$id" "failed rc=$rc"
+    fi
+  done
+}
+
+write_manifest_json() {
+  local path="$1"; shift || true
+  local selected="$1"; shift || true
+  local now; now="$(date -Is)"
+  {
+    echo "{"
+    echo "  \"run_id\": \"$RUN_ID\","
+    echo "  \"created_at\": \"$now\","
+    echo "  \"profile\": \"$PROFILE\","
+    echo "  \"targets\": \"$TARGETS\","
+    echo "  \"options\": { \"no_udp\": $OPTS_NO_UDP, \"no_zeek\": $OPTS_NO_ZEEK, \"no_suricata\": $OPTS_NO_SURICATA },"
+    echo "  \"selected_modules\": \"$selected\""
+    echo "}"
+  } > "$path"
+}

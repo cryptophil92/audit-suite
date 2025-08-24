@@ -1,0 +1,9 @@
+# Nmap 7.95 scan initiated Sun Aug 24 17:45:09 2025 as: /usr/lib/nmap/nmap --privileged -Pn -p445 --script smb-enum-shares,smb-enum-users -oN output/AUDIT_20250824T214022Z/smb_probe/192.168.1.4_smb_enum.nmap 192.168.1.4
+Nmap scan report for 192.168.1.4
+Host is up (0.00036s latency).
+
+PORT    STATE SERVICE
+445/tcp open  microsoft-ds
+MAC Address: 00:90:A9:EA:4B:CB (Western Digital)
+
+# Nmap done at Sun Aug 24 17:45:09 2025 -- 1 IP address (1 host up) scanned in 0.33 seconds
