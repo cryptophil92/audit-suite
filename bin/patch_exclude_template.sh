@@ -15,11 +15,11 @@ patch_runner() {
   # remplace discover_modules_sorted pour ignorer _TEMPLATE
   awk '
     BEGIN{replaced=0}
-    /^discover_modules_sorted\(\)\s*{/{
+    /^discover_modules_sorted\(\)\s*{/ {
       print "discover_modules_sorted() {"
-      print "  ls -1 modules/*.sh 2>/dev/null | grep -v '"'"'_TEMPLATE'"'"' | sort -V"
+      print "  ls -1 modules/*.sh 2>/dev/null | grep -v '\''_TEMPLATE'\'' | sort -V"
       print "}"
-      # sauter les lignes du bloc original jusqu à la prochaine '}'
+      # sauter les lignes du bloc original jusqu à la prochaine accolade fermante
       inblk=1; replaced=1; next
     }
     inblk && /^\}/ { inblk=0; next }
