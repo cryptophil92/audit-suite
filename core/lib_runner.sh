@@ -161,15 +161,39 @@ run_modules() {
 write_manifest_json() {
   local path="$1"; shift || true
   local selected="$1"; shift || true
-  local now; now="$(date -Is)"
-  {
-    echo "{"
-    echo "  \"run_id\": \"$RUN_ID\","
-    echo "  \"created_at\": \"$now\","
-    echo "  \"profile\": \"$PROFILE\","
-    echo "  \"targets\": \"$TARGETS\","
-    echo "  \"options\": { \"no_udp\": $OPTS_NO_UDP, \"no_zeek\": $OPTS_NO_ZEEK, \"no_suricata\": $OPTS_NO_SURICATA, \"allow_public\": ${ALLOW_PUBLIC:-0} },"
-    echo "  \"selected_modules\": \"$selected\""
-    echo "}"
-  } > "$path"
+  local now tmp_path
+
+  now="$(date -Is)"
+  tmp_path="${path}.tmp"
+
+  if ! command -v jq >/dev/null 2>&1; then
+    emit ERROR "runner" "jq is required to write manifest.json"
+    return 1
+  fi
+
+  jq -n \
+    --arg run_id "$RUN_ID" \
+    --arg created_at "$now" \
+    --arg profile "$PROFILE" \
+    --arg targets "$TARGETS" \
+    --arg selected_modules "$selected" \
+    --arg no_udp "${OPTS_NO_UDP:-0}" \
+    --arg no_zeek "${OPTS_NO_ZEEK:-0}" \
+    --arg no_suricata "${OPTS_NO_SURICATA:-0}" \
+    --arg allow_public "${ALLOW_PUBLIC:-0}" \
+    '{
+      run_id: $run_id,
+      created_at: $created_at,
+      profile: $profile,
+      targets: ($targets | split(" ") | map(select(length > 0))),
+      options: {
+        no_udp: ($no_udp == "1"),
+        no_zeek: ($no_zeek == "1"),
+        no_suricata: ($no_suricata == "1"),
+        allow_public: ($allow_public == "1")
+      },
+      selected_modules: ($selected_modules | split(" ") | map(select(length > 0)))
+    }' > "$tmp_path"
+
+  mv "$tmp_path" "$path"
 }
