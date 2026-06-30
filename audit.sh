@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # audit.sh - Launcher principal de la suite d'audit
-# @version 0.2.0
+# @version 0.2.1
 set -Eeuo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
@@ -44,11 +44,22 @@ for lib in core/lib_logging.sh core/lib_detect.sh core/lib_menu.sh core/lib_vali
   source "$lib"
 done
 
+safe_emit() {
+  local lvl="$1" mod="$2"
+  shift 2 || true
+
+  if [[ -n "${LOG_FILE:-}" ]]; then
+    emit "$lvl" "$mod" "$@"
+  else
+    printf '%s [%s] [%s] %s\n' "$(date -Is)" "$lvl" "$mod" "$*" >&2
+  fi
+}
+
 # Pré-traitement signaux
 cleanup() {
   [[ -n "${LOG_BUS:-}" && -p "${LOG_BUS}" ]] && rm -f "${LOG_BUS}" || true
 }
-trap 'emit ERROR "launcher" "interrupted"; cleanup' INT TERM
+trap 'safe_emit ERROR "launcher" "interrupted"; cleanup' INT TERM
 trap 'cleanup' EXIT
 
 # Vérifier dépendances (retourne toujours 0)
