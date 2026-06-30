@@ -1,13 +1,45 @@
 #!/usr/bin/env bash
 # audit.sh - Launcher principal de la suite d'audit
-# @version 0.1.1
+# @version 0.2.0
 set -Eeuo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"
 
+ALLOW_PUBLIC=0
+
+usage() {
+  cat <<'EOF'
+Usage: ./audit.sh [options]
+
+Options:
+  --allow-public    Autorise les cibles publiques. À utiliser uniquement avec autorisation explicite.
+  -h, --help        Affiche cette aide.
+
+Par défaut, AUDIT-SUITE refuse les IP/plages publiques et accepte uniquement les périmètres locaux/lab.
+EOF
+}
+
+while (( $# > 0 )); do
+  case "$1" in
+    --allow-public)
+      ALLOW_PUBLIC=1
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    *)
+      echo "Option inconnue: $1" >&2
+      usage >&2
+      exit 2
+      ;;
+  esac
+  shift
+done
+
 # Charger libs
-for lib in core/lib_logging.sh core/lib_detect.sh core/lib_menu.sh core/lib_runner.sh core/lib_update.sh; do
+for lib in core/lib_logging.sh core/lib_detect.sh core/lib_menu.sh core/lib_validate.sh core/lib_runner.sh core/lib_update.sh; do
   # shellcheck source=/dev/null
   source "$lib"
 done
@@ -35,6 +67,15 @@ TARGETS="$(ui_enter_targets || true)"
   exit 1
 }
 
+if ! TARGETS="$(validate_targets "$TARGETS" "$ALLOW_PUBLIC")"; then
+  echo "Validation des cibles échouée. Audit annulé." >&2
+  exit 1
+fi
+
+if [[ "$ALLOW_PUBLIC" == "1" ]]; then
+  echo "ATTENTION: cibles publiques autorisées pour cette exécution. Vérifier l'autorisation écrite."
+fi
+
 CATEGORIES="$(ui_pick_categories || true)"
 # normalisation: espaces/nouvelles lignes -> virgules, trim
 CATEGORIES="$(printf '%s' "$CATEGORIES" | tr ' \n' ',' | sed 's/,,*/,/g; s/^,//; s/,$//')"
@@ -54,7 +95,7 @@ mkdir -p "$RUN_DIR" "$LOG_DIR" "$TMP_DIR"
 
 # Logging + event bus
 init_logging "$RUN_ID"
-emit INFO "launcher" "Start profile=$PROFILE targets=$TARGETS opts=no-udp:$OPTS_NO_UDP,no-zeek:$OPTS_NO_ZEEK,no-suricata:$OPTS_NO_SURICATA"
+emit INFO "launcher" "Start profile=$PROFILE targets=$TARGETS allow_public=$ALLOW_PUBLIC opts=no-udp:$OPTS_NO_UDP,no-zeek:$OPTS_NO_ZEEK,no-suricata:$OPTS_NO_SURICATA"
 
 # Lancer UI logger tmux si dispo
 if command -v tmux >/dev/null 2>&1; then
@@ -62,7 +103,7 @@ if command -v tmux >/dev/null 2>&1; then
 fi
 
 # Export env standard pour les modules
-export RUN_ID TARGETS PROFILE RUN_DIR LOG_DIR LOG_FILE LOG_BUS OPTS_NO_UDP OPTS_NO_ZEEK OPTS_NO_SURICATA DEF_IFACE DEF_CIDR HAVE_X11 HAVE_TMUX
+export RUN_ID TARGETS PROFILE RUN_DIR LOG_DIR LOG_FILE LOG_BUS OPTS_NO_UDP OPTS_NO_ZEEK OPTS_NO_SURICATA DEF_IFACE DEF_CIDR HAVE_X11 HAVE_TMUX ALLOW_PUBLIC
 
 # Orchestration
 discover_modules_sorted >"$TMP_DIR/modules.list"
