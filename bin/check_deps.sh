@@ -1,32 +1,82 @@
 #!/usr/bin/env bash
 # bin/check_deps.sh
-# @version 0.1.0
+# @version 0.2.0
 set -Eeuo pipefail
 
-DEPS=( nmap whatweb tmux whiptail zenity fzf jq tar gzip )
-OPT_DEPS=( arp-scan fping sslscan nuclei zeek suricata )
+INSTALL_MISSING=0
 
-ask_install() {
+REQUIRED_DEPS=( nmap jq tar gzip timeout )
+OPTIONAL_DEPS=( tmux whiptail zenity fzf whatweb arp-scan fping sslscan nuclei zeek suricata )
+
+usage() {
+  cat <<'EOF'
+Usage: bin/check_deps.sh [options]
+
+Options:
+  --install    Propose l'installation des dépendances requises manquantes.
+  -h, --help   Affiche cette aide.
+
+Par défaut, ce script vérifie uniquement les dépendances et n'installe rien.
+EOF
+}
+
+while (( $# > 0 )); do
+  case "$1" in
+    --install)
+      INSTALL_MISSING=1
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    *)
+      echo "Option inconnue: $1" >&2
+      usage >&2
+      exit 2
+      ;;
+  esac
+  shift
+done
+
+install_pkg() {
   local pkg="$1"
-  echo "[?] Installer $pkg ? [Y/n]"
+  local ans
+
+  echo "[?] Installer $pkg ? [y/N]"
   read -r ans || true
-  [[ -z "$ans" || "$ans" =~ ^[Yy]$ ]] || return 1
+  [[ "$ans" =~ ^[Yy]$ ]] || return 1
+
   if command -v sudo >/dev/null 2>&1; then
-    sudo apt-get update -y && sudo apt-get install -y "$pkg" || true
+    sudo apt-get update -y && sudo apt-get install -y "$pkg"
   else
-    apt-get update -y && apt-get install -y "$pkg" || true
+    apt-get update -y && apt-get install -y "$pkg"
   fi
 }
 
-for d in "${DEPS[@]}"; do
-  if ! command -v "$d" >/dev/null 2>&1; then
-    echo "[!] Dépendance manquante: $d"
-    ask_install "$d" || echo "-> Ignorée (fonctionnalité dégradée)"
+missing_required=()
+
+for dep in "${REQUIRED_DEPS[@]}"; do
+  if ! command -v "$dep" >/dev/null 2>&1; then
+    echo "[!] Dépendance requise manquante: $dep"
+    missing_required+=("$dep")
   fi
 done
 
-for d in "${OPT_DEPS[@]}"; do
-  command -v "$d" >/dev/null 2>&1 || echo "[i] Optionnel manquant: $d"
+for dep in "${OPTIONAL_DEPS[@]}"; do
+  if ! command -v "$dep" >/dev/null 2>&1; then
+    echo "[i] Optionnel manquant: $dep"
+  fi
 done
+
+if (( ${#missing_required[@]} > 0 )); then
+  if (( INSTALL_MISSING == 1 )); then
+    for dep in "${missing_required[@]}"; do
+      install_pkg "$dep" || echo "-> Installation ignorée ou échouée: $dep"
+    done
+  else
+    echo "[!] Dépendances requises manquantes. Relancer avec --install pour proposer l'installation."
+    exit 1
+  fi
+fi
 
 exit 0
