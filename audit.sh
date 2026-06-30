@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # audit.sh - Launcher principal de la suite d'audit
-# @version 0.2.1
+# @version 0.2.2
 set -Eeuo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
@@ -62,8 +62,8 @@ cleanup() {
 trap 'safe_emit ERROR "launcher" "interrupted"; cleanup' INT TERM
 trap 'cleanup' EXIT
 
-# Vérifier dépendances (retourne toujours 0)
-bin/check_deps.sh || true
+# Préflight dépendances requises
+bin/check_deps.sh
 
 # Détecter environnement
 detect_env
