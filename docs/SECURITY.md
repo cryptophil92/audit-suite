@@ -75,6 +75,7 @@ Déjà traité dans la branche `feat/v0.2-hardening-bash` :
 - exécution des modules dans un shell enfant ;
 - passage des cibles aux modules via tableaux Bash ;
 - génération du manifest avec `jq` ;
+- résultats modules ajoutés au manifest : statut, code retour, durée et dossier de sortie ;
 - ajout de ShellCheck en CI ;
 - ajout de tests Bash pour `core/lib_validate.sh` ;
 - suppression de l'installation automatique des dépendances par défaut.
@@ -83,5 +84,4 @@ Déjà traité dans la branche `feat/v0.2-hardening-bash` :
 
 - corriger les alertes ShellCheck éventuelles ;
 - tester un run réel sur lab local ;
-- enrichir le manifest avec durée par module, code retour et chemins de sortie ;
 - créer une pull request vers `main` après validation.
