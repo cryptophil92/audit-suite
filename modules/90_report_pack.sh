@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # modules/90_report_pack.sh
-# @version 0.2.0
+# @version 0.2.1
+# shellcheck disable=SC2154
 set -Eeuo pipefail
 MOD_ID="90_report_pack"
 MOD_NAME="Pack rapport"
