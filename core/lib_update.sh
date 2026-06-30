@@ -1,28 +1,41 @@
 #!/usr/bin/env bash
 # core/lib_update.sh
-# @version 0.1.0
+# @version 0.2.0
 set -Eeuo pipefail
 
+_list_module_files() {
+  [[ -d modules ]] || return 0
+  find modules -maxdepth 1 -type f -name '*.sh' ! -name '*_TEMPLATE*' -print | sort -V
+}
+
 verify_integrity() {
-  # Parcourt modules et compare sha256 s'ils sont listés dans etc/manifest.json
-  [[ -f etc/manifest.json ]] || { echo "[]" > etc/manifest.json; }
-  local ok=1
+  # Parcourt modules et compare sha256 s'ils sont listés dans etc/manifest.json.
+  local ok=0
+  local path sum recorded
+
+  mkdir -p etc
+  [[ -f etc/manifest.json ]] || printf '[]\n' > etc/manifest.json
+
   while IFS= read -r path; do
     [[ -f "$path" ]] || continue
-    local sum; sum="$(sha256sum "$path" | awk '{print $1}')"
-    local recorded
-    recorded="$(jq -r --arg p "$path" '.[] | select(.path==$p) | .sha256' etc/manifest.json 2>/dev/null || echo "")"
+
+    sum="$(sha256sum "$path" | awk '{print $1}')"
+    recorded="$(jq -r --arg p "$path" '.[] | select(.path==$p) | .sha256' etc/manifest.json 2>/dev/null || true)"
+
     if [[ -n "$recorded" && "$recorded" != "null" && "$recorded" != "$sum" ]]; then
       echo "Mismatch: $path (have=$sum, expected=$recorded)"
-      ok=0
+      ok=1
     fi
-  done < <(ls -1 modules/*.sh 2>/dev/null)
-  return $ok
+  done < <(_list_module_files)
+
+  return "$ok"
 }
 
 list_modules_versions() {
-  while IFS= read -r m; do
-    local ver; ver="$(grep -m1 -E '^# *@version' "$m" | awk '{print $3}')" || true
-    echo "$(basename "$m") ${ver:-0.0.0}"
-  done < <(ls -1 modules/*.sh 2>/dev/null)
+  local module ver
+
+  while IFS= read -r module; do
+    ver="$(grep -m1 -E '^# *@version' "$module" | awk '{print $3}' || true)"
+    echo "$(basename "$module") ${ver:-0.0.0}"
+  done < <(_list_module_files)
 }
