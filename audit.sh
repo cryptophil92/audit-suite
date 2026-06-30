@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # audit.sh - Launcher principal de la suite d'audit
-# @version 0.2.2
+# @version 0.2.3
 set -Eeuo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
@@ -57,7 +57,9 @@ safe_emit() {
 
 # Pré-traitement signaux
 cleanup() {
-  [[ -n "${LOG_BUS:-}" && -p "${LOG_BUS}" ]] && rm -f "${LOG_BUS}" || true
+  if [[ -n "${LOG_BUS:-}" && -p "${LOG_BUS}" ]]; then
+    rm -f "${LOG_BUS}"
+  fi
 }
 trap 'safe_emit ERROR "launcher" "interrupted"; cleanup' INT TERM
 trap 'cleanup' EXIT
