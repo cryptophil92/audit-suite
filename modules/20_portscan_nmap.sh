@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # modules/20_portscan_nmap.sh
-# @version 0.2.0
+# @version 0.2.1
+# shellcheck disable=SC2154
 set -Eeuo pipefail
 MOD_ID="20_portscan_nmap"
 MOD_NAME="Portscan Nmap"
