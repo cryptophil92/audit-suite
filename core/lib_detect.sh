@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # core/lib_detect.sh
-# @version 0.1.0
+# @version 0.2.0
+# shellcheck disable=SC2034
 set -Eeuo pipefail
 
 detect_env() {
