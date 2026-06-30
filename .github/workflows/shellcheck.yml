@@ -29,4 +29,8 @@ jobs:
             core/*.sh \
             bin/*.sh \
             modules/*.sh \
-            ui/*.sh
+            ui/*.sh \
+            tests/*.sh
+
+      - name: Run validation tests
+        run: bash tests/test_validate.sh
