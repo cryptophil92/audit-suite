@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
-source "core/lib_logging.sh"
 # modules/90_report_pack.sh
-# @version 0.1.0
+# @version 0.2.0
 set -Eeuo pipefail
 MOD_ID="90_report_pack"
 MOD_NAME="Pack rapport"
@@ -12,9 +11,12 @@ MOD_TAGS=("report")
 
 mod_pre(){ return 0; }
 mod_run(){
-  local out="$RUN_DIR/$MOD_ID"; mkdir -p "$out"
-  tar -C "$RUN_DIR/.." -czf "$out/../${RUN_ID}.tar.gz" "$RUN_ID" || true
+  local out="$RUN_DIR/$MOD_ID"
+  local archive_path="$RUN_DIR/../${RUN_ID}.tar.gz"
+
+  mkdir -p "$out"
+  tar -C "$RUN_DIR/.." -czf "$archive_path" "$RUN_ID" || true
   printf 'Run: %s\nProfile: %s\nTargets: %s\n' "$RUN_ID" "$PROFILE" "$TARGETS" > "$out/summary.txt"
-  emit INFO "$MOD_ID" "Archive créée: $RUN_DIR/../${RUN_ID}.tar.gz"
+  emit INFO "$MOD_ID" "Archive créée: $archive_path"
 }
 mod_post(){ return 0; }
