@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # modules/10_network_discovery.sh
-# @version 0.2.0
+# @version 0.2.1
+# shellcheck disable=SC2154
 set -Eeuo pipefail
 MOD_ID="10_network_discovery"
 MOD_NAME="Découverte réseau"
