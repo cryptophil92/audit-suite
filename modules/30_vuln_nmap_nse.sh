@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # modules/30_vuln_nmap_nse.sh
-# @version 0.2.0
+# @version 0.2.1
+# shellcheck disable=SC2154
 set -Eeuo pipefail
 MOD_ID="30_vuln_nmap_nse"
 MOD_NAME="Nmap NSE Vuln"
