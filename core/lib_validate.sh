@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # core/lib_validate.sh
 # Validation stricte des cibles d'audit.
-# @version 0.2.1
+# @version 0.2.2
 set -Eeuo pipefail
 
 _ipv4_to_int() {
@@ -143,7 +143,9 @@ validate_targets() {
 
   for target in "${parsed_targets[@]}"; do
     [[ -n "$target" ]] || continue
-    _validate_one_target "$target" "$allow_public"
+    if ! _validate_one_target "$target" "$allow_public"; then
+      return 1
+    fi
     valid_targets+=("$target")
   done
 
