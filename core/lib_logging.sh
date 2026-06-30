@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # core/lib_logging.sh
-# @version 0.1.0
+# @version 0.2.0
 set -Eeuo pipefail
 
 init_logging() {
@@ -13,11 +13,16 @@ init_logging() {
 
 emit() { # emit LEVEL MODULE MSG...
   local lvl="$1" mod="$2"; shift 2
-  local msg
+  local msg log_file log_bus
+
+  log_file="${LOG_FILE:-/dev/stderr}"
+  log_bus="${LOG_BUS:-}"
   msg="$(date -Is) [$lvl] [$mod] $*"
-  echo "$msg" | tee -a "$LOG_FILE" >/dev/null
-  if [[ -p "$LOG_BUS" ]]; then
-    printf '%s\n' "$msg" > "$LOG_BUS" 2>/dev/null || true
+
+  echo "$msg" | tee -a "$log_file" >/dev/null
+
+  if [[ -n "$log_bus" && -p "$log_bus" ]]; then
+    printf '%s\n' "$msg" > "$log_bus" 2>/dev/null || true
   fi
 }
 
