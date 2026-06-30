@@ -42,7 +42,7 @@ L'option suivante désactive le blocage des IP publiques :
 
 Elle doit être utilisée uniquement avec une autorisation explicite et vérifiable.
 
-AUDIT-SUITE ne doit jamais être lancé contre une IP publique, un domaine, une entreprise ou un tiers sans accord clair.
+AUDIT-SUITE ne doit pas être lancé sur un périmètre qui ne t'appartient pas ou qui n'a pas été clairement autorisé.
 
 ## Exemples acceptés par défaut
 
@@ -63,15 +63,25 @@ https://example.com
 203.0.113.0/24
 ```
 
-## Limites du patch 0.2.0 initial
+## État du hardening 0.2.0
 
-Ce premier patch ajoute une première barrière de sécurité côté launcher.
+Déjà traité dans la branche `feat/v0.2-hardening-bash` :
 
-Les étapes suivantes du hardening doivent encore traiter :
-
-- correction complète de `MOD_REQUIRES` ;
-- isolation renforcée des modules ;
-- passage des cibles en tableau sécurisé dans tous les modules ;
+- validation stricte IPv4/CIDR côté launcher ;
+- blocage des cibles publiques par défaut ;
+- option explicite `--allow-public` ;
+- correction de `MOD_REQUIRES` ;
+- lecture des métadonnées module dans un shell enfant ;
+- exécution des modules dans un shell enfant ;
+- passage des cibles aux modules via tableaux Bash ;
 - génération du manifest avec `jq` ;
 - ajout de ShellCheck en CI ;
-- durcissement de `bin/check_deps.sh`.
+- suppression de l'installation automatique des dépendances par défaut.
+
+## Prochains contrôles
+
+- corriger les alertes ShellCheck éventuelles ;
+- tester un run réel sur lab local ;
+- ajouter des tests Bash pour `core/lib_validate.sh` ;
+- enrichir le manifest avec durée par module, code retour et chemins de sortie ;
+- créer une pull request vers `main` après validation.
