@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # modules/40_service_enum.sh
-# @version 0.2.1
-# shellcheck disable=SC2154
+# @version 0.2.2
+# shellcheck disable=SC2034,SC2153,SC2154
 set -Eeuo pipefail
 MOD_ID="40_service_enum"
 MOD_NAME="Énumération services"
