@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # core/lib_runner.sh
-# @version 0.2.0
+# @version 0.2.1
 set -Eeuo pipefail
 
 discover_modules_sorted() {
@@ -18,6 +18,51 @@ _normalize_module_path() {
   [[ "$module" =~ ^modules/[A-Za-z0-9_.-]+\.sh$ ]] || return 1
 
   printf '%s\n' "$module"
+}
+
+_module_results_file() {
+  printf '%s\n' "${TMP_DIR:-tmp}/module_results.${RUN_ID:-unknown}.jsonl"
+}
+
+_append_module_result() {
+  local module_id="$1"
+  local module_name="$2"
+  local module_path="$3"
+  local status="$4"
+  local rc="$5"
+  local started_at="$6"
+  local finished_at="$7"
+  local duration_seconds="$8"
+  local output_path="$9"
+  local reason="${10:-}"
+  local results_file
+
+  results_file="$(_module_results_file)"
+  mkdir -p "$(dirname -- "$results_file")"
+
+  jq -n \
+    --arg id "$module_id" \
+    --arg name "$module_name" \
+    --arg path "$module_path" \
+    --arg status "$status" \
+    --arg rc "$rc" \
+    --arg started_at "$started_at" \
+    --arg finished_at "$finished_at" \
+    --arg duration_seconds "$duration_seconds" \
+    --arg output_path "$output_path" \
+    --arg reason "$reason" \
+    '{
+      id: $id,
+      name: $name,
+      path: $path,
+      status: $status,
+      rc: ($rc | tonumber),
+      started_at: $started_at,
+      finished_at: $finished_at,
+      duration_seconds: ($duration_seconds | tonumber),
+      output_path: $output_path,
+      reason: $reason
+    }' >> "$results_file"
 }
 
 _read_module_metadata() {
@@ -79,9 +124,14 @@ _requirements_are_met() {
 
 run_modules() {
   local selected="${1:-}"
+  local results_file
   local -a list=()
   local -a raw_list=()
   local selected_norm raw_module module
+
+  results_file="$(_module_results_file)"
+  mkdir -p "$(dirname -- "$results_file")"
+  : > "$results_file"
 
   if [[ -n "$selected" ]]; then
     selected_norm="${selected//,/ }"
@@ -101,7 +151,8 @@ run_modules() {
   for module in "${list[@]}"; do
     [[ -f "$module" ]] || { emit WARN "runner" "skip missing $module"; continue; }
 
-    local meta id name timeout requires_raw rc
+    local meta id name timeout requires_raw rc status reason
+    local started_at finished_at start_ts end_ts duration output_path
     local -a requires=()
 
     if ! meta="$(_read_module_metadata "$module")"; then
@@ -114,6 +165,8 @@ run_modules() {
     : "${name:=Unknown}"
     : "${timeout:=1800}"
 
+    output_path="$RUN_DIR/$id"
+
     if [[ -n "${requires_raw:-}" ]]; then
       read -r -a requires <<< "$requires_raw"
     fi
@@ -121,8 +174,14 @@ run_modules() {
     emit INFO "$id" "start: $name"
 
     if ! _requirements_are_met "$id" "${requires[@]}"; then
+      started_at="$(date -Is)"
+      finished_at="$started_at"
+      _append_module_result "$id" "$name" "$module" "skipped" "127" "$started_at" "$finished_at" "0" "$output_path" "missing dependency"
       continue
     fi
+
+    started_at="$(date -Is)"
+    start_ts="$(date +%s)"
 
     # Exécution réelle dans un shell enfant. Le module est sourcé uniquement dans ce shell.
     set +e
@@ -150,21 +209,32 @@ run_modules() {
     rc=$?
     set -e
 
+    finished_at="$(date -Is)"
+    end_ts="$(date +%s)"
+    duration=$(( end_ts - start_ts ))
+
     if [[ $rc -eq 0 ]]; then
+      status="success"
+      reason=""
       emit INFO "$id" "success"
     else
+      status="failed"
+      reason="module returned rc=$rc"
       emit ERROR "$id" "failed rc=$rc"
     fi
+
+    _append_module_result "$id" "$name" "$module" "$status" "$rc" "$started_at" "$finished_at" "$duration" "$output_path" "$reason"
   done
 }
 
 write_manifest_json() {
   local path="$1"; shift || true
   local selected="$1"; shift || true
-  local now tmp_path
+  local now tmp_path results_file
 
   now="$(date -Is)"
   tmp_path="${path}.tmp"
+  results_file="$(_module_results_file)"
 
   if ! command -v jq >/dev/null 2>&1; then
     emit ERROR "runner" "jq is required to write manifest.json"
@@ -181,6 +251,7 @@ write_manifest_json() {
     --arg no_zeek "${OPTS_NO_ZEEK:-0}" \
     --arg no_suricata "${OPTS_NO_SURICATA:-0}" \
     --arg allow_public "${ALLOW_PUBLIC:-0}" \
+    --slurpfile modules "$results_file" \
     '{
       run_id: $run_id,
       created_at: $created_at,
@@ -192,7 +263,8 @@ write_manifest_json() {
         no_suricata: ($no_suricata == "1"),
         allow_public: ($allow_public == "1")
       },
-      selected_modules: ($selected_modules | split(" ") | map(select(length > 0)))
+      selected_modules: ($selected_modules | split(" ") | map(select(length > 0))),
+      modules: $modules
     }' > "$tmp_path"
 
   mv "$tmp_path" "$path"
