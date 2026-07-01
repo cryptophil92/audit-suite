@@ -69,10 +69,10 @@ emit_plan_json() {
     --arg categories "$categories" \
     --arg selected_modules "$selected" \
     --arg opts "$opts" \
-    --argjson allow_public "$allow_public" \
-    --argjson no_udp "$no_udp" \
-    --argjson no_zeek "$no_zeek" \
-    --argjson no_suricata "$no_suricata" \
+    --arg allow_public "$allow_public" \
+    --arg no_udp "$no_udp" \
+    --arg no_zeek "$no_zeek" \
+    --arg no_suricata "$no_suricata" \
     --arg output_path "$(run_output_path "$run_id")" \
     --arg log_path "$(run_log_path "$run_id")" \
     '{
@@ -85,10 +85,10 @@ emit_plan_json() {
       selected_modules: ($selected_modules | split(" ") | map(select(length > 0))),
       options: {
         raw: $opts,
-        allow_public: $allow_public,
-        no_udp: $no_udp,
-        no_zeek: $no_zeek,
-        no_suricata: $no_suricata
+        allow_public: ($allow_public == "1"),
+        no_udp: ($no_udp == "1"),
+        no_zeek: ($no_zeek == "1"),
+        no_suricata: ($no_suricata == "1")
       },
       paths: {
         output: $output_path,
