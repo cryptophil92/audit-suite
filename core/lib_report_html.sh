@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # core/lib_report_html.sh
-# @version 0.2.4
+# @version 0.2.5
 set -Eeuo pipefail
 
 _report_html_require_jq() {
@@ -63,13 +63,13 @@ report_html_generate() {
       else
         ((.modules // []) | map(
           "<tr>" +
-          "<td><code>" + (.id // "" | h) + "</code></td>" +
-          "<td>" + (.name // "" | h) + "</td>" +
+          "<td><code>" + ((.id // "") | h) + "</code></td>" +
+          "<td>" + ((.name // "") | h) + "</td>" +
           "<td><span class=\"badge " + status_class(.status // "unknown") + "\">" + status_label(.status // "unknown") + "</span></td>" +
           "<td>" + ((.rc // "") | h) + "</td>" +
           "<td>" + ((.duration_seconds // 0) | h) + " s</td>" +
-          "<td><code>" + (.output_path // "" | h) + "</code></td>" +
-          "<td>" + (.reason // "" | h) + "</td>" +
+          "<td><code>" + ((.output_path // "") | h) + "</code></td>" +
+          "<td>" + ((.reason // "") | h) + "</td>" +
           "</tr>"
         ) | join("\n"))
       end;
@@ -124,16 +124,16 @@ report_html_generate() {
     "    <h2>Contexte d'exécution</h2>",
     "    <table>",
     "      <tr><th>Champ</th><th>Valeur</th></tr>",
-    "      <tr><td>Date</td><td>" + (.created_at // "" | h) + "</td></tr>",
-    "      <tr><td>Profil</td><td>" + (.profile // "" | h) + "</td></tr>",
+    "      <tr><td>Date</td><td>" + ((.created_at // "") | h) + "</td></tr>",
+    "      <tr><td>Profil</td><td>" + ((.profile // "") | h) + "</td></tr>",
     "      <tr><td>Cibles</td><td><code>" + ((.targets // []) | join(", ") | h) + "</code></td></tr>",
     "      <tr><td>IP publiques autorisées</td><td>" + yesno(.options.allow_public // false) + "</td></tr>",
     "      <tr><td>Sans UDP</td><td>" + yesno(.options.no_udp // false) + "</td></tr>",
     "      <tr><td>Sans Zeek</td><td>" + yesno(.options.no_zeek // false) + "</td></tr>",
     "      <tr><td>Sans Suricata</td><td>" + yesno(.options.no_suricata // false) + "</td></tr>",
-    "      <tr><td>Manifest</td><td><code>" + (.paths.manifest // "" | h) + "</code></td></tr>",
-    "      <tr><td>Sortie</td><td><code>" + (.paths.output // "" | h) + "</code></td></tr>",
-    "      <tr><td>Logs</td><td><code>" + (.paths.logs // "" | h) + "</code></td></tr>",
+    "      <tr><td>Manifest</td><td><code>" + ((.paths.manifest // "") | h) + "</code></td></tr>",
+    "      <tr><td>Sortie</td><td><code>" + ((.paths.output // "") | h) + "</code></td></tr>",
+    "      <tr><td>Logs</td><td><code>" + ((.paths.logs // "") | h) + "</code></td></tr>",
     "    </table>",
     "  </section>",
     "  <section>",
