@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
 # core/lib_args.sh
-# @version 0.2.7
+# @version 0.2.8
 set -Eeuo pipefail
 
 AUDIT_ARG_HELP=0
 AUDIT_ARG_ALLOW_PUBLIC=0
+AUDIT_ARG_DRY_RUN=0
+AUDIT_ARG_LIST_MODULES=0
 AUDIT_ARG_PROFILE=""
 AUDIT_ARG_TARGETS=""
 AUDIT_ARG_CATEGORIES=""
@@ -22,6 +24,8 @@ Options:
   --no-zeek                           Désactive Zeek.
   --no-suricata                       Désactive Suricata.
   --allow-public                      Autorise les cibles publiques avec autorisation explicite.
+  --dry-run                           Valide et affiche le plan sans exécuter de modules.
+  --list-modules                      Liste les modules disponibles puis quitte.
   -h, --help                          Affiche cette aide.
 
 Par défaut, AUDIT-SUITE refuse les IP/plages publiques et accepte uniquement les périmètres locaux/lab.
@@ -71,6 +75,8 @@ _args_append_opt() {
 parse_audit_args() {
   AUDIT_ARG_HELP=0
   AUDIT_ARG_ALLOW_PUBLIC=0
+  AUDIT_ARG_DRY_RUN=0
+  AUDIT_ARG_LIST_MODULES=0
   AUDIT_ARG_PROFILE=""
   AUDIT_ARG_TARGETS=""
   AUDIT_ARG_CATEGORIES=""
@@ -123,6 +129,14 @@ parse_audit_args() {
         ;;
       --allow-public)
         AUDIT_ARG_ALLOW_PUBLIC=1
+        shift
+        ;;
+      --dry-run)
+        AUDIT_ARG_DRY_RUN=1
+        shift
+        ;;
+      --list-modules)
+        AUDIT_ARG_LIST_MODULES=1
         shift
         ;;
       -h|--help)
