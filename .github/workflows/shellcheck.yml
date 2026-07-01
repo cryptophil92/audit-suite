@@ -63,6 +63,9 @@ jobs:
       - name: Run dry-run tests
         run: bash tests/test_dry_run.sh
 
+      - name: Run JSON plan tests
+        run: bash tests/test_plan_json.sh
+
       - name: Run validation tests
         run: bash tests/test_validate.sh
 
