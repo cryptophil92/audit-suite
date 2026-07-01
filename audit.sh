@@ -87,12 +87,6 @@ cleanup() {
 trap 'safe_emit ERROR "launcher" "interrupted"; cleanup' INT TERM
 trap 'cleanup' EXIT
 
-# Préflight dépendances requises
-bin/check_deps.sh
-
-# Détecter environnement
-detect_env
-
 # Profil, cibles, catégories & options : CLI prioritaire, UI en fallback
 PROFILE="$AUDIT_ARG_PROFILE"
 if [[ -z "${PROFILE:-}" ]]; then
@@ -141,6 +135,12 @@ if [[ "$AUDIT_ARG_DRY_RUN" == "1" ]]; then
   print_dry_run_plan "$SELECTED"
   exit 0
 fi
+
+# Préflight dépendances requises
+bin/check_deps.sh
+
+# Détecter environnement
+detect_env
 
 # RUN_ID & dossiers
 RUN_ID="AUDIT_$(date -u +%Y%m%dT%H%M%SZ)"
