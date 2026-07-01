@@ -51,6 +51,9 @@ jobs:
             shellcheck-output.txt
             shellcheck-exit-code.txt
 
+      - name: Run args tests
+        run: bash tests/test_args.sh
+
       - name: Run validation tests
         run: bash tests/test_validate.sh
 
