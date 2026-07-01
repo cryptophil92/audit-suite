@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # core/lib_history.sh
-# @version 0.2.2
+# @version 0.2.3
 set -Eeuo pipefail
 
 history_dir() {
@@ -42,29 +42,34 @@ history_record_run() {
   tmp_path="${latest_path}.tmp"
 
   jq -c --arg manifest_path "$manifest_path" '{
+    schema_version: (.schema_version // "0.1.0"),
     run_id,
     created_at,
     profile,
     targets,
     options,
     selected_modules,
-    module_count: (.modules | length),
-    success_count: ([.modules[]? | select(.status == "success")] | length),
-    failed_count: ([.modules[]? | select(.status == "failed")] | length),
-    skipped_count: ([.modules[]? | select(.status == "skipped")] | length),
-    output_path: ("output/" + .run_id),
+    module_count: (.summary.module_count // (.modules | length)),
+    success_count: (.summary.success_count // ([.modules[]? | select(.status == "success")] | length)),
+    failed_count: (.summary.failed_count // ([.modules[]? | select(.status == "failed")] | length)),
+    skipped_count: (.summary.skipped_count // ([.modules[]? | select(.status == "skipped")] | length)),
+    total_duration_seconds: (.summary.total_duration_seconds // ([.modules[]?.duration_seconds] | add // 0)),
+    status: (.summary.status // "unknown"),
+    output_path: (.paths.output // ("output/" + .run_id)),
     manifest_path: $manifest_path
   }' "$manifest_path" >> "$index_path"
 
   jq --arg manifest_path "$manifest_path" '{
+    schema_version: (.schema_version // "0.1.0"),
     run_id,
     created_at,
     profile,
     targets,
     options,
     selected_modules,
+    summary,
     modules,
-    output_path: ("output/" + .run_id),
+    output_path: (.paths.output // ("output/" + .run_id)),
     manifest_path: $manifest_path
   }' "$manifest_path" > "$tmp_path"
 
@@ -77,5 +82,5 @@ history_list_runs() {
   index_path="$(history_index_path)"
 
   [[ -f "$index_path" ]] || return 0
-  jq -r '[.created_at, .run_id, .profile, (.targets | join(",")), (.success_count|tostring), (.failed_count|tostring), (.skipped_count|tostring)] | @tsv' "$index_path"
+  jq -r '[.created_at, .run_id, .profile, (.targets | join(",")), (.status // "unknown"), (.success_count|tostring), (.failed_count|tostring), (.skipped_count|tostring)] | @tsv' "$index_path"
 }
