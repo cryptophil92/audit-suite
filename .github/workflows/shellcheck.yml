@@ -57,6 +57,9 @@ jobs:
       - name: Run history tests
         run: bash tests/test_history.sh
 
+      - name: Run manifest schema tests
+        run: bash tests/test_manifest_schema.sh
+
       - name: Fail if ShellCheck failed
         run: |
           rc="$(cat shellcheck-exit-code.txt)"
