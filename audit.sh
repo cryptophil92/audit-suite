@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # audit.sh - Launcher principal de la suite d'audit
-# @version 0.2.11
+# @version 0.2.12
 set -Eeuo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
@@ -23,7 +23,7 @@ fi
 ALLOW_PUBLIC="$AUDIT_ARG_ALLOW_PUBLIC"
 
 # Charger libs
-for lib in core/lib_logging.sh core/lib_detect.sh core/lib_menu.sh core/lib_validate.sh core/lib_modules.sh core/lib_runner.sh core/lib_history.sh core/lib_update.sh; do
+for lib in core/lib_logging.sh core/lib_detect.sh core/lib_menu.sh core/lib_validate.sh core/lib_modules.sh core/lib_run_paths.sh core/lib_runner.sh core/lib_history.sh core/lib_update.sh; do
   # shellcheck source=/dev/null
   source "$lib"
 done
@@ -152,6 +152,10 @@ if [[ "$AUDIT_ARG_DRY_RUN" == "1" ]]; then
   exit 0
 fi
 
+if ! validate_run_paths_available "$PLANNED_RUN_ID"; then
+  exit 1
+fi
+
 # Préflight dépendances requises
 bin/check_deps.sh
 
@@ -160,8 +164,8 @@ detect_env
 
 # RUN_ID & dossiers
 RUN_ID="$PLANNED_RUN_ID"
-RUN_DIR="output/$RUN_ID"
-LOG_DIR="logs/$RUN_ID"
+RUN_DIR="$(run_output_path "$RUN_ID")"
+LOG_DIR="$(run_log_path "$RUN_ID")"
 TMP_DIR="tmp"
 mkdir -p "$RUN_DIR" "$LOG_DIR" "$TMP_DIR"
 
