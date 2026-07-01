@@ -66,6 +66,9 @@ jobs:
       - name: Run HTML report tests
         run: bash tests/test_report_html.sh
 
+      - name: Run report pack tests
+        run: bash tests/test_report_pack.sh
+
       - name: Fail if ShellCheck failed
         run: |
           rc="$(cat shellcheck-exit-code.txt)"
