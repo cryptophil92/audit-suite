@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # audit.sh - Launcher principal de la suite d'audit
-# @version 0.2.7
+# @version 0.2.8
 set -Eeuo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
@@ -51,6 +51,32 @@ finalize_run_outputs() {
     emit WARN "report" "Final report generation failed: $finalize_output"
   fi
 }
+
+print_available_modules() {
+  discover_modules_sorted | sed 's#^modules/##'
+}
+
+print_dry_run_plan() {
+  local selected="$1"
+
+  cat <<EOF
+AUDIT-SUITE dry run
+Profile: $PROFILE
+Targets: $TARGETS
+Categories: $CATEGORIES
+Selected modules: $selected
+Options:
+  allow_public: $ALLOW_PUBLIC
+  no_udp: $OPTS_NO_UDP
+  no_zeek: $OPTS_NO_ZEEK
+  no_suricata: $OPTS_NO_SURICATA
+EOF
+}
+
+if [[ "$AUDIT_ARG_LIST_MODULES" == "1" ]]; then
+  print_available_modules
+  exit 0
+fi
 
 # Pré-traitement signaux
 cleanup() {
@@ -109,6 +135,13 @@ OPTS_NO_UDP=0; OPTS_NO_ZEEK=0; OPTS_NO_SURICATA=0
 [[ "$OPTS" == *"no-zeek"* ]] && OPTS_NO_ZEEK=1
 [[ "$OPTS" == *"no-suricata"* ]] && OPTS_NO_SURICATA=1
 
+SELECTED="$(printf '%s' "$CATEGORIES" | tr ',' ' ')"   # runner accepte espaces
+
+if [[ "$AUDIT_ARG_DRY_RUN" == "1" ]]; then
+  print_dry_run_plan "$SELECTED"
+  exit 0
+fi
+
 # RUN_ID & dossiers
 RUN_ID="AUDIT_$(date -u +%Y%m%dT%H%M%SZ)"
 RUN_DIR="output/$RUN_ID"
@@ -130,7 +163,6 @@ export RUN_ID TARGETS PROFILE RUN_DIR LOG_DIR LOG_FILE LOG_BUS OPTS_NO_UDP OPTS_
 
 # Orchestration
 discover_modules_sorted >"$TMP_DIR/modules.list"
-SELECTED="$(printf '%s' "$CATEGORIES" | tr ',' ' ')"   # runner accepte espaces
 run_modules "$SELECTED"
 
 # Manifest de run + historique local + exports finaux
