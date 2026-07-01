@@ -75,6 +75,9 @@ jobs:
       - name: Run history tests
         run: bash tests/test_history.sh
 
+      - name: Run history JSON tests
+        run: bash tests/test_history_json.sh
+
       - name: Run manifest schema tests
         run: bash tests/test_manifest_schema.sh
 
