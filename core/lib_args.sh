@@ -63,7 +63,7 @@ _args_append_opt() {
   else
     case ",$AUDIT_ARG_OPTS," in
       *",$opt,"*) ;;
-      *) AUDIT_ARG_OPTS=",$AUDIT_ARG_OPTS,$opt" ;;
+      *) AUDIT_ARG_OPTS="$AUDIT_ARG_OPTS,$opt" ;;
     esac
   fi
 }
