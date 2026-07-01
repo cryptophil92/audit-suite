@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # core/lib_report_html.sh
-# @version 0.2.5
+# @version 0.2.6
 set -Eeuo pipefail
 
 _report_html_require_jq() {
@@ -121,7 +121,7 @@ report_html_generate() {
     "    </div>",
     "  </section>",
     "  <section>",
-    "    <h2>Contexte d'exécution</h2>",
+    "    <h2>Contexte d&apos;exécution</h2>",
     "    <table>",
     "      <tr><th>Champ</th><th>Valeur</th></tr>",
     "      <tr><td>Date</td><td>" + ((.created_at // "") | h) + "</td></tr>",
