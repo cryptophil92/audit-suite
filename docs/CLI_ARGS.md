@@ -1,6 +1,6 @@
 # Arguments CLI
 
-Depuis `v0.2.10-categories-all`, `audit.sh` peut être lancé avec des arguments pour éviter les menus interactifs et vérifier un plan sans exécution.
+Depuis `v0.2.11-run-id`, `audit.sh` peut être lancé avec des arguments pour éviter les menus interactifs et vérifier un plan sans exécution.
 
 ## Exemple complet
 
@@ -12,6 +12,27 @@ Depuis `v0.2.10-categories-all`, `audit.sh` peut être lancé avec des arguments
   --no-zeek \
   --no-suricata
 ```
+
+## Run ID stable
+
+```bash
+./audit.sh \
+  --profile fast \
+  --targets 192.168.1.0/24 \
+  --categories all \
+  --run-id AUDIT_TEST_LOCAL \
+  --no-zeek \
+  --no-suricata
+```
+
+Avec `--run-id`, les sorties seront créées dans :
+
+```text
+output/AUDIT_TEST_LOCAL
+logs/AUDIT_TEST_LOCAL
+```
+
+Le Run ID accepte uniquement les caractères suivants : lettres, chiffres, `_`, `.`, `:`, `-`.
 
 ## Lancer tous les modules disponibles
 
@@ -34,6 +55,7 @@ La valeur `all` est convertie automatiquement en liste complète des modules dis
   --profile fast \
   --targets 192.168.1.0/24 \
   --categories all \
+  --run-id AUDIT_TEST_LOCAL \
   --no-zeek \
   --no-suricata
 ```
@@ -54,6 +76,7 @@ Cette commande affiche les modules disponibles puis quitte.
 --profile <fast|full|stealth>
 --targets <cidr[,cidr...]>
 --categories <module[,module...]|all>
+--run-id <id>
 --no-udp
 --no-zeek
 --no-suricata
@@ -74,6 +97,8 @@ Les formats suivants sont acceptés :
 --categories=all
 --categories 10_network_discovery.sh,20_portscan_nmap.sh
 --categories=10_network_discovery.sh,20_portscan_nmap.sh
+--run-id AUDIT_TEST_LOCAL
+--run-id=AUDIT_TEST_LOCAL
 ```
 
 ## Priorité CLI / menu
