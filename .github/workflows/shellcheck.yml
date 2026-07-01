@@ -20,7 +20,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install ShellCheck
-        run: sudo apt-get update && sudo apt-get install -y shellcheck
+        run: sudo apt-get update && sudo apt-get install -y shellcheck jq
 
       - name: Run ShellCheck and capture output
         run: |
@@ -52,6 +52,9 @@ jobs:
 
       - name: Run validation tests
         run: bash tests/test_validate.sh
+
+      - name: Run history tests
+        run: bash tests/test_history.sh
 
       - name: Fail if ShellCheck failed
         run: |
