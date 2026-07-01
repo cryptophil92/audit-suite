@@ -17,10 +17,12 @@ plan_output="$(bash audit.sh \
   --profile fast \
   --targets 192.168.1.0/24 \
   --categories 10_network_discovery.sh \
+  --run-id AUDIT_TEST_LOCAL \
   --no-zeek \
   --no-suricata)"
 
 printf '%s\n' "$plan_output" | grep -q 'AUDIT-SUITE dry run'
+printf '%s\n' "$plan_output" | grep -q 'Run ID: AUDIT_TEST_LOCAL'
 printf '%s\n' "$plan_output" | grep -q 'Profile: fast'
 printf '%s\n' "$plan_output" | grep -q 'Targets: 192.168.1.0/24'
 printf '%s\n' "$plan_output" | grep -q 'Categories: 10_network_discovery.sh'
@@ -33,9 +35,11 @@ all_plan_output="$(bash audit.sh \
   --profile fast \
   --targets 192.168.1.0/24 \
   --categories all \
+  --run-id AUDIT_TEST_ALL \
   --no-zeek \
   --no-suricata)"
 
+printf '%s\n' "$all_plan_output" | grep -q 'Run ID: AUDIT_TEST_ALL'
 printf '%s\n' "$all_plan_output" | grep -q 'Categories: all'
 printf '%s\n' "$all_plan_output" | grep -q 'Selected modules: .*10_network_discovery.sh'
 printf '%s\n' "$all_plan_output" | grep -q 'Selected modules: .*20_portscan_nmap.sh'
