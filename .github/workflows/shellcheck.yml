@@ -54,6 +54,9 @@ jobs:
       - name: Run args tests
         run: bash tests/test_args.sh
 
+      - name: Run module validation tests
+        run: bash tests/test_modules.sh
+
       - name: Run dry-run tests
         run: bash tests/test_dry_run.sh
 
