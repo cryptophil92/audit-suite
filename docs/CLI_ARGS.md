@@ -1,6 +1,6 @@
 # Arguments CLI
 
-Depuis `v0.2.11-run-id`, `audit.sh` peut être lancé avec des arguments pour éviter les menus interactifs et vérifier un plan sans exécution.
+Depuis `v0.2.12-run-id-collision`, `audit.sh` peut être lancé avec des arguments pour éviter les menus interactifs et vérifier un plan sans exécution.
 
 ## Exemple complet
 
@@ -33,6 +33,8 @@ logs/AUDIT_TEST_LOCAL
 ```
 
 Le Run ID accepte uniquement les caractères suivants : lettres, chiffres, `_`, `.`, `:`, `-`.
+
+Si `output/<RUN_ID>` ou `logs/<RUN_ID>` existe déjà, le lancement est refusé. Il faut choisir un autre `--run-id` pour éviter de mélanger deux résultats.
 
 ## Lancer tous les modules disponibles
 
