@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # audit.sh - Launcher principal de la suite d'audit
-# @version 0.2.4
+# @version 0.2.6
 set -Eeuo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
@@ -52,6 +52,19 @@ safe_emit() {
     emit "$lvl" "$mod" "$@"
   else
     printf '%s [%s] [%s] %s\n' "$(date -Is)" "$lvl" "$mod" "$*" >&2
+  fi
+}
+
+finalize_run_outputs() {
+  local manifest_path="$1"
+  local finalize_output
+
+  if finalize_output="$(bash bin/finalize_reports.sh "$manifest_path" 2>&1)"; then
+    while IFS= read -r line; do
+      [[ -n "$line" ]] && emit INFO "report" "$line"
+    done <<< "$finalize_output"
+  else
+    emit WARN "report" "Final report generation failed: $finalize_output"
   fi
 }
 
@@ -123,9 +136,10 @@ discover_modules_sorted >"$TMP_DIR/modules.list"
 SELECTED="$(printf '%s' "$CATEGORIES" | tr ',' ' ')"   # runner accepte espaces
 run_modules "$SELECTED"
 
-# Manifest de run + historique local
+# Manifest de run + historique local + exports finaux
 MANIFEST_PATH="$RUN_DIR/manifest.json"
 write_manifest_json "$MANIFEST_PATH" "$SELECTED"
+finalize_run_outputs "$MANIFEST_PATH"
 history_record_run "$MANIFEST_PATH"
 
 emit INFO "launcher" "Terminé. Dossier: $RUN_DIR"
