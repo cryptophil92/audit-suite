@@ -9,20 +9,21 @@ cd "$REPO_DIR"
 
 SMOKE_TARGET="${SMOKE_TARGET:-192.168.1.0/24}"
 SMOKE_RUN_ID="${SMOKE_RUN_ID:-SMOKE_LOCAL}"
-SMOKE_HISTORY_DIR="${SMOKE_HISTORY_DIR:-$(mktemp -d)}"
-
-cleanup() {
-  if [[ -n "${_SMOKE_TMP_HISTORY_CREATED:-}" && -d "$SMOKE_HISTORY_DIR" ]]; then
-    rm -rf "$SMOKE_HISTORY_DIR"
-  fi
-}
 
 if [[ -z "${SMOKE_HISTORY_DIR:-}" ]]; then
   SMOKE_HISTORY_DIR="$(mktemp -d)"
   _SMOKE_TMP_HISTORY_CREATED=1
 fi
 
+cleanup() {
+  rm -f /tmp/audit-suite-smoke.out
+  if [[ -n "${_SMOKE_TMP_HISTORY_CREATED:-}" && -d "$SMOKE_HISTORY_DIR" ]]; then
+    rm -rf "$SMOKE_HISTORY_DIR"
+  fi
+}
+
 trap cleanup EXIT
+export SMOKE_TARGET SMOKE_RUN_ID
 export AUDIT_HISTORY_DIR="$SMOKE_HISTORY_DIR/history"
 
 usage_smoke_local() {
@@ -75,5 +76,4 @@ smoke_step "plan_json" bash -c 'bash bin/plan_json.sh --profile fast --targets "
 smoke_step "api_snapshot" bash -c 'bash bin/api_snapshot_json.sh | jq -e ".kind == \"audit-suite.api_snapshot\"" >/dev/null'
 smoke_step "audit_dry_run" bash -c 'bash audit.sh --dry-run --profile fast --targets "$SMOKE_TARGET" --categories all --run-id "$SMOKE_RUN_ID" --no-zeek --no-suricata | grep -q "AUDIT-SUITE dry run"'
 
-rm -f /tmp/audit-suite-smoke.out
 printf '[OK] local smoke test passed\n'
