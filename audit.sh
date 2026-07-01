@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # audit.sh - Launcher principal de la suite d'audit
-# @version 0.2.8
+# @version 0.2.9
 set -Eeuo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
@@ -23,7 +23,7 @@ fi
 ALLOW_PUBLIC="$AUDIT_ARG_ALLOW_PUBLIC"
 
 # Charger libs
-for lib in core/lib_logging.sh core/lib_detect.sh core/lib_menu.sh core/lib_validate.sh core/lib_runner.sh core/lib_history.sh core/lib_update.sh; do
+for lib in core/lib_logging.sh core/lib_detect.sh core/lib_menu.sh core/lib_validate.sh core/lib_modules.sh core/lib_runner.sh core/lib_history.sh core/lib_update.sh; do
   # shellcheck source=/dev/null
   source "$lib"
 done
@@ -118,6 +118,11 @@ if [[ -z "${CATEGORIES:-}" ]]; then
 fi
 CATEGORIES="$(normalize_csv_to_commas "$CATEGORIES")"
 
+if ! validate_selected_modules "$CATEGORIES"; then
+  echo "Sélection de modules invalide. Utiliser --list-modules pour voir les modules disponibles." >&2
+  exit 1
+fi
+
 OPTS="$AUDIT_ARG_OPTS"
 if [[ -z "${OPTS:-}" ]]; then
   OPTS="$(ui_confirm_opts || true)"
@@ -129,7 +134,7 @@ OPTS_NO_UDP=0; OPTS_NO_ZEEK=0; OPTS_NO_SURICATA=0
 [[ "$OPTS" == *"no-zeek"* ]] && OPTS_NO_ZEEK=1
 [[ "$OPTS" == *"no-suricata"* ]] && OPTS_NO_SURICATA=1
 
-SELECTED="$(printf '%s' "$CATEGORIES" | tr ',' ' ')"   # runner accepte espaces
+SELECTED="$(selected_modules_to_runner_args "$CATEGORIES")"
 
 if [[ "$AUDIT_ARG_DRY_RUN" == "1" ]]; then
   print_dry_run_plan "$SELECTED"
