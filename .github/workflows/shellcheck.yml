@@ -63,6 +63,9 @@ jobs:
       - name: Run status JSON tests
         run: bash tests/test_status_json.sh
 
+      - name: Run API snapshot JSON tests
+        run: bash tests/test_api_snapshot_json.sh
+
       - name: Run path tests
         run: bash tests/test_run_paths.sh
 
