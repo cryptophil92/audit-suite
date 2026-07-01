@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # core/lib_history.sh
-# @version 0.2.1
+# @version 0.2.2
 set -Eeuo pipefail
 
 history_dir() {
@@ -41,7 +41,7 @@ history_record_run() {
   latest_path="$(history_latest_path)"
   tmp_path="${latest_path}.tmp"
 
-  jq -c '{
+  jq -c --arg manifest_path "$manifest_path" '{
     run_id,
     created_at,
     profile,
@@ -54,9 +54,9 @@ history_record_run() {
     skipped_count: ([.modules[]? | select(.status == "skipped")] | length),
     output_path: ("output/" + .run_id),
     manifest_path: $manifest_path
-  }' --arg manifest_path "$manifest_path" "$manifest_path" >> "$index_path"
+  }' "$manifest_path" >> "$index_path"
 
-  jq '{
+  jq --arg manifest_path "$manifest_path" '{
     run_id,
     created_at,
     profile,
@@ -66,7 +66,7 @@ history_record_run() {
     modules,
     output_path: ("output/" + .run_id),
     manifest_path: $manifest_path
-  }' --arg manifest_path "$manifest_path" "$manifest_path" > "$tmp_path"
+  }' "$manifest_path" > "$tmp_path"
 
   mv "$tmp_path" "$latest_path"
   emit INFO "history" "Run history updated: $index_path"
