@@ -20,6 +20,11 @@ module_exists 'modules/10_network_discovery.sh'
 
 validate_selected_modules '10_network_discovery.sh,20_portscan_nmap.sh'
 validate_selected_modules 'modules/10_network_discovery.sh modules/20_portscan_nmap.sh'
+validate_selected_modules 'all'
+
+all_modules="$(selected_modules_to_runner_args 'all')"
+printf '%s\n' "$all_modules" | grep -q '10_network_discovery.sh'
+printf '%s\n' "$all_modules" | grep -q '20_portscan_nmap.sh'
 
 [[ "$(selected_modules_to_runner_args '10_network_discovery.sh,20_portscan_nmap.sh')" == '10_network_discovery.sh 20_portscan_nmap.sh' ]]
 

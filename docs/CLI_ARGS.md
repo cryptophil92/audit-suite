@@ -1,6 +1,6 @@
 # Arguments CLI
 
-Depuis `v0.2.8-dry-run`, `audit.sh` peut être lancé avec des arguments pour éviter les menus interactifs et vérifier un plan sans exécution.
+Depuis `v0.2.10-categories-all`, `audit.sh` peut être lancé avec des arguments pour éviter les menus interactifs et vérifier un plan sans exécution.
 
 ## Exemple complet
 
@@ -13,6 +13,19 @@ Depuis `v0.2.8-dry-run`, `audit.sh` peut être lancé avec des arguments pour é
   --no-suricata
 ```
 
+## Lancer tous les modules disponibles
+
+```bash
+./audit.sh \
+  --profile fast \
+  --targets 192.168.1.0/24 \
+  --categories all \
+  --no-zeek \
+  --no-suricata
+```
+
+La valeur `all` est convertie automatiquement en liste complète des modules disponibles.
+
 ## Vérifier sans exécuter
 
 ```bash
@@ -20,7 +33,7 @@ Depuis `v0.2.8-dry-run`, `audit.sh` peut être lancé avec des arguments pour é
   --dry-run \
   --profile fast \
   --targets 192.168.1.0/24 \
-  --categories 10_network_discovery.sh \
+  --categories all \
   --no-zeek \
   --no-suricata
 ```
@@ -40,7 +53,7 @@ Cette commande affiche les modules disponibles puis quitte.
 ```text
 --profile <fast|full|stealth>
 --targets <cidr[,cidr...]>
---categories <module[,module...]>
+--categories <module[,module...]|all>
 --no-udp
 --no-zeek
 --no-suricata
@@ -57,6 +70,8 @@ Les formats suivants sont acceptés :
 --profile=fast
 --targets 192.168.1.0/24
 --targets=192.168.1.0/24
+--categories all
+--categories=all
 --categories 10_network_discovery.sh,20_portscan_nmap.sh
 --categories=10_network_discovery.sh,20_portscan_nmap.sh
 ```

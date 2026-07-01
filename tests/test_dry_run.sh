@@ -28,6 +28,18 @@ printf '%s\n' "$plan_output" | grep -q 'Selected modules: 10_network_discovery.s
 printf '%s\n' "$plan_output" | grep -q 'no_zeek: 1'
 printf '%s\n' "$plan_output" | grep -q 'no_suricata: 1'
 
+all_plan_output="$(bash audit.sh \
+  --dry-run \
+  --profile fast \
+  --targets 192.168.1.0/24 \
+  --categories all \
+  --no-zeek \
+  --no-suricata)"
+
+printf '%s\n' "$all_plan_output" | grep -q 'Categories: all'
+printf '%s\n' "$all_plan_output" | grep -q 'Selected modules: .*10_network_discovery.sh'
+printf '%s\n' "$all_plan_output" | grep -q 'Selected modules: .*20_portscan_nmap.sh'
+
 if bash audit.sh \
   --dry-run \
   --profile fast \
