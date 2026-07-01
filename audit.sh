@@ -1,42 +1,26 @@
 #!/usr/bin/env bash
 # audit.sh - Launcher principal de la suite d'audit
-# @version 0.2.6
+# @version 0.2.7
 set -Eeuo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"
 
-ALLOW_PUBLIC=0
+# Charger le parsing CLI en premier pour exposer usage()
+# shellcheck source=/dev/null
+source "core/lib_args.sh"
 
-usage() {
-  cat <<'EOF'
-Usage: ./audit.sh [options]
+if ! parse_audit_args "$@"; then
+  usage >&2
+  exit 2
+fi
 
-Options:
-  --allow-public    Autorise les cibles publiques. À utiliser uniquement avec autorisation explicite.
-  -h, --help        Affiche cette aide.
+if [[ "$AUDIT_ARG_HELP" == "1" ]]; then
+  usage
+  exit 0
+fi
 
-Par défaut, AUDIT-SUITE refuse les IP/plages publiques et accepte uniquement les périmètres locaux/lab.
-EOF
-}
-
-while (( $# > 0 )); do
-  case "$1" in
-    --allow-public)
-      ALLOW_PUBLIC=1
-      ;;
-    -h|--help)
-      usage
-      exit 0
-      ;;
-    *)
-      echo "Option inconnue: $1" >&2
-      usage >&2
-      exit 2
-      ;;
-  esac
-  shift
-done
+ALLOW_PUBLIC="$AUDIT_ARG_ALLOW_PUBLIC"
 
 # Charger libs
 for lib in core/lib_logging.sh core/lib_detect.sh core/lib_menu.sh core/lib_validate.sh core/lib_runner.sh core/lib_history.sh core/lib_update.sh; do
@@ -83,11 +67,17 @@ bin/check_deps.sh
 # Détecter environnement
 detect_env
 
-# UI: profil, cibles, catégories & options
-PROFILE="$(ui_pick_profile || true)"
+# Profil, cibles, catégories & options : CLI prioritaire, UI en fallback
+PROFILE="$AUDIT_ARG_PROFILE"
+if [[ -z "${PROFILE:-}" ]]; then
+  PROFILE="$(ui_pick_profile || true)"
+fi
 [[ -z "${PROFILE:-}" ]] && PROFILE="fast"
 
-TARGETS="$(ui_enter_targets || true)"
+TARGETS="$AUDIT_ARG_TARGETS"
+if [[ -z "${TARGETS:-}" ]]; then
+  TARGETS="$(ui_enter_targets || true)"
+fi
 [[ -z "${TARGETS:-}" ]] && {
   echo "Aucune cible fournie. Exemple: 192.168.1.0/24,192.168.27.0/24"
   exit 1
@@ -102,11 +92,18 @@ if [[ "$ALLOW_PUBLIC" == "1" ]]; then
   echo "ATTENTION: cibles publiques autorisées pour cette exécution. Vérifier l'autorisation écrite."
 fi
 
-CATEGORIES="$(ui_pick_categories || true)"
-# normalisation: espaces/nouvelles lignes -> virgules, trim
-CATEGORIES="$(printf '%s' "$CATEGORIES" | tr ' \n' ',' | sed 's/,,*/,/g; s/^,//; s/,$//')"
+CATEGORIES="$AUDIT_ARG_CATEGORIES"
+if [[ -z "${CATEGORIES:-}" ]]; then
+  CATEGORIES="$(ui_pick_categories || true)"
+fi
+CATEGORIES="$(normalize_csv_to_commas "$CATEGORIES")"
 
-OPTS="$(ui_confirm_opts || true)"
+OPTS="$AUDIT_ARG_OPTS"
+if [[ -z "${OPTS:-}" ]]; then
+  OPTS="$(ui_confirm_opts || true)"
+fi
+OPTS="$(normalize_csv_to_commas "$OPTS")"
+
 OPTS_NO_UDP=0; OPTS_NO_ZEEK=0; OPTS_NO_SURICATA=0
 [[ "$OPTS" == *"no-udp"* ]] && OPTS_NO_UDP=1
 [[ "$OPTS" == *"no-zeek"* ]] && OPTS_NO_ZEEK=1
