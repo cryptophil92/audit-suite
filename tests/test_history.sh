@@ -63,7 +63,7 @@ grep -q 'AUDIT_TEST_001' "$(history_index_path)"
 jq -e '.run_id == "AUDIT_TEST_001"' "$(history_latest_path)" >/dev/null
 jq -e '.modules[0].status == "success"' "$(history_latest_path)" >/dev/null
 
-bin/history.sh list >/dev/null
-AUDIT_HISTORY_DIR="$AUDIT_HISTORY_DIR" bin/history.sh latest >/dev/null
+bash bin/history.sh list >/dev/null
+AUDIT_HISTORY_DIR="$AUDIT_HISTORY_DIR" bash bin/history.sh latest >/dev/null
 
 printf '[OK] history tests passed\n'
