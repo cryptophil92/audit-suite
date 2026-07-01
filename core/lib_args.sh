@@ -79,34 +79,34 @@ parse_audit_args() {
   while (( $# > 0 )); do
     case "$1" in
       --profile)
-        _args_require_value "$1" "${2:-}"
-        _args_validate_profile "$2"
+        _args_require_value "$1" "${2:-}" || return 2
+        _args_validate_profile "$2" || return 2
         AUDIT_ARG_PROFILE="$2"
         shift 2
         ;;
       --profile=*)
         AUDIT_ARG_PROFILE="${1#*=}"
-        _args_validate_profile "$AUDIT_ARG_PROFILE"
+        _args_validate_profile "$AUDIT_ARG_PROFILE" || return 2
         shift
         ;;
       --targets)
-        _args_require_value "$1" "${2:-}"
+        _args_require_value "$1" "${2:-}" || return 2
         AUDIT_ARG_TARGETS="$2"
         shift 2
         ;;
       --targets=*)
         AUDIT_ARG_TARGETS="${1#*=}"
-        _args_require_value "--targets" "$AUDIT_ARG_TARGETS"
+        _args_require_value "--targets" "$AUDIT_ARG_TARGETS" || return 2
         shift
         ;;
       --categories)
-        _args_require_value "$1" "${2:-}"
+        _args_require_value "$1" "${2:-}" || return 2
         AUDIT_ARG_CATEGORIES="$2"
         shift 2
         ;;
       --categories=*)
         AUDIT_ARG_CATEGORIES="${1#*=}"
-        _args_require_value "--categories" "$AUDIT_ARG_CATEGORIES"
+        _args_require_value "--categories" "$AUDIT_ARG_CATEGORIES" || return 2
         shift
         ;;
       --no-udp)
