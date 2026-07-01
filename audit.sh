@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # audit.sh - Launcher principal de la suite d'audit
-# @version 0.2.9
+# @version 0.2.11
 set -Eeuo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
@@ -52,15 +52,25 @@ finalize_run_outputs() {
   fi
 }
 
+resolve_run_id() {
+  if [[ -n "${AUDIT_ARG_RUN_ID:-}" ]]; then
+    printf '%s\n' "$AUDIT_ARG_RUN_ID"
+  else
+    printf 'AUDIT_%s\n' "$(date -u +%Y%m%dT%H%M%SZ)"
+  fi
+}
+
 print_available_modules() {
   discover_modules_sorted | sed 's#^modules/##'
 }
 
 print_dry_run_plan() {
   local selected="$1"
+  local planned_run_id="$2"
 
   cat <<EOF
 AUDIT-SUITE dry run
+Run ID: $planned_run_id
 Profile: $PROFILE
 Targets: $TARGETS
 Categories: $CATEGORIES
@@ -135,9 +145,10 @@ OPTS_NO_UDP=0; OPTS_NO_ZEEK=0; OPTS_NO_SURICATA=0
 [[ "$OPTS" == *"no-suricata"* ]] && OPTS_NO_SURICATA=1
 
 SELECTED="$(selected_modules_to_runner_args "$CATEGORIES")"
+PLANNED_RUN_ID="$(resolve_run_id)"
 
 if [[ "$AUDIT_ARG_DRY_RUN" == "1" ]]; then
-  print_dry_run_plan "$SELECTED"
+  print_dry_run_plan "$SELECTED" "$PLANNED_RUN_ID"
   exit 0
 fi
 
@@ -148,7 +159,7 @@ bin/check_deps.sh
 detect_env
 
 # RUN_ID & dossiers
-RUN_ID="AUDIT_$(date -u +%Y%m%dT%H%M%SZ)"
+RUN_ID="$PLANNED_RUN_ID"
 RUN_DIR="output/$RUN_ID"
 LOG_DIR="logs/$RUN_ID"
 TMP_DIR="tmp"
