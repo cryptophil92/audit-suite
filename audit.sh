@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # audit.sh - Launcher principal de la suite d'audit
-# @version 0.2.3
+# @version 0.2.4
 set -Eeuo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
@@ -39,7 +39,7 @@ while (( $# > 0 )); do
 done
 
 # Charger libs
-for lib in core/lib_logging.sh core/lib_detect.sh core/lib_menu.sh core/lib_validate.sh core/lib_runner.sh core/lib_update.sh; do
+for lib in core/lib_logging.sh core/lib_detect.sh core/lib_menu.sh core/lib_validate.sh core/lib_runner.sh core/lib_history.sh core/lib_update.sh; do
   # shellcheck source=/dev/null
   source "$lib"
 done
@@ -123,8 +123,10 @@ discover_modules_sorted >"$TMP_DIR/modules.list"
 SELECTED="$(printf '%s' "$CATEGORIES" | tr ',' ' ')"   # runner accepte espaces
 run_modules "$SELECTED"
 
-# Manifest de run
-write_manifest_json "$RUN_DIR/manifest.json" "$SELECTED"
+# Manifest de run + historique local
+MANIFEST_PATH="$RUN_DIR/manifest.json"
+write_manifest_json "$MANIFEST_PATH" "$SELECTED"
+history_record_run "$MANIFEST_PATH"
 
 emit INFO "launcher" "Terminé. Dossier: $RUN_DIR"
 echo "Audit terminé. Résultats: $RUN_DIR"
