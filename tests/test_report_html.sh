@@ -80,7 +80,10 @@ grep -q 'status-failed' "$report_path"
 grep -q 'xss_test' "$report_path"
 grep -q '&lt;script&gt;alert' "$report_path"
 grep -q 'module returned rc=1 &lt;unsafe&gt;' "$report_path"
-! grep -q '<script>alert' "$report_path"
+if grep -q '<script>alert' "$report_path"; then
+  echo 'Raw script tag found in generated report' >&2
+  exit 1
+fi
 
 cp "$manifest_path" "$TMP_ROOT/default/manifest.json"
 bash bin/report_html.sh "$TMP_ROOT/default/manifest.json" >/dev/null
