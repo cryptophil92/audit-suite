@@ -60,6 +60,9 @@ jobs:
       - name: Run manifest schema tests
         run: bash tests/test_manifest_schema.sh
 
+      - name: Run compare runs tests
+        run: bash tests/test_compare_runs.sh
+
       - name: Fail if ShellCheck failed
         run: |
           rc="$(cat shellcheck-exit-code.txt)"
