@@ -28,6 +28,17 @@ printf '%s\n' "$plan_output" | grep -q 'Selected modules: 10_network_discovery.s
 printf '%s\n' "$plan_output" | grep -q 'no_zeek: 1'
 printf '%s\n' "$plan_output" | grep -q 'no_suricata: 1'
 
+if bash audit.sh \
+  --dry-run \
+  --profile fast \
+  --targets 192.168.1.0/24 \
+  --categories does_not_exist.sh >/tmp/audit-suite-invalid-module.out 2>/tmp/audit-suite-invalid-module.err; then
+  echo 'invalid module accepted by dry-run' >&2
+  exit 1
+fi
+
+grep -q 'Module inconnu ou indisponible: does_not_exist.sh' /tmp/audit-suite-invalid-module.err
+
 after_output_count="$(find output -mindepth 1 -maxdepth 1 -type d 2>/dev/null | wc -l | tr -d ' ')"
 [[ "$before_output_count" == "$after_output_count" ]]
 
