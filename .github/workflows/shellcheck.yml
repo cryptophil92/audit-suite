@@ -57,6 +57,9 @@ jobs:
       - name: Run module validation tests
         run: bash tests/test_modules.sh
 
+      - name: Run modules JSON tests
+        run: bash tests/test_modules_json.sh
+
       - name: Run path tests
         run: bash tests/test_run_paths.sh
 
