@@ -46,6 +46,29 @@
       font-weight: bold;
     }
 
+    label {
+      display: block;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+
+    input, select, button {
+      box-sizing: border-box;
+      width: 100%;
+      margin-top: 4px;
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid color-mix(in srgb, CanvasText 25%, transparent);
+      background: Canvas;
+      color: CanvasText;
+    }
+
+    button {
+      cursor: pointer;
+      margin-top: 14px;
+      font-weight: bold;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
@@ -89,6 +112,42 @@
     </section>
 
     <section class="card" style="margin-top: 16px;">
+      <h2>Aperçu de plan</h2>
+      <form id="plan-form">
+        <label>
+          Cibles
+          <input id="plan-targets" name="targets" value="192.168.1.0/24" required>
+        </label>
+        <label>
+          Profil
+          <select id="plan-profile" name="profile">
+            <option value="fast">fast</option>
+            <option value="full">full</option>
+            <option value="stealth">stealth</option>
+          </select>
+        </label>
+        <label>
+          Catégories
+          <input id="plan-categories" name="categories" value="all">
+        </label>
+        <label>
+          Run ID
+          <input id="plan-run-id" name="run_id" value="WEB_PLAN_PREVIEW">
+        </label>
+        <label>
+          <input id="plan-no-zeek" name="no_zeek" type="checkbox" checked>
+          Désactiver Zeek
+        </label>
+        <label>
+          <input id="plan-no-suricata" name="no_suricata" type="checkbox" checked>
+          Désactiver Suricata
+        </label>
+        <button type="submit">Afficher le plan JSON</button>
+      </form>
+      <pre id="plan-json">Aucun plan chargé.</pre>
+    </section>
+
+    <section class="card" style="margin-top: 16px;">
       <h2>Modules disponibles</h2>
       <table>
         <thead>
@@ -121,6 +180,21 @@
       return response.json();
     }
 
+    async function loadPlan(event) {
+      event.preventDefault();
+      const params = new URLSearchParams();
+      params.set("targets", document.getElementById("plan-targets").value);
+      params.set("profile", document.getElementById("plan-profile").value);
+      params.set("categories", document.getElementById("plan-categories").value || "all");
+      params.set("run_id", document.getElementById("plan-run-id").value || "WEB_PLAN_PREVIEW");
+      if (document.getElementById("plan-no-zeek").checked) params.set("no_zeek", "1");
+      if (document.getElementById("plan-no-suricata").checked) params.set("no_suricata", "1");
+
+      const response = await fetch(`/api/plan?${params.toString()}`, { cache: "no-store" });
+      const payload = await response.json();
+      document.getElementById("plan-json").textContent = JSON.stringify(payload, null, 2);
+    }
+
     function render(snapshot) {
       const status = snapshot.status || {};
       const modules = snapshot.modules || { modules: [] };
@@ -149,6 +223,8 @@
 
       document.getElementById("latest-json").textContent = JSON.stringify(latest.latest, null, 2);
     }
+
+    document.getElementById("plan-form").addEventListener("submit", loadPlan);
 
     loadSnapshot()
       .then(render)

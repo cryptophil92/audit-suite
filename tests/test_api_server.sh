@@ -70,10 +70,14 @@ content_type, body = get_text("/")
 assert "text/html" in content_type
 assert "AUDIT-SUITE" in body
 assert "/api/snapshot" in body
+assert "/api/plan" in body
+assert "Aperçu de plan" in body
+assert "WEB_PLAN_PREVIEW" in body
 
 content_type, body = get_text("/index.html")
 assert "text/html" in content_type
 assert "Interface locale" in body
+assert "Afficher le plan JSON" in body
 
 assert get_json("/api/health")["kind"] == "audit-suite.api_health"
 assert get_json("/api/status")["kind"] == "audit-suite.status"
