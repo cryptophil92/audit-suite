@@ -21,6 +21,7 @@ GET /api/modules
 GET /api/history
 GET /api/latest
 GET /api/snapshot
+GET /api/openapi.json
 GET /api/plan?targets=192.168.1.0/24&profile=fast&categories=all&run_id=API_PLAN_TEST
 ```
 
@@ -40,6 +41,10 @@ no_udp        1/true/yes/on
 no_zeek       1/true/yes/on
 no_suricata   1/true/yes/on
 ```
+
+## Spécification
+
+`/api/openapi.json` sert le fichier `api/openapi.json`.
 
 ## Comportement
 
