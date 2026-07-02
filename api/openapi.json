@@ -1,0 +1,136 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "AUDIT-SUITE Local Read-only API",
+    "version": "0.2.23",
+    "description": "Local read-only API for AUDIT-SUITE JSON endpoints."
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:8765"
+    }
+  ],
+  "paths": {
+    "/api/health": {
+      "get": {
+        "summary": "Health check",
+        "responses": {
+          "200": {
+            "description": "API health payload"
+          }
+        }
+      }
+    },
+    "/api/status": {
+      "get": {
+        "summary": "Local engine status",
+        "responses": {
+          "200": {
+            "description": "Status JSON payload"
+          }
+        }
+      }
+    },
+    "/api/modules": {
+      "get": {
+        "summary": "Available module catalog",
+        "responses": {
+          "200": {
+            "description": "Modules JSON payload"
+          }
+        }
+      }
+    },
+    "/api/history": {
+      "get": {
+        "summary": "Run history list",
+        "responses": {
+          "200": {
+            "description": "History JSON payload"
+          }
+        }
+      }
+    },
+    "/api/latest": {
+      "get": {
+        "summary": "Latest run",
+        "responses": {
+          "200": {
+            "description": "Latest run JSON payload"
+          }
+        }
+      }
+    },
+    "/api/snapshot": {
+      "get": {
+        "summary": "Aggregated API snapshot",
+        "responses": {
+          "200": {
+            "description": "Snapshot JSON payload"
+          }
+        }
+      }
+    },
+    "/api/plan": {
+      "get": {
+        "summary": "Plan preview",
+        "parameters": [
+          {
+            "name": "targets",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "profile",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string", "enum": ["fast", "full", "stealth"], "default": "fast" }
+          },
+          {
+            "name": "categories",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string", "default": "all" }
+          },
+          {
+            "name": "run_id",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "no_zeek",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "boolean" }
+          },
+          {
+            "name": "no_suricata",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "boolean" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Plan JSON payload"
+          },
+          "400": {
+            "description": "Invalid or missing query parameter"
+          }
+        }
+      }
+    },
+    "/api/openapi.json": {
+      "get": {
+        "summary": "OpenAPI specification",
+        "responses": {
+          "200": {
+            "description": "OpenAPI JSON document"
+          }
+        }
+      }
+    }
+  }
+}
