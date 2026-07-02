@@ -21,6 +21,24 @@ GET /api/modules
 GET /api/history
 GET /api/latest
 GET /api/snapshot
+GET /api/plan?targets=192.168.1.0/24&profile=fast&categories=all&run_id=API_PLAN_TEST
+```
+
+## Route plan
+
+`/api/plan` appelle `bin/plan_json.sh` et retourne un plan JSON sans créer de dossier de run.
+
+Paramètres acceptés :
+
+```text
+targets       obligatoire
+profile       défaut: fast
+categories    défaut: all
+run_id        optionnel
+allow_public  1/true/yes/on
+no_udp        1/true/yes/on
+no_zeek       1/true/yes/on
+no_suricata   1/true/yes/on
 ```
 
 ## Comportement
@@ -38,6 +56,7 @@ bin/status_json.sh
 bin/modules_json.sh
 bin/history_json.sh
 bin/api_snapshot_json.sh
+bin/plan_json.sh
 ```
 
 ## Objectif
