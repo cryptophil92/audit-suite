@@ -46,6 +46,7 @@ python3 - <<'PY'
 import json
 import os
 import urllib.error
+import urllib.parse
 import urllib.request
 
 port = os.environ.get("API_TEST_PORT", "9876")
@@ -80,6 +81,28 @@ assert get_json("/api/modules")["kind"] == "audit-suite.modules"
 assert get_json("/api/history")["kind"] == "audit-suite.history"
 assert get_json("/api/latest")["kind"] == "audit-suite.history.latest"
 assert get_json("/api/snapshot")["kind"] == "audit-suite.api_snapshot"
+
+query = urllib.parse.urlencode({
+    "targets": "192.168.1.0/24",
+    "profile": "fast",
+    "categories": "all",
+    "run_id": "API_PLAN_TEST",
+    "no_zeek": "1",
+    "no_suricata": "1",
+})
+plan = get_json(f"/api/plan?{query}")
+assert plan["kind"] == "audit-suite.plan"
+assert plan["run_id"] == "API_PLAN_TEST"
+assert plan["profile"] == "fast"
+assert plan["targets"] == ["192.168.1.0/24"]
+assert plan["options"]["no_zeek"] is True
+assert plan["options"]["no_suricata"] is True
+
+try:
+    urllib.request.urlopen(base + "/api/plan", timeout=5)
+    raise AssertionError("plan without targets accepted")
+except urllib.error.HTTPError as exc:
+    assert exc.code == 400
 
 try:
     urllib.request.urlopen(base + "/api/missing", timeout=5)
