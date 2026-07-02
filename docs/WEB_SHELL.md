@@ -20,6 +20,7 @@ La page lit :
 
 ```text
 GET /api/snapshot
+GET /api/plan
 ```
 
 Elle affiche :
@@ -28,11 +29,24 @@ Elle affiche :
 - le nombre de modules ;
 - le nombre de runs historisés ;
 - la table des modules disponibles ;
-- le dernier run au format JSON.
+- le dernier run au format JSON ;
+- un aperçu de plan JSON à partir des paramètres saisis.
+
+## Aperçu de plan
+
+Le formulaire d'aperçu demande :
+
+- cibles ;
+- profil ;
+- catégories ;
+- run ID ;
+- options `no_zeek` et `no_suricata`.
+
+Le bouton affiche uniquement le JSON retourné par `/api/plan`.
 
 ## Garanties
 
-- Aucun bouton d'exécution.
+- Aucun bouton d'exécution réelle.
 - Lecture seule.
 - Aucune dépendance front-end externe.
 - Compatible avec le serveur local standard library Python.
