@@ -10,7 +10,7 @@ from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Any
-from urllib.parse import urlparse
+from urllib.parse import parse_qs, urlparse
 
 REPO_DIR = Path(__file__).resolve().parent.parent
 WEB_INDEX = REPO_DIR / "web" / "index.html"
@@ -55,8 +55,55 @@ def run_json_command(command: list[str]) -> tuple[int, dict[str, Any]]:
         }
 
 
+def first_query_value(query: dict[str, list[str]], key: str, default: str = "") -> str:
+    values = query.get(key, [])
+    if not values:
+        return default
+    return values[0]
+
+
+def query_flag_enabled(value: str) -> bool:
+    return value.lower() in {"1", "true", "yes", "on"}
+
+
+def build_plan_command(query: dict[str, list[str]]) -> tuple[list[str] | None, dict[str, Any] | None]:
+    targets = first_query_value(query, "targets")
+    if not targets:
+        return None, {
+            "kind": "audit-suite.api_error",
+            "error": "missing_query_param",
+            "param": "targets",
+        }
+
+    command = [
+        "bash",
+        "bin/plan_json.sh",
+        "--profile",
+        first_query_value(query, "profile", "fast"),
+        "--targets",
+        targets,
+        "--categories",
+        first_query_value(query, "categories", "all"),
+    ]
+
+    run_id = first_query_value(query, "run_id")
+    if run_id:
+        command.extend(["--run-id", run_id])
+
+    if query_flag_enabled(first_query_value(query, "allow_public")):
+        command.append("--allow-public")
+    if query_flag_enabled(first_query_value(query, "no_udp")):
+        command.append("--no-udp")
+    if query_flag_enabled(first_query_value(query, "no_zeek")):
+        command.append("--no-zeek")
+    if query_flag_enabled(first_query_value(query, "no_suricata")):
+        command.append("--no-suricata")
+
+    return command, None
+
+
 class AuditSuiteHandler(BaseHTTPRequestHandler):
-    server_version = "AuditSuiteReadOnlyAPI/0.2.20"
+    server_version = "AuditSuiteReadOnlyAPI/0.2.21"
 
     def log_message(self, format: str, *args: Any) -> None:  # noqa: A002
         if getattr(self.server, "quiet", False):
@@ -93,7 +140,8 @@ class AuditSuiteHandler(BaseHTTPRequestHandler):
         self.wfile.write(body)
 
     def do_GET(self) -> None:  # noqa: N802
-        path = urlparse(self.path).path
+        parsed_url = urlparse(self.path)
+        path = parsed_url.path
 
         if path in {"/", "/index.html"}:
             self._write_html(HTTPStatus.OK, WEB_INDEX)
@@ -108,6 +156,19 @@ class AuditSuiteHandler(BaseHTTPRequestHandler):
                     "read_only": True,
                 },
             )
+            return
+
+        if path == "/api/plan":
+            command, error_payload = build_plan_command(parse_qs(parsed_url.query))
+            if error_payload is not None or command is None:
+                self._write_json(HTTPStatus.BAD_REQUEST, error_payload or {})
+                return
+
+            returncode, payload = run_json_command(command)
+            if returncode == 0:
+                self._write_json(HTTPStatus.OK, payload)
+            else:
+                self._write_json(HTTPStatus.BAD_REQUEST, payload)
             return
 
         command = ROUTES.get(path)
