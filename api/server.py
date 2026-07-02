@@ -14,6 +14,7 @@ from urllib.parse import parse_qs, urlparse
 
 REPO_DIR = Path(__file__).resolve().parent.parent
 WEB_INDEX = REPO_DIR / "web" / "index.html"
+OPENAPI_SPEC = REPO_DIR / "api" / "openapi.json"
 
 ROUTES: dict[str, list[str]] = {
     "/api/status": ["bash", "bin/status_json.sh"],
@@ -103,7 +104,7 @@ def build_plan_command(query: dict[str, list[str]]) -> tuple[list[str] | None, d
 
 
 class AuditSuiteHandler(BaseHTTPRequestHandler):
-    server_version = "AuditSuiteReadOnlyAPI/0.2.21"
+    server_version = "AuditSuiteReadOnlyAPI/0.2.23"
 
     def log_message(self, format: str, *args: Any) -> None:  # noqa: A002
         if getattr(self.server, "quiet", False):
@@ -112,6 +113,26 @@ class AuditSuiteHandler(BaseHTTPRequestHandler):
 
     def _write_json(self, status: HTTPStatus, payload: dict[str, Any]) -> None:
         body = json.dumps(payload, ensure_ascii=False, indent=2).encode("utf-8")
+        self.send_response(status)
+        self.send_header("Content-Type", "application/json; charset=utf-8")
+        self.send_header("Content-Length", str(len(body)))
+        self.send_header("Cache-Control", "no-store")
+        self.end_headers()
+        self.wfile.write(body)
+
+    def _write_json_file(self, status: HTTPStatus, json_path: Path) -> None:
+        if not json_path.is_file():
+            self._write_json(
+                HTTPStatus.NOT_FOUND,
+                {
+                    "kind": "audit-suite.api_error",
+                    "error": "json_file_missing",
+                    "path": str(json_path),
+                },
+            )
+            return
+
+        body = json_path.read_bytes()
         self.send_response(status)
         self.send_header("Content-Type", "application/json; charset=utf-8")
         self.send_header("Content-Length", str(len(body)))
@@ -145,6 +166,10 @@ class AuditSuiteHandler(BaseHTTPRequestHandler):
 
         if path in {"/", "/index.html"}:
             self._write_html(HTTPStatus.OK, WEB_INDEX)
+            return
+
+        if path == "/api/openapi.json":
+            self._write_json_file(HTTPStatus.OK, OPENAPI_SPEC)
             return
 
         if path == "/api/health":

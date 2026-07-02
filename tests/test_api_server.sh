@@ -79,6 +79,11 @@ assert "text/html" in content_type
 assert "Interface locale" in body
 assert "Afficher le plan JSON" in body
 
+openapi = get_json("/api/openapi.json")
+assert openapi["openapi"] == "3.0.3"
+assert "/api/plan" in openapi["paths"]
+assert "/api/snapshot" in openapi["paths"]
+
 assert get_json("/api/health")["kind"] == "audit-suite.api_health"
 assert get_json("/api/status")["kind"] == "audit-suite.status"
 assert get_json("/api/modules")["kind"] == "audit-suite.modules"
