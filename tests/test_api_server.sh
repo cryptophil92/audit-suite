@@ -57,6 +57,23 @@ def get_json(path):
         assert response.status == 200
         return json.loads(response.read().decode("utf-8"))
 
+
+def get_text(path):
+    with urllib.request.urlopen(base + path, timeout=5) as response:
+        assert response.status == 200
+        content_type = response.headers.get("Content-Type", "")
+        body = response.read().decode("utf-8")
+        return content_type, body
+
+content_type, body = get_text("/")
+assert "text/html" in content_type
+assert "AUDIT-SUITE" in body
+assert "/api/snapshot" in body
+
+content_type, body = get_text("/index.html")
+assert "text/html" in content_type
+assert "Interface locale" in body
+
 assert get_json("/api/health")["kind"] == "audit-suite.api_health"
 assert get_json("/api/status")["kind"] == "audit-suite.status"
 assert get_json("/api/modules")["kind"] == "audit-suite.modules"

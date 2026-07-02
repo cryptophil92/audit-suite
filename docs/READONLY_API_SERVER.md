@@ -1,6 +1,6 @@
 # API locale en lecture seule
 
-`api/server.py` expose les sorties JSON locales via HTTP.
+`api/server.py` expose les sorties JSON locales et la page web locale via HTTP.
 
 ## Lancement
 
@@ -13,6 +13,8 @@ Par défaut, l'écoute est limitée à `127.0.0.1`.
 ## Routes disponibles
 
 ```text
+GET /
+GET /index.html
 GET /api/health
 GET /api/status
 GET /api/modules
@@ -23,7 +25,8 @@ GET /api/snapshot
 
 ## Comportement
 
-- Les routes disponibles retournent du JSON.
+- `/` et `/index.html` servent `web/index.html`.
+- Les routes `/api/*` retournent du JSON.
 - Les méthodes non prévues sont refusées.
 - Les chemins inconnus retournent une erreur JSON.
 - Les réponses utilisent `Cache-Control: no-store`.

@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AUDIT-SUITE</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      padding: 24px;
+      background: Canvas;
+      color: CanvasText;
+    }
+
+    header {
+      margin-bottom: 24px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      border: 1px solid color-mix(in srgb, CanvasText 22%, transparent);
+      border-radius: 10px;
+      padding: 16px;
+      background: color-mix(in srgb, Canvas 94%, CanvasText 6%);
+    }
+
+    .muted {
+      opacity: 0.75;
+    }
+
+    .status-ok {
+      font-weight: bold;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    th, td {
+      border-bottom: 1px solid color-mix(in srgb, CanvasText 18%, transparent);
+      padding: 8px;
+      text-align: left;
+    }
+
+    pre {
+      overflow: auto;
+      padding: 12px;
+      border-radius: 8px;
+      background: color-mix(in srgb, CanvasText 10%, transparent);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>AUDIT-SUITE</h1>
+    <p class="muted">Interface locale en lecture seule.</p>
+  </header>
+
+  <main>
+    <section class="grid">
+      <article class="card">
+        <h2>État moteur</h2>
+        <p id="status-summary" class="muted">Chargement...</p>
+      </article>
+      <article class="card">
+        <h2>Modules</h2>
+        <p id="modules-summary" class="muted">Chargement...</p>
+      </article>
+      <article class="card">
+        <h2>Historique</h2>
+        <p id="history-summary" class="muted">Chargement...</p>
+      </article>
+    </section>
+
+    <section class="card" style="margin-top: 16px;">
+      <h2>Modules disponibles</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Ordre</th>
+            <th>Nom</th>
+            <th>Chemin</th>
+          </tr>
+        </thead>
+        <tbody id="modules-table">
+          <tr><td colspan="3" class="muted">Chargement...</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="card" style="margin-top: 16px;">
+      <h2>Dernier run</h2>
+      <pre id="latest-json">Chargement...</pre>
+    </section>
+  </main>
+
+  <script>
+    const text = (value, fallback = "-") => value === undefined || value === null || value === "" ? fallback : String(value);
+
+    async function loadSnapshot() {
+      const response = await fetch("/api/snapshot", { cache: "no-store" });
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+      return response.json();
+    }
+
+    function render(snapshot) {
+      const status = snapshot.status || {};
+      const modules = snapshot.modules || { modules: [] };
+      const history = snapshot.history || { runs: [] };
+      const latest = snapshot.latest || { latest: null };
+
+      document.getElementById("status-summary").innerHTML = `
+        <span class="status-ok">JSON chargé</span><br>
+        Modules dir: ${text(status.checks?.modules_dir_exists)}<br>
+        History index: ${text(status.checks?.history_index_exists)}
+      `;
+
+      document.getElementById("modules-summary").textContent = `${modules.count || 0} module(s) disponible(s)`;
+      document.getElementById("history-summary").textContent = `${history.count || 0} run(s) historisé(s)`;
+
+      const tbody = document.getElementById("modules-table");
+      tbody.innerHTML = "";
+      for (const mod of modules.modules || []) {
+        const row = document.createElement("tr");
+        row.innerHTML = `<td>${text(mod.order)}</td><td>${text(mod.name)}</td><td>${text(mod.path)}</td>`;
+        tbody.appendChild(row);
+      }
+      if (!tbody.children.length) {
+        tbody.innerHTML = '<tr><td colspan="3" class="muted">Aucun module détecté.</td></tr>';
+      }
+
+      document.getElementById("latest-json").textContent = JSON.stringify(latest.latest, null, 2);
+    }
+
+    loadSnapshot()
+      .then(render)
+      .catch((error) => {
+        document.getElementById("status-summary").textContent = `Erreur: ${error.message}`;
+        document.getElementById("modules-summary").textContent = "Indisponible";
+        document.getElementById("history-summary").textContent = "Indisponible";
+        document.getElementById("modules-table").innerHTML = '<tr><td colspan="3">Erreur chargement API.</td></tr>';
+        document.getElementById("latest-json").textContent = "null";
+      });
+  </script>
+</body>
+</html>
