@@ -21,6 +21,7 @@ La page lit :
 ```text
 GET /api/snapshot
 GET /api/plan
+GET /api/routes
 ```
 
 Elle affiche :
@@ -29,6 +30,7 @@ Elle affiche :
 - le nombre de modules ;
 - le nombre de runs historisés ;
 - la table des modules disponibles ;
+- la liste des routes API locales ;
 - le dernier run au format JSON ;
 - un aperçu JSON à partir des paramètres saisis.
 
@@ -44,6 +46,14 @@ Le formulaire propose :
 - options `no_zeek` et `no_suricata`.
 
 Le bouton affiche uniquement le JSON retourné par `/api/plan`.
+
+## Panneau routes
+
+Le panneau `Routes API locales` lit `/api/routes` et affiche :
+
+- méthode ;
+- chemin ;
+- type de réponse.
 
 ## Garanties
 
