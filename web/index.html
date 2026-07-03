@@ -191,6 +191,22 @@
     </section>
 
     <section class="card" style="margin-top: 16px;">
+      <h2>Routes API locales</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Méthode</th>
+            <th>Chemin</th>
+            <th>Type</th>
+          </tr>
+        </thead>
+        <tbody id="routes-table">
+          <tr><td colspan="3" class="muted">Chargement...</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="card" style="margin-top: 16px;">
       <h2>Dernier run</h2>
       <pre id="latest-json">Chargement...</pre>
     </section>
@@ -201,6 +217,14 @@
 
     async function loadSnapshot() {
       const response = await fetch("/api/snapshot", { cache: "no-store" });
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+      return response.json();
+    }
+
+    async function loadRoutes() {
+      const response = await fetch("/api/routes", { cache: "no-store" });
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}`);
       }
@@ -253,6 +277,21 @@
       }
     }
 
+    function renderRoutes(routesPayload) {
+      const tbody = document.getElementById("routes-table");
+      tbody.innerHTML = "";
+
+      for (const route of routesPayload.routes || []) {
+        const row = document.createElement("tr");
+        row.innerHTML = `<td>${text(route.method)}</td><td>${text(route.path)}</td><td>${text(route.type)}</td>`;
+        tbody.appendChild(row);
+      }
+
+      if (!tbody.children.length) {
+        tbody.innerHTML = '<tr><td colspan="3" class="muted">Aucune route détectée.</td></tr>';
+      }
+    }
+
     function render(snapshot) {
       const status = snapshot.status || {};
       const modules = snapshot.modules || { modules: [] };
@@ -295,6 +334,12 @@
         document.getElementById("modules-table").innerHTML = '<tr><td colspan="3">Erreur chargement API.</td></tr>';
         document.getElementById("plan-module-selector").innerHTML = '<p>Erreur chargement modules.</p>';
         document.getElementById("latest-json").textContent = "null";
+      });
+
+    loadRoutes()
+      .then(renderRoutes)
+      .catch((error) => {
+        document.getElementById("routes-table").innerHTML = `<tr><td colspan="3">Erreur routes API: ${error.message}</td></tr>`;
       });
   </script>
 </body>
