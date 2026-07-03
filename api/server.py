@@ -25,6 +25,26 @@ ROUTES: dict[str, list[str]] = {
 }
 
 
+def api_routes_payload() -> dict[str, Any]:
+    return {
+        "kind": "audit-suite.api_routes",
+        "schema_version": "1.0.0",
+        "routes": [
+            {"method": "GET", "path": "/", "type": "html"},
+            {"method": "GET", "path": "/index.html", "type": "html"},
+            {"method": "GET", "path": "/api/health", "type": "json"},
+            {"method": "GET", "path": "/api/status", "type": "json"},
+            {"method": "GET", "path": "/api/modules", "type": "json"},
+            {"method": "GET", "path": "/api/history", "type": "json"},
+            {"method": "GET", "path": "/api/latest", "type": "json"},
+            {"method": "GET", "path": "/api/snapshot", "type": "json"},
+            {"method": "GET", "path": "/api/plan", "type": "json", "requires_query": ["targets"]},
+            {"method": "GET", "path": "/api/openapi.json", "type": "json"},
+            {"method": "GET", "path": "/api/routes", "type": "json"},
+        ],
+    }
+
+
 def run_json_command(command: list[str]) -> tuple[int, dict[str, Any]]:
     env = os.environ.copy()
     result = subprocess.run(
@@ -104,7 +124,7 @@ def build_plan_command(query: dict[str, list[str]]) -> tuple[list[str] | None, d
 
 
 class AuditSuiteHandler(BaseHTTPRequestHandler):
-    server_version = "AuditSuiteReadOnlyAPI/0.2.23"
+    server_version = "AuditSuiteReadOnlyAPI/0.2.25"
 
     def log_message(self, format: str, *args: Any) -> None:  # noqa: A002
         if getattr(self.server, "quiet", False):
@@ -166,6 +186,10 @@ class AuditSuiteHandler(BaseHTTPRequestHandler):
 
         if path in {"/", "/index.html"}:
             self._write_html(HTTPStatus.OK, WEB_INDEX)
+            return
+
+        if path == "/api/routes":
+            self._write_json(HTTPStatus.OK, api_routes_payload())
             return
 
         if path == "/api/openapi.json":

@@ -22,8 +22,13 @@ GET /api/history
 GET /api/latest
 GET /api/snapshot
 GET /api/openapi.json
+GET /api/routes
 GET /api/plan?targets=192.168.1.0/24&profile=fast&categories=all&run_id=API_PLAN_TEST
 ```
+
+## Catalogue des routes
+
+`/api/routes` retourne la liste structurée des routes exposées par le serveur local.
 
 ## Route plan
 
