@@ -63,6 +63,27 @@
       color: CanvasText;
     }
 
+    input[type="checkbox"] {
+      width: auto;
+      margin-right: 8px;
+    }
+
+    .module-selector {
+      max-height: 220px;
+      overflow: auto;
+      padding: 8px;
+      border: 1px solid color-mix(in srgb, CanvasText 18%, transparent);
+      border-radius: 8px;
+    }
+
+    .module-selector label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin: 6px 0;
+      font-family: monospace;
+    }
+
     button {
       cursor: pointer;
       margin-top: 14px;
@@ -128,8 +149,14 @@
         </label>
         <label>
           Catégories
-          <input id="plan-categories" name="categories" value="all">
+          <select id="plan-categories-mode" name="categories_mode">
+            <option value="all">Tous les modules</option>
+            <option value="selected">Modules sélectionnés</option>
+          </select>
         </label>
+        <div id="plan-module-selector" class="module-selector" aria-label="Sélection des modules">
+          <p class="muted">Chargement des modules...</p>
+        </div>
         <label>
           Run ID
           <input id="plan-run-id" name="run_id" value="WEB_PLAN_PREVIEW">
@@ -180,12 +207,22 @@
       return response.json();
     }
 
+    function selectedCategories() {
+      const mode = document.getElementById("plan-categories-mode").value;
+      if (mode === "all") {
+        return "all";
+      }
+
+      const checked = Array.from(document.querySelectorAll("input[name='plan-module']:checked"));
+      return checked.map((item) => item.value).join(",");
+    }
+
     async function loadPlan(event) {
       event.preventDefault();
       const params = new URLSearchParams();
       params.set("targets", document.getElementById("plan-targets").value);
       params.set("profile", document.getElementById("plan-profile").value);
-      params.set("categories", document.getElementById("plan-categories").value || "all");
+      params.set("categories", selectedCategories() || "all");
       params.set("run_id", document.getElementById("plan-run-id").value || "WEB_PLAN_PREVIEW");
       if (document.getElementById("plan-no-zeek").checked) params.set("no_zeek", "1");
       if (document.getElementById("plan-no-suricata").checked) params.set("no_suricata", "1");
@@ -193,6 +230,27 @@
       const response = await fetch(`/api/plan?${params.toString()}`, { cache: "no-store" });
       const payload = await response.json();
       document.getElementById("plan-json").textContent = JSON.stringify(payload, null, 2);
+    }
+
+    function renderModuleSelector(modules) {
+      const selector = document.getElementById("plan-module-selector");
+      selector.innerHTML = "";
+
+      for (const mod of modules.modules || []) {
+        const label = document.createElement("label");
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.name = "plan-module";
+        checkbox.value = mod.name;
+        checkbox.checked = true;
+        label.appendChild(checkbox);
+        label.appendChild(document.createTextNode(text(mod.name)));
+        selector.appendChild(label);
+      }
+
+      if (!selector.children.length) {
+        selector.innerHTML = '<p class="muted">Aucun module disponible.</p>';
+      }
     }
 
     function render(snapshot) {
@@ -209,6 +267,8 @@
 
       document.getElementById("modules-summary").textContent = `${modules.count || 0} module(s) disponible(s)`;
       document.getElementById("history-summary").textContent = `${history.count || 0} run(s) historisé(s)`;
+
+      renderModuleSelector(modules);
 
       const tbody = document.getElementById("modules-table");
       tbody.innerHTML = "";
@@ -233,6 +293,7 @@
         document.getElementById("modules-summary").textContent = "Indisponible";
         document.getElementById("history-summary").textContent = "Indisponible";
         document.getElementById("modules-table").innerHTML = '<tr><td colspan="3">Erreur chargement API.</td></tr>';
+        document.getElementById("plan-module-selector").innerHTML = '<p>Erreur chargement modules.</p>';
         document.getElementById("latest-json").textContent = "null";
       });
   </script>

@@ -30,15 +30,16 @@ Elle affiche :
 - le nombre de runs historisés ;
 - la table des modules disponibles ;
 - le dernier run au format JSON ;
-- un aperçu de plan JSON à partir des paramètres saisis.
+- un aperçu JSON à partir des paramètres saisis.
 
-## Aperçu de plan
+## Formulaire d'aperçu
 
-Le formulaire d'aperçu demande :
+Le formulaire propose :
 
 - cibles ;
 - profil ;
-- catégories ;
+- mode de sélection : tous les modules ou éléments cochés ;
+- liste construite depuis les données du snapshot ;
 - run ID ;
 - options `no_zeek` et `no_suricata`.
 
