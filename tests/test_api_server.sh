@@ -71,7 +71,10 @@ assert "text/html" in content_type
 assert "AUDIT-SUITE" in body
 assert "/api/snapshot" in body
 assert "/api/plan" in body
+assert "/api/routes" in body
 assert "Aperçu de plan" in body
+assert "Routes API locales" in body
+assert "routes-table" in body
 assert "WEB_PLAN_PREVIEW" in body
 assert "plan-categories-mode" in body
 assert "plan-module-selector" in body
@@ -82,6 +85,7 @@ assert "text/html" in content_type
 assert "Interface locale" in body
 assert "Afficher le plan JSON" in body
 assert "checkbox.name = \"plan-module\"" in body
+assert "renderRoutes" in body
 
 openapi = get_json("/api/openapi.json")
 assert openapi["openapi"] == "3.0.3"
