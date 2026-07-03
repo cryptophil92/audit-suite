@@ -73,11 +73,15 @@ assert "/api/snapshot" in body
 assert "/api/plan" in body
 assert "Aperçu de plan" in body
 assert "WEB_PLAN_PREVIEW" in body
+assert "plan-categories-mode" in body
+assert "plan-module-selector" in body
+assert "Modules sélectionnés" in body
 
 content_type, body = get_text("/index.html")
 assert "text/html" in content_type
 assert "Interface locale" in body
 assert "Afficher le plan JSON" in body
+assert "name=\"plan-module\"" in body
 
 openapi = get_json("/api/openapi.json")
 assert openapi["openapi"] == "3.0.3"
