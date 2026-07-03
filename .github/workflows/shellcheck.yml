@@ -72,6 +72,9 @@ jobs:
       - name: Run version JSON tests
         run: bash tests/test_version_json.sh
 
+      - name: Run routes JSON tests
+        run: bash tests/test_routes_json.sh
+
       - name: Run local smoke test
         run: bash bin/smoke_local.sh
 
