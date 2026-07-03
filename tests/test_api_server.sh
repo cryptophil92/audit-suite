@@ -81,7 +81,7 @@ content_type, body = get_text("/index.html")
 assert "text/html" in content_type
 assert "Interface locale" in body
 assert "Afficher le plan JSON" in body
-assert "name=\"plan-module\"" in body
+assert "checkbox.name = \"plan-module\"" in body
 
 openapi = get_json("/api/openapi.json")
 assert openapi["openapi"] == "3.0.3"
