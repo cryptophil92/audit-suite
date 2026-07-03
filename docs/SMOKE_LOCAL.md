@@ -13,6 +13,7 @@ bash bin/smoke_local.sh
 Le script contrôle :
 
 - `bin/version_json.sh` ;
+- `bin/routes_json.sh` ;
 - `bin/modules_json.sh` ;
 - `bin/status_json.sh` ;
 - `bin/history_json.sh list` ;

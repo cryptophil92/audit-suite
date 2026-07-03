@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # bin/smoke_local.sh
-# @version 0.2.28
+# @version 0.2.30
 set -Eeuo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
@@ -70,6 +70,7 @@ esac
 require_jq
 
 smoke_step "version_json" bash -c 'bash bin/version_json.sh | jq -e ".kind == \"audit-suite.version\"" >/dev/null'
+smoke_step "routes_json" bash -c 'bash bin/routes_json.sh | jq -e ".kind == \"audit-suite.routes\"" >/dev/null'
 smoke_step "modules_json" bash -c 'bash bin/modules_json.sh | jq -e ".kind == \"audit-suite.modules\"" >/dev/null'
 smoke_step "status_json" bash -c 'bash bin/status_json.sh | jq -e ".kind == \"audit-suite.status\"" >/dev/null'
 smoke_step "history_json" bash -c 'bash bin/history_json.sh list | jq -e ".kind == \"audit-suite.history\"" >/dev/null'
