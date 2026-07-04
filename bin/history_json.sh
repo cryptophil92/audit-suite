@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # bin/history_json.sh
-# @version 0.2.15
+# @version 0.2.34
 set -Eeuo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
@@ -15,10 +15,11 @@ usage_history_json() {
 Usage: bash bin/history_json.sh [command]
 
 Commands:
-  list      Export history index as JSON.
-  latest    Export latest run as JSON.
-  paths     Export history file paths as JSON.
-  help      Show this help.
+  list          Export history index as JSON.
+  latest        Export latest run as JSON.
+  paths         Export history file paths as JSON.
+  run RUN_ID    Export one run from the history index.
+  help          Show this help.
 
 Default: list
 EOF
@@ -83,6 +84,40 @@ history_json_latest() {
     "$latest_path"
 }
 
+history_json_run() {
+  local run_id="$1"
+  local index_path entry
+  index_path="$(history_index_path)"
+
+  if [[ -z "$run_id" ]]; then
+    jq -n --arg kind "audit-suite.history.run" --arg schema_version "1.0.0" \
+      '{kind: $kind, schema_version: $schema_version, error: "missing_run_id"}'
+    return 0
+  fi
+
+  if [[ ! "$run_id" =~ ^[A-Za-z0-9._:-]+$ ]]; then
+    jq -n --arg kind "audit-suite.history.run" --arg schema_version "1.0.0" --arg run_id "$run_id" \
+      '{kind: $kind, schema_version: $schema_version, run_id: $run_id, error: "invalid_run_id"}'
+    return 0
+  fi
+
+  if [[ ! -s "$index_path" ]]; then
+    jq -n --arg kind "audit-suite.history.run" --arg schema_version "1.0.0" --arg run_id "$run_id" --arg index_path "$index_path" \
+      '{kind: $kind, schema_version: $schema_version, run_id: $run_id, found: false, paths: {index: $index_path}, run: null}'
+    return 0
+  fi
+
+  entry="$(jq -cs --arg run_id "$run_id" 'map(select(.run_id == $run_id)) | last // empty' "$index_path")"
+  if [[ -z "$entry" ]]; then
+    jq -n --arg kind "audit-suite.history.run" --arg schema_version "1.0.0" --arg run_id "$run_id" --arg index_path "$index_path" \
+      '{kind: $kind, schema_version: $schema_version, run_id: $run_id, found: false, paths: {index: $index_path}, run: null}'
+    return 0
+  fi
+
+  jq -n --arg kind "audit-suite.history.run" --arg schema_version "1.0.0" --arg run_id "$run_id" --arg index_path "$index_path" --argjson run "$entry" \
+    '{kind: $kind, schema_version: $schema_version, run_id: $run_id, found: true, paths: {index: $index_path}, run: $run}'
+}
+
 cmd="${1:-list}"
 
 case "$cmd" in
@@ -97,6 +132,11 @@ case "$cmd" in
   paths|path)
     require_jq
     history_json_paths
+    ;;
+  run|detail)
+    require_jq
+    shift || true
+    history_json_run "${1:-}"
     ;;
   help|-h|--help)
     usage_history_json

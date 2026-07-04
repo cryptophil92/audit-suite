@@ -2,7 +2,7 @@
   "openapi": "3.0.3",
   "info": {
     "title": "AUDIT-SUITE Local Read-only API",
-    "version": "0.2.23",
+    "version": "0.2.34",
     "description": "Local read-only API for AUDIT-SUITE JSON endpoints."
   },
   "servers": [
@@ -47,6 +47,16 @@
         "responses": {
           "200": {
             "description": "History JSON payload"
+          }
+        }
+      }
+    },
+    "/api/history/paths": {
+      "get": {
+        "summary": "History storage paths",
+        "responses": {
+          "200": {
+            "description": "History paths JSON payload"
           }
         }
       }

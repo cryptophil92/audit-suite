@@ -20,6 +20,7 @@ ROUTES: dict[str, list[str]] = {
     "/api/status": ["bash", "bin/status_json.sh"],
     "/api/modules": ["bash", "bin/modules_json.sh"],
     "/api/history": ["bash", "bin/history_json.sh", "list"],
+    "/api/history/paths": ["bash", "bin/history_json.sh", "paths"],
     "/api/latest": ["bash", "bin/history_json.sh", "latest"],
     "/api/snapshot": ["bash", "bin/api_snapshot_json.sh"],
 }
@@ -36,6 +37,7 @@ def api_routes_payload() -> dict[str, Any]:
             {"method": "GET", "path": "/api/status", "type": "json"},
             {"method": "GET", "path": "/api/modules", "type": "json"},
             {"method": "GET", "path": "/api/history", "type": "json"},
+            {"method": "GET", "path": "/api/history/paths", "type": "json"},
             {"method": "GET", "path": "/api/latest", "type": "json"},
             {"method": "GET", "path": "/api/snapshot", "type": "json"},
             {"method": "GET", "path": "/api/plan", "type": "json", "requires_query": ["targets"]},
@@ -124,7 +126,7 @@ def build_plan_command(query: dict[str, list[str]]) -> tuple[list[str] | None, d
 
 
 class AuditSuiteHandler(BaseHTTPRequestHandler):
-    server_version = "AuditSuiteReadOnlyAPI/0.2.25"
+    server_version = "AuditSuiteReadOnlyAPI/0.2.34"
 
     def log_message(self, format: str, *args: Any) -> None:  # noqa: A002
         if getattr(self.server, "quiet", False):
@@ -151,7 +153,6 @@ class AuditSuiteHandler(BaseHTTPRequestHandler):
                 },
             )
             return
-
         body = json_path.read_bytes()
         self.send_response(status)
         self.send_header("Content-Type", "application/json; charset=utf-8")
@@ -171,7 +172,6 @@ class AuditSuiteHandler(BaseHTTPRequestHandler):
                 },
             )
             return
-
         body = html_path.read_bytes()
         self.send_response(status)
         self.send_header("Content-Type", "text/html; charset=utf-8")
@@ -212,7 +212,6 @@ class AuditSuiteHandler(BaseHTTPRequestHandler):
             if error_payload is not None or command is None:
                 self._write_json(HTTPStatus.BAD_REQUEST, error_payload or {})
                 return
-
             returncode, payload = run_json_command(command)
             if returncode == 0:
                 self._write_json(HTTPStatus.OK, payload)
