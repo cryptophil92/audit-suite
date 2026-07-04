@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 # core/lib_runner.sh
-# @version 0.2.1
+# @version 0.2.2
 set -Eeuo pipefail
+
+MANIFEST_SCHEMA_VERSION="1.0.0"
 
 discover_modules_sorted() {
   [[ -d modules ]] || return 0
@@ -235,6 +237,8 @@ write_manifest_json() {
   now="$(date -Is)"
   tmp_path="${path}.tmp"
   results_file="$(_module_results_file)"
+  mkdir -p "$(dirname -- "$results_file")"
+  touch "$results_file"
 
   if ! command -v jq >/dev/null 2>&1; then
     emit ERROR "runner" "jq is required to write manifest.json"
@@ -242,6 +246,7 @@ write_manifest_json() {
   fi
 
   jq -n \
+    --arg schema_version "$MANIFEST_SCHEMA_VERSION" \
     --arg run_id "$RUN_ID" \
     --arg created_at "$now" \
     --arg profile "$PROFILE" \
@@ -251,8 +256,13 @@ write_manifest_json() {
     --arg no_zeek "${OPTS_NO_ZEEK:-0}" \
     --arg no_suricata "${OPTS_NO_SURICATA:-0}" \
     --arg allow_public "${ALLOW_PUBLIC:-0}" \
+    --arg output_path "$RUN_DIR" \
+    --arg log_path "$LOG_DIR" \
+    --arg manifest_path "$path" \
     --slurpfile modules "$results_file" \
     '{
+      schema_version: $schema_version,
+      kind: "audit-suite.manifest",
       run_id: $run_id,
       created_at: $created_at,
       profile: $profile,
@@ -263,7 +273,25 @@ write_manifest_json() {
         no_suricata: ($no_suricata == "1"),
         allow_public: ($allow_public == "1")
       },
+      paths: {
+        output: $output_path,
+        logs: $log_path,
+        manifest: $manifest_path
+      },
       selected_modules: ($selected_modules | split(" ") | map(select(length > 0))),
+      summary: {
+        module_count: ($modules | length),
+        success_count: ([$modules[]? | select(.status == "success")] | length),
+        failed_count: ([$modules[]? | select(.status == "failed")] | length),
+        skipped_count: ([$modules[]? | select(.status == "skipped")] | length),
+        total_duration_seconds: ([$modules[]?.duration_seconds] | add // 0),
+        status: (
+          if ([$modules[]? | select(.status == "failed")] | length) > 0 then "failed"
+          elif ([$modules[]? | select(.status == "success")] | length) > 0 then "success"
+          else "empty"
+          end
+        )
+      },
       modules: $modules
     }' > "$tmp_path"
 

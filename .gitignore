@@ -1,0 +1,21 @@
+# Runtime outputs
+output/
+logs/
+tmp/
+history/
+
+# Local backups
+*.bak
+*.bak-*
+
+# Editors / OS
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Python / misc future tooling
+__pycache__/
+*.pyc
+.venv/
+venv/

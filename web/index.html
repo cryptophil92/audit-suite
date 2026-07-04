@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AUDIT-SUITE</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      padding: 24px;
+      background: Canvas;
+      color: CanvasText;
+    }
+
+    header {
+      margin-bottom: 24px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      border: 1px solid color-mix(in srgb, CanvasText 22%, transparent);
+      border-radius: 10px;
+      padding: 16px;
+      background: color-mix(in srgb, Canvas 94%, CanvasText 6%);
+    }
+
+    .muted {
+      opacity: 0.75;
+    }
+
+    .status-ok {
+      font-weight: bold;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+
+    input, select, button {
+      box-sizing: border-box;
+      width: 100%;
+      margin-top: 4px;
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid color-mix(in srgb, CanvasText 25%, transparent);
+      background: Canvas;
+      color: CanvasText;
+    }
+
+    input[type="checkbox"] {
+      width: auto;
+      margin-right: 8px;
+    }
+
+    .module-selector {
+      max-height: 220px;
+      overflow: auto;
+      padding: 8px;
+      border: 1px solid color-mix(in srgb, CanvasText 18%, transparent);
+      border-radius: 8px;
+    }
+
+    .module-selector label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin: 6px 0;
+      font-family: monospace;
+    }
+
+    button {
+      cursor: pointer;
+      margin-top: 14px;
+      font-weight: bold;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    th, td {
+      border-bottom: 1px solid color-mix(in srgb, CanvasText 18%, transparent);
+      padding: 8px;
+      text-align: left;
+    }
+
+    pre {
+      overflow: auto;
+      padding: 12px;
+      border-radius: 8px;
+      background: color-mix(in srgb, CanvasText 10%, transparent);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>AUDIT-SUITE</h1>
+    <p class="muted">Interface locale en lecture seule.</p>
+  </header>
+
+  <main>
+    <section class="grid">
+      <article class="card">
+        <h2>État moteur</h2>
+        <p id="status-summary" class="muted">Chargement...</p>
+      </article>
+      <article class="card">
+        <h2>Modules</h2>
+        <p id="modules-summary" class="muted">Chargement...</p>
+      </article>
+      <article class="card">
+        <h2>Historique</h2>
+        <p id="history-summary" class="muted">Chargement...</p>
+      </article>
+    </section>
+
+    <section class="card" style="margin-top: 16px;">
+      <h2>Aperçu de plan</h2>
+      <form id="plan-form">
+        <label>
+          Cibles
+          <input id="plan-targets" name="targets" value="192.168.1.0/24" required>
+        </label>
+        <label>
+          Profil
+          <select id="plan-profile" name="profile">
+            <option value="fast">fast</option>
+            <option value="full">full</option>
+            <option value="stealth">stealth</option>
+          </select>
+        </label>
+        <label>
+          Catégories
+          <select id="plan-categories-mode" name="categories_mode">
+            <option value="all">Tous les modules</option>
+            <option value="selected">Modules sélectionnés</option>
+          </select>
+        </label>
+        <div id="plan-module-selector" class="module-selector" aria-label="Sélection des modules">
+          <p class="muted">Chargement des modules...</p>
+        </div>
+        <label>
+          Run ID
+          <input id="plan-run-id" name="run_id" value="WEB_PLAN_PREVIEW">
+        </label>
+        <label>
+          <input id="plan-no-zeek" name="no_zeek" type="checkbox" checked>
+          Désactiver Zeek
+        </label>
+        <label>
+          <input id="plan-no-suricata" name="no_suricata" type="checkbox" checked>
+          Désactiver Suricata
+        </label>
+        <button type="submit">Afficher le plan JSON</button>
+      </form>
+      <pre id="plan-json">Aucun plan chargé.</pre>
+    </section>
+
+    <section class="card" style="margin-top: 16px;">
+      <h2>Modules disponibles</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Ordre</th>
+            <th>Nom</th>
+            <th>Chemin</th>
+          </tr>
+        </thead>
+        <tbody id="modules-table">
+          <tr><td colspan="3" class="muted">Chargement...</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="card" style="margin-top: 16px;">
+      <h2>Routes API locales</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Méthode</th>
+            <th>Chemin</th>
+            <th>Type</th>
+          </tr>
+        </thead>
+        <tbody id="routes-table">
+          <tr><td colspan="3" class="muted">Chargement...</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="card" style="margin-top: 16px;">
+      <h2>Dernier run</h2>
+      <pre id="latest-json">Chargement...</pre>
+    </section>
+  </main>
+
+  <script>
+    const text = (value, fallback = "-") => value === undefined || value === null || value === "" ? fallback : String(value);
+
+    async function loadSnapshot() {
+      const response = await fetch("/api/snapshot", { cache: "no-store" });
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+      return response.json();
+    }
+
+    async function loadRoutes() {
+      const response = await fetch("/api/routes", { cache: "no-store" });
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+      return response.json();
+    }
+
+    function selectedCategories() {
+      const mode = document.getElementById("plan-categories-mode").value;
+      if (mode === "all") {
+        return "all";
+      }
+
+      const checked = Array.from(document.querySelectorAll("input[name='plan-module']:checked"));
+      return checked.map((item) => item.value).join(",");
+    }
+
+    async function loadPlan(event) {
+      event.preventDefault();
+      const params = new URLSearchParams();
+      params.set("targets", document.getElementById("plan-targets").value);
+      params.set("profile", document.getElementById("plan-profile").value);
+      params.set("categories", selectedCategories() || "all");
+      params.set("run_id", document.getElementById("plan-run-id").value || "WEB_PLAN_PREVIEW");
+      if (document.getElementById("plan-no-zeek").checked) params.set("no_zeek", "1");
+      if (document.getElementById("plan-no-suricata").checked) params.set("no_suricata", "1");
+
+      const response = await fetch(`/api/plan?${params.toString()}`, { cache: "no-store" });
+      const payload = await response.json();
+      document.getElementById("plan-json").textContent = JSON.stringify(payload, null, 2);
+    }
+
+    function renderModuleSelector(modules) {
+      const selector = document.getElementById("plan-module-selector");
+      selector.innerHTML = "";
+
+      for (const mod of modules.modules || []) {
+        const label = document.createElement("label");
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.name = "plan-module";
+        checkbox.value = mod.name;
+        checkbox.checked = true;
+        label.appendChild(checkbox);
+        label.appendChild(document.createTextNode(text(mod.name)));
+        selector.appendChild(label);
+      }
+
+      if (!selector.children.length) {
+        selector.innerHTML = '<p class="muted">Aucun module disponible.</p>';
+      }
+    }
+
+    function renderRoutes(routesPayload) {
+      const tbody = document.getElementById("routes-table");
+      tbody.innerHTML = "";
+
+      for (const route of routesPayload.routes || []) {
+        const row = document.createElement("tr");
+        row.innerHTML = `<td>${text(route.method)}</td><td>${text(route.path)}</td><td>${text(route.type)}</td>`;
+        tbody.appendChild(row);
+      }
+
+      if (!tbody.children.length) {
+        tbody.innerHTML = '<tr><td colspan="3" class="muted">Aucune route détectée.</td></tr>';
+      }
+    }
+
+    function render(snapshot) {
+      const status = snapshot.status || {};
+      const modules = snapshot.modules || { modules: [] };
+      const history = snapshot.history || { runs: [] };
+      const latest = snapshot.latest || { latest: null };
+
+      document.getElementById("status-summary").innerHTML = `
+        <span class="status-ok">JSON chargé</span><br>
+        Modules dir: ${text(status.checks?.modules_dir_exists)}<br>
+        History index: ${text(status.checks?.history_index_exists)}
+      `;
+
+      document.getElementById("modules-summary").textContent = `${modules.count || 0} module(s) disponible(s)`;
+      document.getElementById("history-summary").textContent = `${history.count || 0} run(s) historisé(s)`;
+
+      renderModuleSelector(modules);
+
+      const tbody = document.getElementById("modules-table");
+      tbody.innerHTML = "";
+      for (const mod of modules.modules || []) {
+        const row = document.createElement("tr");
+        row.innerHTML = `<td>${text(mod.order)}</td><td>${text(mod.name)}</td><td>${text(mod.path)}</td>`;
+        tbody.appendChild(row);
+      }
+      if (!tbody.children.length) {
+        tbody.innerHTML = '<tr><td colspan="3" class="muted">Aucun module détecté.</td></tr>';
+      }
+
+      document.getElementById("latest-json").textContent = JSON.stringify(latest.latest, null, 2);
+    }
+
+    document.getElementById("plan-form").addEventListener("submit", loadPlan);
+
+    loadSnapshot()
+      .then(render)
+      .catch((error) => {
+        document.getElementById("status-summary").textContent = `Erreur: ${error.message}`;
+        document.getElementById("modules-summary").textContent = "Indisponible";
+        document.getElementById("history-summary").textContent = "Indisponible";
+        document.getElementById("modules-table").innerHTML = '<tr><td colspan="3">Erreur chargement API.</td></tr>';
+        document.getElementById("plan-module-selector").innerHTML = '<p>Erreur chargement modules.</p>';
+        document.getElementById("latest-json").textContent = "null";
+      });
+
+    loadRoutes()
+      .then(renderRoutes)
+      .catch((error) => {
+        document.getElementById("routes-table").innerHTML = `<tr><td colspan="3">Erreur routes API: ${error.message}</td></tr>`;
+      });
+  </script>
+</body>
+</html>
