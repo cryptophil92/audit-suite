@@ -1,0 +1,62 @@
+name: ShellCheck
+
+on:
+  push:
+    branches:
+      - main
+      - 'feat/**'
+      - 'fix/**'
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  shellcheck:
+    name: ShellCheck Bash scripts
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install ShellCheck
+        run: sudo apt-get update && sudo apt-get install -y shellcheck
+
+      - name: Run ShellCheck and capture output
+        run: |
+          set +e
+          shellcheck \
+            -e SC1090 \
+            -e SC1091 \
+            -e SC2016 \
+            -e SC2034 \
+            -e SC2154 \
+            audit.sh \
+            core/*.sh \
+            bin/*.sh \
+            modules/*.sh \
+            ui/*.sh \
+            tests/*.sh > shellcheck-output.txt 2>&1
+          rc=$?
+          echo "$rc" > shellcheck-exit-code.txt
+          cat shellcheck-output.txt
+          exit 0
+
+      - name: Upload ShellCheck output
+        uses: actions/upload-artifact@v4
+        with:
+          name: shellcheck-output
+          path: |
+            shellcheck-output.txt
+            shellcheck-exit-code.txt
+
+      - name: Run validation tests
+        run: bash tests/test_validate.sh
+
+      - name: Fail if ShellCheck failed
+        run: |
+          rc="$(cat shellcheck-exit-code.txt)"
+          if [ "$rc" != "0" ]; then
+            echo "ShellCheck failed with exit code $rc"
+            exit "$rc"
+          fi
