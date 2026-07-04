@@ -9,6 +9,7 @@ on:
   pull_request:
     branches:
       - main
+      - 'feat/**'
 
 jobs:
   shellcheck:
@@ -20,7 +21,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install ShellCheck
-        run: sudo apt-get update && sudo apt-get install -y shellcheck
+        run: sudo apt-get update && sudo apt-get install -y shellcheck jq
 
       - name: Run ShellCheck and capture output
         run: |
@@ -50,8 +51,65 @@ jobs:
             shellcheck-output.txt
             shellcheck-exit-code.txt
 
+      - name: Run args tests
+        run: bash tests/test_args.sh
+
+      - name: Run module validation tests
+        run: bash tests/test_modules.sh
+
+      - name: Run modules JSON tests
+        run: bash tests/test_modules_json.sh
+
+      - name: Run status JSON tests
+        run: bash tests/test_status_json.sh
+
+      - name: Run API snapshot JSON tests
+        run: bash tests/test_api_snapshot_json.sh
+
+      - name: Run API server tests
+        run: bash tests/test_api_server.sh
+
+      - name: Run version JSON tests
+        run: bash tests/test_version_json.sh
+
+      - name: Run routes JSON tests
+        run: bash tests/test_routes_json.sh
+
+      - name: Run local smoke test
+        run: bash bin/smoke_local.sh
+
+      - name: Run path tests
+        run: bash tests/test_run_paths.sh
+
+      - name: Run dry-run tests
+        run: bash tests/test_dry_run.sh
+
+      - name: Run JSON plan tests
+        run: bash tests/test_plan_json.sh
+
       - name: Run validation tests
         run: bash tests/test_validate.sh
+
+      - name: Run history tests
+        run: bash tests/test_history.sh
+
+      - name: Run history JSON tests
+        run: bash tests/test_history_json.sh
+
+      - name: Run manifest schema tests
+        run: bash tests/test_manifest_schema.sh
+
+      - name: Run compare runs tests
+        run: bash tests/test_compare_runs.sh
+
+      - name: Run HTML report tests
+        run: bash tests/test_report_html.sh
+
+      - name: Run report pack tests
+        run: bash tests/test_report_pack.sh
+
+      - name: Run report pipeline tests
+        run: bash tests/test_report_pipeline.sh
 
       - name: Fail if ShellCheck failed
         run: |
