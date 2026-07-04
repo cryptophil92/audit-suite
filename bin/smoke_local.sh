@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # bin/smoke_local.sh
-# @version 0.2.30
+# @version 0.2.34
 set -Eeuo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
@@ -74,6 +74,7 @@ smoke_step "routes_json" bash -c 'bash bin/routes_json.sh | jq -e ".kind == \"au
 smoke_step "modules_json" bash -c 'bash bin/modules_json.sh | jq -e ".kind == \"audit-suite.modules\"" >/dev/null'
 smoke_step "status_json" bash -c 'bash bin/status_json.sh | jq -e ".kind == \"audit-suite.status\"" >/dev/null'
 smoke_step "history_json" bash -c 'bash bin/history_json.sh list | jq -e ".kind == \"audit-suite.history\"" >/dev/null'
+smoke_step "history_run_json" bash -c 'bash bin/history_json.sh run "$SMOKE_RUN_ID" | jq -e ".kind == \"audit-suite.history.run\"" >/dev/null'
 smoke_step "plan_json" bash -c 'bash bin/plan_json.sh --profile fast --targets "$SMOKE_TARGET" --categories all --run-id "$SMOKE_RUN_ID" --no-zeek --no-suricata | jq -e ".kind == \"audit-suite.plan\"" >/dev/null'
 smoke_step "api_snapshot" bash -c 'bash bin/api_snapshot_json.sh | jq -e ".kind == \"audit-suite.api_snapshot\"" >/dev/null'
 smoke_step "audit_dry_run" bash -c 'bash audit.sh --dry-run --profile fast --targets "$SMOKE_TARGET" --categories all --run-id "$SMOKE_RUN_ID" --no-zeek --no-suricata | grep -q "AUDIT-SUITE dry run"'
