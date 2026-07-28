@@ -72,7 +72,10 @@ capture_file="$tmp_root/results.tsv"
   # shellcheck source=../core/lib_runner.sh
   source "$RUNNER_LIB"
 
+  # Invoked indirectly by run_modules through Bash dynamic function lookup.
+  # shellcheck disable=SC2317
   emit() { :; }
+  # shellcheck disable=SC2317
   _append_module_result() {
     printf '%s\t%s\t%s\t%s\t%s\n' "$1" "$4" "$5" "${10:-}" "$9" >>"$capture_file"
   }
