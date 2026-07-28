@@ -16,9 +16,20 @@ Les changements notables d’Audit Suite sont documentés ici. Le projet adopter
 
 ### Important
 
-- aucune correction fonctionnelle du moteur n’est incluse dans ce lot ;
+- le lot documentaire initial n’incluait aucune correction fonctionnelle du
+  moteur ;
 - aucune nouvelle licence n’est choisie ;
 - les problèmes découverts sont suivis par des issues dédiées.
+
+### Corrigé
+
+- lecture tolérante de l’historique JSONL avec compteurs de dégradation ;
+- snapshot JSON maintenu disponible si l’index ou `latest.json` est
+  partiellement corrompu ;
+- sérialisation des écritures d’historique et remplacement atomique de
+  `latest.json` ;
+- réservation exclusive des dossiers d’un `run_id` contre les lancements
+  concurrents.
 
 ## 0.2.34 — état de code non publié
 

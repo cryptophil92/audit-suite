@@ -167,7 +167,10 @@ RUN_ID="$PLANNED_RUN_ID"
 RUN_DIR="$(run_output_path "$RUN_ID")"
 LOG_DIR="$(run_log_path "$RUN_ID")"
 TMP_DIR="tmp"
-mkdir -p "$RUN_DIR" "$LOG_DIR" "$TMP_DIR"
+if ! reserve_run_paths "$RUN_ID"; then
+  exit 1
+fi
+mkdir -p "$TMP_DIR"
 
 # Logging + event bus
 init_logging "$RUN_ID"

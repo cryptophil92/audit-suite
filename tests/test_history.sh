@@ -63,6 +63,53 @@ grep -q 'AUDIT_TEST_001' "$(history_index_path)"
 jq -e '.run_id == "AUDIT_TEST_001"' "$(history_latest_path)" >/dev/null
 jq -e '.modules[0].status == "success"' "$(history_latest_path)" >/dev/null
 
+writer_pids=()
+for writer_id in $(seq 1 12); do
+  writer_manifest="$AUDIT_HISTORY_DIR/manifest.concurrent.$writer_id.json"
+  jq -n \
+    --arg run_id "AUDIT_CONCURRENT_$writer_id" \
+    --arg created_at "2026-07-01T00:00:${writer_id}Z" \
+    '{
+      schema_version: "1.0.0",
+      run_id: $run_id,
+      created_at: $created_at,
+      profile: "fast",
+      targets: ["192.168.1.0/24"],
+      options: {},
+      selected_modules: [],
+      summary: {
+        module_count: 0,
+        success_count: 0,
+        failed_count: 0,
+        skipped_count: 0,
+        total_duration_seconds: 0,
+        status: "success"
+      },
+      modules: [],
+      paths: {output: ("output/" + $run_id)}
+    }' > "$writer_manifest"
+
+  (
+    history_record_run "$writer_manifest"
+  ) &
+  writer_pids+=("$!")
+done
+
+for writer_pid in "${writer_pids[@]}"; do
+  wait "$writer_pid"
+done
+
+history_state="$(history_read_index_json)"
+printf '%s\n' "$history_state" | jq -e '.invalid_line_count == 0' >/dev/null
+printf '%s\n' "$history_state" | jq -e '.runs | length == 13' >/dev/null
+printf '%s\n' "$history_state" | jq -e '[.runs[].run_id] | unique | length == 13' >/dev/null
+jq -e '.run_id | startswith("AUDIT_")' "$(history_latest_path)" >/dev/null
+[[ ! -e "$(history_lock_path)" ]]
+if find "$AUDIT_HISTORY_DIR" -maxdepth 1 \( -name '.record.*' -o -name '.latest.*' \) | grep -q .; then
+  echo 'temporary history files were not cleaned up' >&2
+  exit 1
+fi
+
 bash bin/history.sh list >/dev/null
 AUDIT_HISTORY_DIR="$AUDIT_HISTORY_DIR" bash bin/history.sh latest >/dev/null
 
