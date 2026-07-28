@@ -35,4 +35,9 @@ printf '%s\n' "$run_json" | jq -e '.run.profile == "full"' >/dev/null
 printf '%s\n' "$run_json" | jq -e '.run.status == "failed"' >/dev/null
 printf '%s\n' "$run_json" | jq -e '.paths.index | endswith("runs.jsonl")' >/dev/null
 
+printf '%s\n' 'invalid-history-line' >>"$AUDIT_HISTORY_DIR/runs.jsonl"
+degraded_run="$(bash bin/history_json.sh run RUN_2)"
+printf '%s\n' "$degraded_run" | jq -e '.found == true and .run.run_id == "RUN_2"' >/dev/null
+printf '%s\n' "$degraded_run" | jq -e '.degraded == true and .error_count == 1' >/dev/null
+
 printf '[OK] run detail JSON tests passed\n'

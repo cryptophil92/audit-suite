@@ -26,6 +26,8 @@ history/latest.json
 Chaque ligne contient notamment :
 
 - `run_id`
+- `version`
+- `commit`
 - `created_at`
 - `profile`
 - `targets`
@@ -42,6 +44,24 @@ Chaque ligne contient notamment :
 ## `latest.json`
 
 `latest.json` contient le dernier audit sous forme lisible, avec le détail des modules.
+
+## Résilience et concurrence
+
+- Chaque manifeste est validé et transformé avant de prendre le verrou
+  d'écriture.
+- Les ajouts à `runs.jsonl` sont sérialisés par
+  `history/.write.lock`.
+- Le nouveau contenu de `latest.json` est préparé dans un fichier temporaire
+  unique situé dans `history/`, puis publié par remplacement atomique.
+- Les fichiers temporaires et le verrou sont nettoyés à la fin de
+  l'écriture, y compris en cas d'erreur ou de signal.
+- Les lecteurs JSON conservent les entrées valides si une ligne de
+  `runs.jsonl` est invalide ou tronquée et exposent un compteur d'erreurs
+  structuré.
+
+La création des dossiers `output/<run_id>` et `logs/<run_id>` est également
+réservée de manière exclusive. Deux processus ne peuvent donc pas partager les
+dossiers d'un même identifiant.
 
 Les historiques issus d’un manifest `1.0.0` peuvent ne pas contenir `partial_count`. Les lecteurs doivent alors utiliser `0` ou recompter les modules dont le statut vaut `partial`.
 

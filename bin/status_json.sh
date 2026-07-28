@@ -70,7 +70,7 @@ count_history_runs() {
     return 0
   fi
 
-  wc -l < "$index_path" | tr -d ' '
+  history_read_index_json | jq -r '.runs | length'
 }
 
 count_modules() {

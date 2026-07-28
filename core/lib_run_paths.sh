@@ -37,3 +37,28 @@ validate_run_paths_available() {
     return 1
   fi
 }
+
+reserve_run_paths() {
+  local run_id="$1"
+  local output_path log_path
+
+  output_path="$(run_output_path "$run_id")"
+  log_path="$(run_log_path "$run_id")"
+
+  mkdir -p "$(dirname "$output_path")" "$(dirname "$log_path")"
+
+  if ! mkdir "$output_path" 2>/dev/null; then
+    echo "Chemin déjà existant: $output_path" >&2
+    echo "Identifiant déjà utilisé: $run_id" >&2
+    echo "Choisir un autre --run-id." >&2
+    return 1
+  fi
+
+  if ! mkdir "$log_path" 2>/dev/null; then
+    rmdir "$output_path" 2>/dev/null || true
+    echo "Chemin déjà existant: $log_path" >&2
+    echo "Identifiant déjà utilisé: $run_id" >&2
+    echo "Choisir un autre --run-id." >&2
+    return 1
+  fi
+}

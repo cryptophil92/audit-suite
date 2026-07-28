@@ -16,6 +16,13 @@ le format [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et
 ### Corrigé
 
 - suppression du bus FIFO inutilisé afin que le logging ne puisse plus bloquer le moteur sur POSIX sans lecteur.
+- lecture tolérante de l’historique JSONL avec compteurs de dégradation ;
+- snapshot JSON maintenu disponible si l’index ou `latest.json` est
+  partiellement corrompu ;
+- sérialisation des écritures d’historique et remplacement atomique de
+  `latest.json` ;
+- réservation exclusive des dossiers d’un `run_id` contre les lancements
+  concurrents.
 
 ### Documentation
 
