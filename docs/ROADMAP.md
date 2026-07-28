@@ -17,7 +17,7 @@ Cette roadmap traduit l’audit du 28 juillet 2026. Les priorités et estimation
 Objectif : rendre le dépôt et le chemin de démarrage sûrs.
 
 - traiter les sorties d’audit suivies dans Git ;
-- corriger le blocage FIFO ;
+- conserver un logging fichier non bloquant et tester toute future réintroduction d’un bus d’événements ;
 - ajouter des gardes CI contre les artefacts runtime ;
 - vérifier les canaux de signalement privé.
 

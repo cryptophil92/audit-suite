@@ -4,6 +4,10 @@ Les changements notables d’Audit Suite sont documentés ici. Le projet adopter
 
 ## Non publié
 
+### Corrigé
+
+- suppression du bus FIFO inutilisé afin que le logging ne puisse plus bloquer le moteur sur POSIX sans lecteur.
+
 ### Documentation
 
 - professionnalisation du README ;
@@ -16,7 +20,7 @@ Les changements notables d’Audit Suite sont documentés ici. Le projet adopter
 
 ### Important
 
-- aucune correction fonctionnelle du moteur n’est incluse dans ce lot ;
+- le lot documentaire fusionné par la PR #59 ne contenait aucune correction fonctionnelle du moteur ;
 - aucune nouvelle licence n’est choisie ;
 - les problèmes découverts sont suivis par des issues dédiées.
 

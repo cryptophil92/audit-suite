@@ -81,6 +81,9 @@ jobs:
       - name: Run path tests
         run: bash tests/test_run_paths.sh
 
+      - name: Run logging tests
+        run: bash tests/test_logging.sh
+
       - name: Run dry-run tests
         run: bash tests/test_dry_run.sh
 
