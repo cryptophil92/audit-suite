@@ -51,6 +51,7 @@ modules/                Modules d’audit Bash
 bin/                    Commandes JSON, rapports, diagnostic et smoke test
 api/server.py           API HTTP locale en lecture seule
 api/openapi.json        Spécification OpenAPI actuelle
+VERSION                 Source canonique de la version applicative
 web/index.html          Tableau de bord local statique
 ui/                     Aides d’interface terminal
 tests/                  Tests Bash et test fonctionnel de l’API
@@ -250,6 +251,17 @@ Copyright 2026 Cryptophil ([cryptophil92](https://github.com/cryptophil92)).
 
 Les attributions et exceptions applicables, notamment pour le code de conduite
 adapté du Contributor Covenant 2.1, sont décrites dans [`NOTICE`](NOTICE).
+
+## Version et releases
+
+La version applicative est définie uniquement dans [`VERSION`](VERSION). Elle
+est exposée avec le commit source par `./audit.sh --version`,
+`bash bin/version_json.sh`, l'API locale et les manifests de run.
+
+La stratégie SemVer, les contrôles préalables et la procédure de publication
+sont documentés dans [`docs/RELEASING.md`](docs/RELEASING.md). Aucun nouveau
+tag ne doit être créé tant que les P0/P1 destinés à la première release ne sont
+pas validés.
 
 ## Auteur et maintenance
 
