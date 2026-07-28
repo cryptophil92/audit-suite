@@ -15,7 +15,7 @@ printf '%s\n' "$version_json" | jq -e '.schema_version == "1.0.0"' >/dev/null
 printf '%s\n' "$version_json" | jq -e --arg version "$expected_version" '.version == $version' >/dev/null
 printf '%s\n' "$version_json" | jq -e --arg commit "$expected_commit" '.commit == $commit' >/dev/null
 
-[[ "$(./audit.sh --version)" == "AUDIT-SUITE $expected_version ($expected_commit)" ]]
+[[ "$(bash audit.sh --version)" == "AUDIT-SUITE $expected_version ($expected_commit)" ]]
 
 if bash bin/version_json.sh --unknown >/tmp/version-json.out 2>/tmp/version-json.err; then
   echo 'unknown option accepted' >&2
