@@ -13,7 +13,8 @@ Vérifier :
 
 - dépôt propre ;
 - bonne branche ;
-- aucune sortie runtime inattendue suivie par Git.
+- aucune nouvelle sortie runtime ajoutée par la branche ;
+- incident historique `output/`, `logs/` et `tmp/` suivi séparément.
 
 ## 2. Contrôle JSON et dry-run
 
@@ -113,10 +114,10 @@ git status
 
 Vérifier :
 
-- aucun fichier runtime ajouté ;
-- pas de dossier `output/` suivi ;
-- pas de dossier `logs/` suivi ;
-- pas de dossier `history/` suivi.
+- aucun nouveau fichier runtime ajouté ;
+- `git diff --name-only <base>...HEAD` ne contient ni résultat ni log ;
+- les fixtures éventuelles sont synthétiques et clairement identifiées ;
+- l’incident des fichiers runtime historiques n’est pas aggravé.
 
 ## Validation finale
 
@@ -127,4 +128,4 @@ Les PR peuvent être passées en revue seulement si :
 - API locale OK ;
 - dashboard OK ;
 - garde-fous publics OK ;
-- aucun fichier runtime suivi par Git.
+- aucune nouvelle donnée runtime ou sensible introduite.

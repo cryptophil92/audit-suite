@@ -1,5 +1,8 @@
 # Carte de pile des PR
 
+> Document historique. La pile décrite ici a été consolidée dans `main` via
+> la PR #34. Ne pas utiliser ces branches comme base de nouveau travail.
+
 Ce document décrit l'ordre logique de revue, test et fusion des PR empilées.
 
 ## Principe

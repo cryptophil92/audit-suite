@@ -1,5 +1,9 @@
 # Sécurité et périmètre d'utilisation
 
+Pour signaler une vulnérabilité, suivre la politique privée décrite dans
+[`../SECURITY.md`](../SECURITY.md). Ne pas publier de preuve d’exploitation,
+de secret ou de résultat d’audit dans une issue.
+
 AUDIT-SUITE est un outil d'audit réseau défensif.
 
 Il doit être utilisé uniquement dans un cadre autorisé :
@@ -82,6 +86,22 @@ Déjà traité dans la branche `feat/v0.2-hardening-bash` :
 
 ## Prochains contrôles
 
-- corriger les alertes ShellCheck éventuelles ;
-- tester un run réel sur lab local ;
-- créer une pull request vers `main` après validation.
+- traiter les sorties d’audit suivies dans Git ;
+- corriger le blocage potentiel du FIFO de logging ;
+- rendre les statuts modules fidèles aux codes retour ;
+- limiter l’API à loopback et borner ses sous-processus ;
+- tester un run réel sur lab local après correction ;
+- vérifier les archives avant partage.
+
+## Données d’audit
+
+Les fichiers de `output/`, `logs/` et `history/` peuvent révéler :
+
+- topologie et adressage ;
+- noms d’hôtes et fabricants ;
+- ports et versions de services ;
+- vulnérabilités potentielles ;
+- chemins et informations sur la machine d’analyse.
+
+Ils doivent rester locaux, être anonymisés avant partage et ne jamais être
+committés. Le `.gitignore` ne retire pas un fichier déjà suivi de l’historique.

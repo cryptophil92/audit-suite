@@ -1,5 +1,9 @@
 # Guide de fusion progressive
 
+> Document historique. La stratégie de fusion #1 à #33 n’est plus active
+> depuis la consolidation via la PR #34. Toute nouvelle branche part de
+> `main` et suit `CONTRIBUTING.md`.
+
 Ce guide décrit la méthode recommandée pour fusionner les PR empilées après validation locale.
 
 ## Précondition

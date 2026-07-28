@@ -1,5 +1,8 @@
 # Roadmap post-consolidation v0.2.32
 
+> Document de contexte historique. La roadmap active issue de l’audit du
+> 28 juillet 2026 se trouve dans [`ROADMAP.md`](ROADMAP.md).
+
 Ce document fixe l'état de référence après consolidation de la pile v0.2.32 dans `main`.
 
 ## État de référence
