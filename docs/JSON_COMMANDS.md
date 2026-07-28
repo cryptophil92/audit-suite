@@ -8,7 +8,8 @@ Ce document regroupe les commandes JSON disponibles dans AUDIT-SUITE.
 bash bin/version_json.sh
 ```
 
-Retourne la version courante au format JSON.
+Retourne la version courante et le commit source au format JSON. La version est
+lue depuis le fichier racine `VERSION`.
 
 ## Routes
 

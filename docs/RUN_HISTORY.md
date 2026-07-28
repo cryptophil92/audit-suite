@@ -26,6 +26,8 @@ history/latest.json
 Chaque ligne contient notamment :
 
 - `run_id`
+- `version`
+- `commit`
 - `created_at`
 - `profile`
 - `targets`
@@ -33,6 +35,7 @@ Chaque ligne contient notamment :
 - `selected_modules`
 - `module_count`
 - `success_count`
+- `partial_count`
 - `failed_count`
 - `skipped_count`
 - `output_path`
@@ -59,6 +62,8 @@ Chaque ligne contient notamment :
 La création des dossiers `output/<run_id>` et `logs/<run_id>` est également
 réservée de manière exclusive. Deux processus ne peuvent donc pas partager les
 dossiers d'un même identifiant.
+
+Les historiques issus d’un manifest `1.0.0` peuvent ne pas contenir `partial_count`. Les lecteurs doivent alors utiliser `0` ou recompter les modules dont le statut vaut `partial`.
 
 ## Commandes
 

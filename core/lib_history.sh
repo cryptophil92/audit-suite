@@ -108,6 +108,8 @@ history_record_run() {
 
   if ! jq -ce --arg manifest_path "$manifest_path" '{
     schema_version: (.schema_version // "0.1.0"),
+    version: (.version // "unknown"),
+    commit: (.commit // "unknown"),
     run_id,
     created_at,
     profile,
@@ -116,6 +118,7 @@ history_record_run() {
     selected_modules,
     module_count: (.summary.module_count // (.modules | length)),
     success_count: (.summary.success_count // ([.modules[]? | select(.status == "success")] | length)),
+    partial_count: (.summary.partial_count // ([.modules[]? | select(.status == "partial")] | length)),
     failed_count: (.summary.failed_count // ([.modules[]? | select(.status == "failed")] | length)),
     skipped_count: (.summary.skipped_count // ([.modules[]? | select(.status == "skipped")] | length)),
     total_duration_seconds: (.summary.total_duration_seconds // ([.modules[]?.duration_seconds] | add // 0)),
@@ -129,6 +132,8 @@ history_record_run() {
 
   if ! jq -e --arg manifest_path "$manifest_path" '{
     schema_version: (.schema_version // "0.1.0"),
+    version: (.version // "unknown"),
+    commit: (.commit // "unknown"),
     run_id,
     created_at,
     profile,
@@ -163,5 +168,15 @@ history_record_run() {
 
 history_list_runs() {
   history_read_index_json \
-    | jq -r '.runs[] | [.created_at, .run_id, .profile, (.targets | join(",")), (.status // "unknown"), (.success_count|tostring), (.failed_count|tostring), (.skipped_count|tostring)] | @tsv'
+    | jq -r '.runs[] | [
+        .created_at,
+        .run_id,
+        .profile,
+        (.targets | join(",")),
+        (.status // "unknown"),
+        (.success_count | tostring),
+        ((.partial_count // 0) | tostring),
+        (.failed_count | tostring),
+        (.skipped_count | tostring)
+      ] | @tsv'
 }

@@ -28,7 +28,7 @@ Les manifests doivent contenir au minimum :
 - `run_id` ;
 - `modules[]`.
 
-Le schéma `v1.0.0` issu de `docs/REPORT_SCHEMA.md` est supporté.
+Les schémas manifest `1.0.0` et `1.1.0` issus de `docs/REPORT_SCHEMA.md` sont supportés.
 
 ## Sortie JSON
 
@@ -65,16 +65,20 @@ Le résumé calcule aussi :
 - `regression_count` ;
 - `improvement_count`.
 
+Les statuts reconnus sont classés ainsi : `failed` < `skipped` < `partial` < `success`. Une transition vers un rang inférieur est une régression ; une transition vers un rang supérieur est une amélioration.
+
 Une régression correspond par exemple à :
 
+- `success` -> `partial` ;
 - `success` -> `failed` ;
-- `success` -> `skipped` ;
+- `partial` -> `skipped` ;
 - `skipped` -> `failed`.
 
 Une amélioration correspond par exemple à :
 
 - `failed` -> `success` ;
-- `skipped` -> `success` ;
+- `skipped` -> `partial` ;
+- `partial` -> `success` ;
 - `failed` -> `skipped`.
 
 ## Objectif

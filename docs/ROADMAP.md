@@ -17,7 +17,7 @@ Cette roadmap traduit l’audit du 28 juillet 2026. Les priorités et estimation
 Objectif : rendre le dépôt et le chemin de démarrage sûrs.
 
 - traiter les sorties d’audit suivies dans Git ;
-- corriger le blocage FIFO ;
+- conserver un logging fichier non bloquant et tester toute future réintroduction d’un bus d’événements ;
 - ajouter des gardes CI contre les artefacts runtime ;
 - vérifier les canaux de signalement privé.
 
@@ -52,7 +52,7 @@ Critère de sortie : une entrée locale invalide ne rend pas tout le tableau de 
 - fins de lignes reproductibles ;
 - mise à jour contrôlée des actions ;
 - source de version unique ;
-- choix de licence ;
+- licence Apache 2.0 et attributions tierces publiées ;
 - première release documentée.
 
 Critère de sortie : un nouveau contributeur peut installer, tester et identifier précisément la version.

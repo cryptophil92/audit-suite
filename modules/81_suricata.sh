@@ -8,8 +8,9 @@ MOD_PRIO=81
 MOD_REQUIRES=( "suricata" )
 MOD_TIMEOUT=7200
 MOD_TAGS=("ids")
+MOD_SKIP_OPTION="OPTS_NO_SURICATA"
 
-mod_pre(){ [[ "${OPTS_NO_SURICATA:-0}" == 1 ]] && return 1 || return 0; }
+mod_pre(){ return 0; }
 mod_run(){
   local out="$RUN_DIR/$MOD_ID"; mkdir -p "$out"
   echo "Suricata placeholder (activer si désiré)" > "$out/README.txt"

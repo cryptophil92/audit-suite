@@ -3,7 +3,10 @@
 # @version 0.2.2
 set -Eeuo pipefail
 
-MANIFEST_SCHEMA_VERSION="1.0.0"
+MANIFEST_SCHEMA_VERSION="1.1.0"
+
+# shellcheck source=lib_version.sh
+source "$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)/lib_version.sh"
 
 discover_modules_sorted() {
   [[ -d modules ]] || return 0
@@ -85,12 +88,13 @@ _read_module_metadata() {
     : "${MOD_ID:=unknown_module}"
     : "${MOD_NAME:=Unknown}"
     : "${MOD_TIMEOUT:=1800}"
+    : "${MOD_SKIP_OPTION:=-}"
 
     if ! [[ "$MOD_TIMEOUT" =~ ^[0-9]+$ ]] || (( MOD_TIMEOUT < 1 || MOD_TIMEOUT > 86400 )); then
       MOD_TIMEOUT=1800
     fi
 
-    printf "%s\t%s\t%s\t" "$MOD_ID" "$MOD_NAME" "$MOD_TIMEOUT"
+    printf "%s\t%s\t%s\t%s\t" "$MOD_ID" "$MOD_NAME" "$MOD_TIMEOUT" "$MOD_SKIP_OPTION"
 
     if declare -p MOD_REQUIRES >/dev/null 2>&1; then
       if declare -p MOD_REQUIRES 2>/dev/null | grep -q "declare -[aA]"; then
@@ -130,6 +134,7 @@ run_modules() {
   local -a list=()
   local -a raw_list=()
   local selected_norm raw_module module
+  local module_index=0
 
   results_file="$(_module_results_file)"
   mkdir -p "$(dirname -- "$results_file")"
@@ -153,27 +158,46 @@ run_modules() {
   for module in "${list[@]}"; do
     [[ -f "$module" ]] || { emit WARN "runner" "skip missing $module"; continue; }
 
-    local meta id name timeout requires_raw rc status reason
+    local meta id name timeout skip_option requires_raw rc status reason
     local started_at finished_at start_ts end_ts duration output_path
+    local outcome_file outcome_status outcome_reason
     local -a requires=()
+
+    ((module_index += 1))
 
     if ! meta="$(_read_module_metadata "$module")"; then
       emit WARN "runner" "skip unreadable module metadata: $module"
       continue
     fi
 
-    IFS=$'\t' read -r id name timeout requires_raw <<< "$meta"
+    IFS=$'\t' read -r id name timeout skip_option requires_raw <<< "$meta"
     : "${id:=unknown_module}"
     : "${name:=Unknown}"
     : "${timeout:=1800}"
+    : "${skip_option:=-}"
 
     output_path="$RUN_DIR/$id"
+    outcome_file="${TMP_DIR:-tmp}/module_outcome.${RUN_ID:-unknown}.${module_index}"
+    rm -f -- "$outcome_file"
 
     if [[ -n "${requires_raw:-}" ]]; then
       read -r -a requires <<< "$requires_raw"
     fi
 
     emit INFO "$id" "start: $name"
+
+    if [[ "$skip_option" != "-" ]]; then
+      if ! [[ "$skip_option" =~ ^[A-Z][A-Z0-9_]*$ ]]; then
+        emit WARN "$id" "invalid skip option metadata: $skip_option"
+      elif [[ "${!skip_option:-0}" == "1" ]]; then
+        started_at="$(date -Is)"
+        finished_at="$started_at"
+        reason="disabled by option $skip_option"
+        emit INFO "$id" "skipped: $reason"
+        _append_module_result "$id" "$name" "$module" "skipped" "0" "$started_at" "$finished_at" "0" "$output_path" "$reason"
+        continue
+      fi
+    fi
 
     if ! _requirements_are_met "$id" "${requires[@]}"; then
       started_at="$(date -Is)"
@@ -190,6 +214,17 @@ run_modules() {
     timeout "$timeout" bash -c '
       set -Eeuo pipefail
       module="$1"
+      MODULE_OUTCOME_FILE="$2"
+      export MODULE_OUTCOME_FILE
+
+      module_mark_partial() {
+        local reason="${*:-optional step failed}"
+        reason="${reason//$'\''\n'\''/ }"
+        reason="${reason//$'\''\t'\''/ }"
+        if [[ ! -s "$MODULE_OUTCOME_FILE" ]]; then
+          printf "partial\t%s\n" "$reason" > "$MODULE_OUTCOME_FILE"
+        fi
+      }
 
       # shellcheck source=/dev/null
       source "core/lib_logging.sh"
@@ -207,7 +242,7 @@ run_modules() {
       mod_pre
       mod_run
       mod_post
-    ' _ "$module"
+    ' _ "$module" "$outcome_file"
     rc=$?
     set -e
 
@@ -215,13 +250,31 @@ run_modules() {
     end_ts="$(date +%s)"
     duration=$(( end_ts - start_ts ))
 
-    if [[ $rc -eq 0 ]]; then
+    outcome_status=""
+    outcome_reason=""
+    if [[ -s "$outcome_file" ]]; then
+      IFS=$'\t' read -r outcome_status outcome_reason < "$outcome_file" || true
+    fi
+    rm -f -- "$outcome_file"
+
+    if [[ $rc -eq 0 && "$outcome_status" == "partial" ]]; then
+      status="partial"
+      reason="${outcome_reason:-optional step failed}"
+      emit WARN "$id" "partial: $reason"
+    elif [[ $rc -eq 0 && -z "$outcome_status" ]]; then
       status="success"
       reason=""
       emit INFO "$id" "success"
     else
       status="failed"
-      reason="module returned rc=$rc"
+      if [[ $rc -eq 124 ]]; then
+        reason="module timed out after ${timeout}s"
+      elif [[ $rc -eq 0 ]]; then
+        reason="invalid module outcome: $outcome_status"
+        rc=2
+      else
+        reason="module returned rc=$rc"
+      fi
       emit ERROR "$id" "failed rc=$rc"
     fi
 
@@ -232,9 +285,11 @@ run_modules() {
 write_manifest_json() {
   local path="$1"; shift || true
   local selected="$1"; shift || true
-  local now tmp_path results_file
+  local now tmp_path results_file application_version application_commit
 
   now="$(date -Is)"
+  application_version="$(audit_suite_version)"
+  application_commit="$(audit_suite_commit)"
   tmp_path="${path}.tmp"
   results_file="$(_module_results_file)"
   mkdir -p "$(dirname -- "$results_file")"
@@ -247,6 +302,8 @@ write_manifest_json() {
 
   jq -n \
     --arg schema_version "$MANIFEST_SCHEMA_VERSION" \
+    --arg version "$application_version" \
+    --arg commit "$application_commit" \
     --arg run_id "$RUN_ID" \
     --arg created_at "$now" \
     --arg profile "$PROFILE" \
@@ -263,6 +320,8 @@ write_manifest_json() {
     '{
       schema_version: $schema_version,
       kind: "audit-suite.manifest",
+      version: $version,
+      commit: $commit,
       run_id: $run_id,
       created_at: $created_at,
       profile: $profile,
@@ -282,11 +341,13 @@ write_manifest_json() {
       summary: {
         module_count: ($modules | length),
         success_count: ([$modules[]? | select(.status == "success")] | length),
+        partial_count: ([$modules[]? | select(.status == "partial")] | length),
         failed_count: ([$modules[]? | select(.status == "failed")] | length),
         skipped_count: ([$modules[]? | select(.status == "skipped")] | length),
         total_duration_seconds: ([$modules[]?.duration_seconds] | add // 0),
         status: (
           if ([$modules[]? | select(.status == "failed")] | length) > 0 then "failed"
+          elif ([$modules[]? | select(.status == "partial")] | length) > 0 then "partial"
           elif ([$modules[]? | select(.status == "success")] | length) > 0 then "success"
           else "empty"
           end
