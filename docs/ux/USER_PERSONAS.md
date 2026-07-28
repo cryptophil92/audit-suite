@@ -1,0 +1,159 @@
+# Personas provisoires
+
+Ces personas sont des hypothèses de conception. Ils ne sont pas validés par une recherche utilisateur.
+
+## Persona A — Particulier avancé
+
+**Contexte :** administre son réseau domestique et comprend les notions IP de base.
+
+**Objectifs :**
+
+- savoir quels appareils et services sont présents ;
+- détecter une configuration inhabituelle ;
+- conserver un rapport compréhensible ;
+- rester entièrement en local.
+
+**Freins :**
+
+- installation Kali et dépendances ;
+- résultats Nmap trop techniques ;
+- peur de scanner une mauvaise cible ;
+- difficulté à distinguer absence de résultat et erreur.
+
+**Besoins :**
+
+- onboarding prudent ;
+- vocabulaire expliqué ;
+- profil rapide recommandé ;
+- résumé lisible et recommandations sourcées.
+
+## Persona B — Technicien informatique
+
+**Contexte :** intervient sur des réseaux clients avec autorisation.
+
+**Objectifs :**
+
+- préparer rapidement un périmètre ;
+- exécuter un audit reproductible ;
+- suivre l’avancement ;
+- exporter un rapport anonymisable ;
+- comparer avant/après.
+
+**Freins :**
+
+- absence de packaging ;
+- statut partiel mal représenté ;
+- difficulté à prouver la version et les options ;
+- archives pouvant contenir trop d’informations.
+
+**Besoins :**
+
+- manifest fiable ;
+- modèle d’autorisation/périmètre ;
+- journal horodaté ;
+- export contrôlé ;
+- comparaison de runs.
+
+## Persona C — Administrateur système
+
+**Contexte :** gère une infrastructure interne et automatise les contrôles.
+
+**Objectifs :**
+
+- intégrer les sorties JSON ;
+- sélectionner des vérifications ;
+- diagnostiquer les dépendances ;
+- reproduire les résultats ;
+- conserver un historique local.
+
+**Freins :**
+
+- contrats JSON dupliqués ;
+- versions incohérentes ;
+- pas de pagination ni verrouillage ;
+- pas de mode non interactif complètement documenté par capacité.
+
+**Besoins :**
+
+- schémas stables ;
+- codes retour fiables ;
+- API bornée ;
+- installation reproductible ;
+- logs structurés.
+
+## Persona D — Professionnel cybersécurité autorisé
+
+**Contexte :** utilise plusieurs outils spécialisés dans un lab ou une mission cadrée.
+
+**Objectifs :**
+
+- comprendre exactement les commandes exécutées ;
+- contrôler l’intrusivité ;
+- distinguer détection et validation ;
+- conserver preuves et métadonnées ;
+- éviter toute fuite de données.
+
+**Freins :**
+
+- placeholders non identifiés ;
+- erreurs masquées ;
+- version et provenance ambiguës ;
+- contrôle incomplet des privilèges.
+
+**Besoins :**
+
+- transparence par module ;
+- niveaux d’intrusivité ;
+- export sécurisé ;
+- état `partial` ;
+- politiques de conservation.
+
+## Persona E — Utilisateur non expert accompagné
+
+**Contexte :** veut comprendre son réseau mais ne maîtrise ni Kali ni Nmap.
+
+**Objectifs :**
+
+- savoir si l’outil est prêt ;
+- lancer uniquement une vérification sûre et autorisée ;
+- comprendre les appareils détectés ;
+- recevoir des explications prudentes.
+
+**Freins :**
+
+- terminal ;
+- jargon ;
+- JSON brut ;
+- risque de fausse alerte ;
+- absence d’aide dans le flux.
+
+**Besoins :**
+
+- accompagnement pas à pas ;
+- explications sans dramatisation ;
+- actions réversibles ;
+- aide contextuelle ;
+- confirmation humaine avant toute opération.
+
+## Hypothèses de segmentation
+
+Axes à valider :
+
+- expertise réseau ;
+- fréquence d’usage ;
+- responsabilité personnelle ou professionnelle ;
+- besoin d’export ;
+- besoin d’automatisation ;
+- tolérance au terminal ;
+- contraintes d’accessibilité ;
+- politique de conservation.
+
+## Questions de recherche
+
+1. Quelle tâche déclenche l’usage réel ?
+2. Quel niveau de preuve est attendu ?
+3. Quels résultats sont compris sans aide ?
+4. Quelles erreurs détruisent le plus la confiance ?
+5. Qui partage les rapports, avec qui et sous quelle forme ?
+6. Le mode Web doit-il rester consultation/préparation ?
+7. Quels handicaps ou contraintes d’environnement faut-il prioriser ?

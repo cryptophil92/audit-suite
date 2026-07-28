@@ -1,0 +1,42 @@
+name: Retour UX ou accessibilité
+description: Décrire une difficulté d’usage, de compréhension ou d’accessibilité.
+title: "[UX] "
+labels:
+  - ux
+body:
+  - type: textarea
+    id: user
+    attributes:
+      label: Profil et contexte
+      description: Niveau d’expérience, plateforme et objectif, sans donnée personnelle inutile.
+    validations:
+      required: true
+  - type: textarea
+    id: journey
+    attributes:
+      label: Parcours
+      description: Étapes suivies avant la difficulté.
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Difficulté observée
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Résultat attendu
+    validations:
+      required: true
+  - type: textarea
+    id: accessibility
+    attributes:
+      label: Besoin d’accessibilité concerné
+      description: Clavier, lecteur d’écran, contraste, zoom, cognition, motricité ou autre.
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Capture anonymisée ou référence
+      description: Ne joignez aucun résultat d’audit ni donnée réseau identifiable.

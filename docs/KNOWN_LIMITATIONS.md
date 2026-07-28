@@ -1,4 +1,8 @@
-# Limites connues avant test local réel
+# Limites connues
+
+> État révisé après l’audit du 28 juillet 2026. Voir
+> [`audit/TECHNICAL_AUDIT_2026-07-28.md`](audit/TECHNICAL_AUDIT_2026-07-28.md)
+> pour les preuves, priorités et recommandations.
 
 Ce document liste les limites connues de la pile actuelle avant validation sur machine locale.
 
@@ -15,9 +19,20 @@ La pile contient :
 - un premier dashboard local ;
 - une documentation de test et de fusion.
 
+## Limites bloquantes ou importantes
+
+- des sorties d’audit sont encore suivies dans l’historique Git public ;
+- le FIFO de logging peut bloquer une exécution POSIX faute de lecteur ;
+- plusieurs modules masquent les erreurs des outils ;
+- l’historique corrompu rend le snapshot indisponible ;
+- l’API ne borne pas la durée ni la taille des sous-processus ;
+- les versions publiées par les composants et les tags divergent.
+
+Ne pas considérer le moteur prêt pour une mission professionnelle avant traitement.
+
 ## Limites non bloquantes
 
-### Pas encore testé sur machine locale réelle
+### Pas encore validé sur Kali réel après audit
 
 La CI valide les scripts et les tests automatisés, mais ne remplace pas un test réel sur ta machine.
 

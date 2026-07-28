@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Politique de signalement de sécurité
+    url: https://github.com/cryptophil92/audit-suite/blob/main/SECURITY.md
+    about: Consultez les canaux privés disponibles avant de transmettre un détail sensible.
+  - name: Cadre légal et éthique
+    url: https://github.com/cryptophil92/audit-suite/blob/main/docs/SECURITY.md
+    about: Vérifiez le périmètre autorisé avant toute utilisation ou contribution.

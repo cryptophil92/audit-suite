@@ -1,0 +1,67 @@
+name: Bug
+description: Signaler un comportement reproductible sans donnée sensible.
+title: "[BUG] "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Ne joignez aucun secret, résultat de scan réel, adresse identifiable ou donnée client.
+  - type: textarea
+    id: context
+    attributes:
+      label: Contexte
+      description: Plateforme, version, commit et objectif.
+    validations:
+      required: true
+  - type: textarea
+    id: location
+    attributes:
+      label: Emplacement
+      description: Fichier, fonction, classe ou module concerné.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction minimale
+      description: Commandes et données de laboratoire anonymisées.
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: current
+    attributes:
+      label: Résultat actuel
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Résultat attendu
+    validations:
+      required: true
+  - type: textarea
+    id: impact
+    attributes:
+      label: Impact et fréquence
+    validations:
+      required: true
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priorité proposée
+      options:
+        - P0 — Bloquant ou critique
+        - P1 — Important
+        - P2 — Amélioration nécessaire
+        - P3 — Confort ou évolution
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Journaux anonymisés
+      description: Supprimez toute donnée réseau ou personnelle avant de coller un extrait.
+      render: text

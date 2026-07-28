@@ -1,0 +1,35 @@
+name: Évolution
+description: Proposer une évolution compatible avec l’usage défensif du projet.
+title: "[ENHANCEMENT] "
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: need
+    attributes:
+      label: Besoin utilisateur
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Périmètre proposé
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives envisagées
+  - type: textarea
+    id: risks
+    attributes:
+      label: Risques et garde-fous
+      description: Sécurité, légalité, données, dépendances, privilèges et portabilité.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Critères d’acceptation
+    validations:
+      required: true
