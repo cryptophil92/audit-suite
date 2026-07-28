@@ -13,11 +13,13 @@ Les changements notables d’Audit Suite sont documentés ici. Le projet adopter
 - ajout de l’étude de faisabilité multiplateforme ;
 - ajout de modèles d’issues et de pull request ;
 - ajout d’une configuration Dependabot pour GitHub Actions.
+- adoption de la licence Apache 2.0 avec attribution publique à
+  Cryptophil (`cryptophil92`) ;
+- ajout d’un fichier `NOTICE` pour l’adaptation du Contributor Covenant 2.1.
 
 ### Important
 
 - aucune correction fonctionnelle du moteur n’est incluse dans ce lot ;
-- aucune nouvelle licence n’est choisie ;
 - les problèmes découverts sont suivis par des issues dédiées.
 
 ## 0.2.34 — état de code non publié

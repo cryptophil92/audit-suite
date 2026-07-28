@@ -83,6 +83,17 @@ bash bin/smoke_local.sh
 
 N’exécutez aucun scan réel dans la CI. Les essais réseau doivent utiliser un laboratoire autorisé, documenter le périmètre et ne jamais committer leurs sorties.
 
+## Licence des contributions
+
+Sauf accord écrit contraire, toute contribution intentionnellement soumise
+pour inclusion dans Audit Suite est fournie sous la licence Apache 2.0,
+conformément à la section 5 de [`LICENSE`](LICENSE).
+
+En proposant une contribution, vous confirmez qu'elle est originale ou que
+vous disposez des droits nécessaires pour la soumettre sous ces conditions.
+Toute dépendance, portion de code ou ressource tierce doit conserver ses
+mentions et être déclarée dans [`NOTICE`](NOTICE) lorsque nécessaire.
+
 ## Pull request
 
 La description doit indiquer :

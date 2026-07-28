@@ -1,6 +1,7 @@
 # Audit Suite
 
 [![CI](https://github.com/cryptophil92/audit-suite/actions/workflows/shellcheck.yml/badge.svg)](https://github.com/cryptophil92/audit-suite/actions/workflows/shellcheck.yml)
+[![Licence: Apache-2.0](https://img.shields.io/badge/licence-Apache--2.0-blue.svg)](LICENSE)
 ![Statut](https://img.shields.io/badge/statut-exp%C3%A9rimental-orange)
 ![Plateforme](https://img.shields.io/badge/plateforme-Kali%20Linux-557C94)
 ![Bash](https://img.shields.io/badge/Bash-5%2B-4EAA25?logo=gnubash&logoColor=white)
@@ -37,7 +38,6 @@ L’audit de professionnalisation du 28 juillet 2026 est documenté dans [`docs/
 - le module SMB ne réalise qu’une détection initiale ;
 - l’interface Web prépare et consulte, mais ne lance pas d’audit ;
 - la portabilité hors Kali/Linux n’est pas garantie ;
-- le projet n’a pas encore de licence publiée ;
 - certains problèmes de fiabilité et de sécurité identifiés par l’audit restent ouverts.
 
 Consultez [`docs/KNOWN_LIMITATIONS.md`](docs/KNOWN_LIMITATIONS.md) et [`docs/audit/TECHNICAL_AUDIT_2026-07-28.md`](docs/audit/TECHNICAL_AUDIT_2026-07-28.md) avant toute utilisation.
@@ -243,7 +243,13 @@ Lisez [`CONTRIBUTING.md`](CONTRIBUTING.md) et utilisez une branche dédiée. Les
 
 ## Licence
 
-Aucune licence n’est actuellement publiée. En l’absence de licence explicite, la réutilisation, la modification et la redistribution ne sont pas accordées par défaut. Le choix de licence doit être effectué par le propriétaire avant toute diffusion structurée.
+Sauf indication contraire, Audit Suite est distribué sous la
+[licence Apache 2.0](LICENSE).
+
+Copyright 2026 Cryptophil ([cryptophil92](https://github.com/cryptophil92)).
+
+Les attributions et exceptions applicables, notamment pour le code de conduite
+adapté du Contributor Covenant 2.1, sont décrites dans [`NOTICE`](NOTICE).
 
 ## Auteur et maintenance
 
