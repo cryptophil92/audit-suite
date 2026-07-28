@@ -13,6 +13,7 @@ MOD_TAGS=("network" "ports")
 mod_pre(){ return 0; }
 mod_run(){
   local out="$RUN_DIR/$MOD_ID"
+  local udp_rc
   local -a targets=()
 
   mkdir -p "$out"
@@ -28,6 +29,13 @@ mod_run(){
       ;;
   esac
 
-  [[ "${OPTS_NO_UDP:-0}" == 1 ]] || nmap -sU --top-ports 50 -oA "$out/udp_top" "${targets[@]}" || true
+  if [[ "${OPTS_NO_UDP:-0}" != 1 ]]; then
+    if nmap -sU --top-ports 50 -oA "$out/udp_top" "${targets[@]}"; then
+      :
+    else
+      udp_rc=$?
+      module_mark_partial "optional UDP scan returned rc=$udp_rc"
+    fi
+  fi
 }
 mod_post(){ return 0; }

@@ -33,6 +33,7 @@ Chaque ligne contient notamment :
 - `selected_modules`
 - `module_count`
 - `success_count`
+- `partial_count`
 - `failed_count`
 - `skipped_count`
 - `output_path`
@@ -41,6 +42,8 @@ Chaque ligne contient notamment :
 ## `latest.json`
 
 `latest.json` contient le dernier audit sous forme lisible, avec le détail des modules.
+
+Les historiques issus d’un manifest `1.0.0` peuvent ne pas contenir `partial_count`. Les lecteurs doivent alors utiliser `0` ou recompter les modules dont le statut vaut `partial`.
 
 ## Commandes
 

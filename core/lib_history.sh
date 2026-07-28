@@ -51,6 +51,7 @@ history_record_run() {
     selected_modules,
     module_count: (.summary.module_count // (.modules | length)),
     success_count: (.summary.success_count // ([.modules[]? | select(.status == "success")] | length)),
+    partial_count: (.summary.partial_count // ([.modules[]? | select(.status == "partial")] | length)),
     failed_count: (.summary.failed_count // ([.modules[]? | select(.status == "failed")] | length)),
     skipped_count: (.summary.skipped_count // ([.modules[]? | select(.status == "skipped")] | length)),
     total_duration_seconds: (.summary.total_duration_seconds // ([.modules[]?.duration_seconds] | add // 0)),
@@ -82,5 +83,5 @@ history_list_runs() {
   index_path="$(history_index_path)"
 
   [[ -f "$index_path" ]] || return 0
-  jq -r '[.created_at, .run_id, .profile, (.targets | join(",")), (.status // "unknown"), (.success_count|tostring), (.failed_count|tostring), (.skipped_count|tostring)] | @tsv' "$index_path"
+  jq -r '[.created_at, .run_id, .profile, (.targets | join(",")), (.status // "unknown"), (.success_count|tostring), (.failed_count|tostring), (.skipped_count|tostring), ((.partial_count // 0)|tostring)] | @tsv' "$index_path"
 }

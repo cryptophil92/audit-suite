@@ -19,6 +19,6 @@ mod_run(){
   read -r -a targets <<< "$TARGETS"
 
   # Détecter SMB rapidement
-  nmap -Pn -p 139,445 --open -oG "$out/smb.gnmap" "${targets[@]}" || true
+  nmap -Pn -p 139,445 --open -oG "$out/smb.gnmap" "${targets[@]}"
 }
 mod_post(){ return 0; }

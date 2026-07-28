@@ -4,6 +4,13 @@ Les changements notables d’Audit Suite sont documentés ici. Le projet adopter
 
 ## Non publié
 
+### Fiabilité
+
+- ajout du statut `partial` et d’un contrat explicite pour les états module ;
+- propagation des erreurs des commandes structurantes ;
+- skip déterministe de Zeek et Suricata lorsqu’ils sont désactivés ;
+- historique, comparaison et rapport HTML adaptés au schéma manifest `1.1.0`.
+
 ### Documentation
 
 - professionnalisation du README ;
