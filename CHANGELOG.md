@@ -20,6 +20,13 @@ Les changements notables d’Audit Suite sont documentés ici. Le projet adopter
 - aucune nouvelle licence n’est choisie ;
 - les problèmes découverts sont suivis par des issues dédiées.
 
+### Sécurité
+
+- refus des binds API non loopback et prise en charge explicite du loopback
+  IPv6 ;
+- suppression des commandes, sorties d'erreur et chemins locaux dans les
+  erreurs HTTP publiques.
+
 ## 0.2.34 — état de code non publié
 
 - lecture détaillée d’un run dans l’historique JSON ;
