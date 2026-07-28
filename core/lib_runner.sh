@@ -5,6 +5,9 @@ set -Eeuo pipefail
 
 MANIFEST_SCHEMA_VERSION="1.0.0"
 
+# shellcheck source=lib_version.sh
+source "$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)/lib_version.sh"
+
 discover_modules_sorted() {
   [[ -d modules ]] || return 0
   find modules -maxdepth 1 -type f -name '*.sh' ! -name '*_TEMPLATE*' -print | sort -V
@@ -232,9 +235,11 @@ run_modules() {
 write_manifest_json() {
   local path="$1"; shift || true
   local selected="$1"; shift || true
-  local now tmp_path results_file
+  local now tmp_path results_file application_version application_commit
 
   now="$(date -Is)"
+  application_version="$(audit_suite_version)"
+  application_commit="$(audit_suite_commit)"
   tmp_path="${path}.tmp"
   results_file="$(_module_results_file)"
   mkdir -p "$(dirname -- "$results_file")"
@@ -247,6 +252,8 @@ write_manifest_json() {
 
   jq -n \
     --arg schema_version "$MANIFEST_SCHEMA_VERSION" \
+    --arg version "$application_version" \
+    --arg commit "$application_commit" \
     --arg run_id "$RUN_ID" \
     --arg created_at "$now" \
     --arg profile "$PROFILE" \
@@ -263,6 +270,8 @@ write_manifest_json() {
     '{
       schema_version: $schema_version,
       kind: "audit-suite.manifest",
+      version: $version,
+      commit: $commit,
       run_id: $run_id,
       created_at: $created_at,
       profile: $profile,

@@ -60,6 +60,8 @@ write_manifest_json "$manifest_path" "modules/10_network_discovery.sh modules/70
 
 jq -e '.schema_version == "1.0.0"' "$manifest_path" >/dev/null
 jq -e '.kind == "audit-suite.manifest"' "$manifest_path" >/dev/null
+jq -e --arg version "$(tr -d '\r\n' < VERSION)" '.version == $version' "$manifest_path" >/dev/null
+jq -e --arg commit "$(git rev-parse --verify HEAD 2>/dev/null || printf 'unknown')" '.commit == $commit' "$manifest_path" >/dev/null
 jq -e '.summary.module_count == 2' "$manifest_path" >/dev/null
 jq -e '.summary.success_count == 1' "$manifest_path" >/dev/null
 jq -e '.summary.failed_count == 0' "$manifest_path" >/dev/null

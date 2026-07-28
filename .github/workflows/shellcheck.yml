@@ -72,6 +72,9 @@ jobs:
       - name: Run version JSON tests
         run: bash tests/test_version_json.sh
 
+      - name: Run version consistency tests
+        run: bash tests/test_version_consistency.sh
+
       - name: Run routes JSON tests
         run: bash tests/test_routes_json.sh
 
@@ -113,6 +116,9 @@ jobs:
 
       - name: Run report pipeline tests
         run: bash tests/test_report_pipeline.sh
+
+      - name: Run runtime artifact guard tests
+        run: bash tests/test_runtime_artifact_guard.sh
 
       - name: Fail if ShellCheck failed
         run: |

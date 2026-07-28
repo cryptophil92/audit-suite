@@ -15,7 +15,9 @@ Type logique :
 ```json
 {
   "kind": "audit-suite.manifest",
-  "schema_version": "1.0.0"
+  "schema_version": "1.0.0",
+  "version": "X.Y.Z",
+  "commit": "0123456789abcdef"
 }
 ```
 
@@ -25,6 +27,8 @@ Type logique :
 |---|---:|---|
 | `schema_version` | string | Version du schéma manifest. |
 | `kind` | string | Type logique du document. |
+| `version` | string | Version applicative lue depuis `VERSION`. |
+| `commit` | string | Commit Git du code exécuté, ou `unknown`. |
 | `run_id` | string | Identifiant horodaté du run. |
 | `created_at` | string | Date ISO de génération du manifest. |
 | `profile` | string | Profil utilisé : `fast`, `full` ou `stealth`. |

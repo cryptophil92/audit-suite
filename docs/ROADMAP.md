@@ -52,7 +52,7 @@ Critère de sortie : une entrée locale invalide ne rend pas tout le tableau de 
 - fins de lignes reproductibles ;
 - mise à jour contrôlée des actions ;
 - source de version unique ;
-- choix de licence ;
+- licence Apache 2.0 et attributions tierces publiées ;
 - première release documentée.
 
 Critère de sortie : un nouveau contributeur peut installer, tester et identifier précisément la version.
