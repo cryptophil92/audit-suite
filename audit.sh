@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 # audit.sh - Launcher principal de la suite d'audit
-# @version 0.2.12
 set -Eeuo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
@@ -17,6 +16,13 @@ fi
 
 if [[ "$AUDIT_ARG_HELP" == "1" ]]; then
   usage
+  exit 0
+fi
+
+if [[ "$AUDIT_ARG_VERSION" == "1" ]]; then
+  # shellcheck source=core/lib_version.sh
+  source "core/lib_version.sh"
+  printf 'AUDIT-SUITE %s (%s)\n' "$(audit_suite_version)" "$(audit_suite_commit)"
   exit 0
 fi
 

@@ -1,6 +1,8 @@
 # Changelog
 
-Les changements notables d’Audit Suite sont documentés ici. Le projet adoptera le format [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et une stratégie SemVer lorsque la source de version et le processus de release auront été stabilisés.
+Les changements notables d’Audit Suite sont documentés ici. Le projet adopte
+le format [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et
+[Semantic Versioning](https://semver.org/lang/fr/).
 
 ## Non publié
 
@@ -16,6 +18,9 @@ Les changements notables d’Audit Suite sont documentés ici. Le projet adopter
 - adoption de la licence Apache 2.0 avec attribution publique à
   Cryptophil (`cryptophil92`) ;
 - ajout d’un fichier `NOTICE` pour l’adaptation du Contributor Covenant 2.1.
+- ajout d'une source canonique `VERSION`, exposée avec le commit par le CLI,
+  l'API et les manifests ;
+- formalisation de la procédure de release et de son contrôle P0/P1.
 
 ### Important
 

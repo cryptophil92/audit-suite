@@ -27,6 +27,7 @@ parse_audit_args \
 [[ "$AUDIT_ARG_DRY_RUN" == "0" ]]
 [[ "$AUDIT_ARG_LIST_MODULES" == "0" ]]
 [[ "$AUDIT_ARG_HELP" == "0" ]]
+[[ "$AUDIT_ARG_VERSION" == "0" ]]
 
 parse_audit_args \
   --profile=stealth \
@@ -49,6 +50,9 @@ parse_audit_args \
 
 parse_audit_args --help
 [[ "$AUDIT_ARG_HELP" == "1" ]]
+
+parse_audit_args --version
+[[ "$AUDIT_ARG_VERSION" == "1" ]]
 
 [[ "$(normalize_csv_to_commas 'a b,c
  d')" == "a,b,c,d" ]]
