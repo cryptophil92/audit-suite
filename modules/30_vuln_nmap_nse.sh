@@ -18,6 +18,6 @@ mod_run(){
   mkdir -p "$out"
   read -r -a targets <<< "$TARGETS"
 
-  nmap -Pn -sV --script vuln -oA "$out/vuln" "${targets[@]}" || true
+  nmap -Pn -sV --script vuln -oA "$out/vuln" "${targets[@]}"
 }
 mod_post(){ return 0; }

@@ -13,12 +13,15 @@ MOD_TAGS=("http" "web")
 mod_pre(){ return 0; }
 mod_run(){
   local out="$RUN_DIR/$MOD_ID"
+  local http_targets
   local -a targets=()
 
   mkdir -p "$out"
   read -r -a targets <<< "$TARGETS"
+  http_targets="$out/http_targets.txt"
 
   # Simple: scanner IP:80/443 avec whatweb; outils avancés optionnels non forcés
-  whatweb --color=never --aggression=1 -a 1 -v -i <(nmap -Pn -p 80,443 --open -oG - "${targets[@]}" | awk '/open/{print $2}') | tee "$out/whatweb.txt" || true
+  nmap -Pn -p 80,443 --open -oG - "${targets[@]}" | awk '/open/{print $2}' > "$http_targets"
+  whatweb --color=never --aggression=1 -a 1 -v -i "$http_targets" | tee "$out/whatweb.txt"
 }
 mod_post(){ return 0; }

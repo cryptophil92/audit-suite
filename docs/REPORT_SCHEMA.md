@@ -15,7 +15,7 @@ Type logique :
 ```json
 {
   "kind": "audit-suite.manifest",
-  "schema_version": "1.0.0",
+  "schema_version": "1.1.0",
   "version": "X.Y.Z",
   "commit": "0123456789abcdef"
 }
@@ -44,17 +44,19 @@ Type logique :
 ```json
 {
   "module_count": 3,
-  "success_count": 2,
+  "success_count": 1,
+  "partial_count": 1,
   "failed_count": 0,
   "skipped_count": 1,
   "total_duration_seconds": 42,
-  "status": "success"
+  "status": "partial"
 }
 ```
 
 Valeurs possibles pour `summary.status` :
 
-- `success` : au moins un module réussi et aucun module échoué ;
+- `success` : au moins un module réussi, sans module partiel ni échoué ;
+- `partial` : au moins un module partiel et aucun module échoué ;
 - `failed` : au moins un module échoué ;
 - `empty` : aucun module exécuté ou enregistré.
 
@@ -80,8 +82,20 @@ Chaque entrée de `modules[]` suit cette structure :
 Valeurs possibles pour `modules[].status` :
 
 - `success`
+- `partial`
 - `failed`
 - `skipped`
+
+## Contrat d’état des modules
+
+- `success` : les étapes structurantes et facultatives demandées ont réussi.
+- `partial` : les étapes structurantes ont réussi, mais au moins une étape explicitement facultative a échoué. Les fichiers utiles déjà produits sont conservés et `reason` explique la limitation.
+- `failed` : une étape structurante, le contrat du module ou son délai a échoué. Un code non nul non déclaré ne peut jamais devenir `success`.
+- `skipped` : le module n’a pas été exécuté, soit par option explicite déclarée avec `MOD_SKIP_OPTION`, soit parce qu’une dépendance manque.
+
+Un module peut appeler `module_mark_partial "raison"` uniquement pour une étape réellement facultative. Les options `OPTS_NO_ZEEK` et `OPTS_NO_SURICATA` sont évaluées avant les dépendances afin de produire un état `skipped` déterministe, que les outils soient installés ou non.
+
+Le schéma `1.1.0` ajoute `partial` et `summary.partial_count`. Les lecteurs doivent continuer à accepter les manifests `1.0.0`, où ce compteur est absent.
 
 ## Objectif
 

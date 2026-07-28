@@ -6,6 +6,13 @@ le format [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et
 
 ## Non publié
 
+### Fiabilité
+
+- ajout du statut `partial` et d’un contrat explicite pour les états module ;
+- propagation des erreurs des commandes structurantes ;
+- skip déterministe de Zeek et Suricata lorsqu’ils sont désactivés ;
+- historique, comparaison et rapport HTML adaptés au schéma manifest `1.1.0`.
+
 ### Corrigé
 
 - suppression du bus FIFO inutilisé afin que le logging ne puisse plus bloquer le moteur sur POSIX sans lecteur.

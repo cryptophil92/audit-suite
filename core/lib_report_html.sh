@@ -45,12 +45,14 @@ report_html_generate() {
     def h: tostring | @html;
     def status_class($s):
       if $s == "success" then "status-success"
+      elif $s == "partial" then "status-partial"
       elif $s == "failed" then "status-failed"
       elif $s == "skipped" then "status-skipped"
       else "status-unknown"
       end;
     def status_label($s):
       if $s == "success" then "Succès"
+      elif $s == "partial" then "Partiel"
       elif $s == "failed" then "Échec"
       elif $s == "skipped" then "Ignoré"
       elif $s == "empty" then "Vide"
@@ -97,6 +99,7 @@ report_html_generate() {
     "    code { font-family: Consolas, Menlo, monospace; font-size: 13px; }",
     "    .badge { display: inline-block; border-radius: 999px; padding: 3px 9px; font-weight: 700; font-size: 12px; }",
     "    .status-success { background: #dcfce7; color: #166534; }",
+    "    .status-partial { background: #ffedd5; color: #9a3412; }",
     "    .status-failed { background: #fee2e2; color: #991b1b; }",
     "    .status-skipped { background: #fef3c7; color: #92400e; }",
     "    .status-unknown { background: #e5e7eb; color: #374151; }",
@@ -115,6 +118,7 @@ report_html_generate() {
     "      <div class=\"card\"><div class=\"label\">Statut</div><div class=\"value\"><span class=\"badge " + status_class(.summary.status // "unknown") + "\">" + status_label(.summary.status // "unknown") + "</span></div></div>",
     "      <div class=\"card\"><div class=\"label\">Modules</div><div class=\"value\">" + ((.summary.module_count // ((.modules // []) | length)) | h) + "</div></div>",
     "      <div class=\"card\"><div class=\"label\">Succès</div><div class=\"value\">" + ((.summary.success_count // 0) | h) + "</div></div>",
+    "      <div class=\"card\"><div class=\"label\">Partiels</div><div class=\"value\">" + ((.summary.partial_count // 0) | h) + "</div></div>",
     "      <div class=\"card\"><div class=\"label\">Échecs</div><div class=\"value\">" + ((.summary.failed_count // 0) | h) + "</div></div>",
     "      <div class=\"card\"><div class=\"label\">Ignorés</div><div class=\"value\">" + ((.summary.skipped_count // 0) | h) + "</div></div>",
     "      <div class=\"card\"><div class=\"label\">Durée totale</div><div class=\"value\">" + ((.summary.total_duration_seconds // 0) | h) + " s</div></div>",

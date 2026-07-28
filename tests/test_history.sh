@@ -26,6 +26,7 @@ export RUN_ID LOG_DIR LOG_FILE LOG_BUS
 manifest_path="$AUDIT_HISTORY_DIR/manifest.json"
 cat > "$manifest_path" <<'JSON'
 {
+  "schema_version": "1.1.0",
   "run_id": "AUDIT_TEST_001",
   "created_at": "2026-07-01T00:00:00+00:00",
   "profile": "fast",
@@ -37,6 +38,15 @@ cat > "$manifest_path" <<'JSON'
     "allow_public": false
   },
   "selected_modules": ["modules/10_network_discovery.sh"],
+  "summary": {
+    "module_count": 2,
+    "success_count": 1,
+    "partial_count": 1,
+    "failed_count": 0,
+    "skipped_count": 0,
+    "total_duration_seconds": 3,
+    "status": "partial"
+  },
   "modules": [
     {
       "id": "10_network_discovery",
@@ -49,6 +59,18 @@ cat > "$manifest_path" <<'JSON'
       "duration_seconds": 1,
       "output_path": "output/AUDIT_TEST_001/10_network_discovery",
       "reason": ""
+    },
+    {
+      "id": "20_portscan_nmap",
+      "name": "Portscan Nmap",
+      "path": "modules/20_portscan_nmap.sh",
+      "status": "partial",
+      "rc": 0,
+      "started_at": "2026-07-01T00:00:03+00:00",
+      "finished_at": "2026-07-01T00:00:05+00:00",
+      "duration_seconds": 2,
+      "output_path": "output/AUDIT_TEST_001/20_portscan_nmap",
+      "reason": "optional UDP scan returned rc=8"
     }
   ]
 }
@@ -62,6 +84,8 @@ history_record_run "$manifest_path"
 grep -q 'AUDIT_TEST_001' "$(history_index_path)"
 jq -e '.run_id == "AUDIT_TEST_001"' "$(history_latest_path)" >/dev/null
 jq -e '.modules[0].status == "success"' "$(history_latest_path)" >/dev/null
+jq -e '.summary.partial_count == 1' "$(history_latest_path)" >/dev/null
+tail -n 1 "$(history_index_path)" | jq -e '.partial_count == 1' >/dev/null
 
 bash bin/history.sh list >/dev/null
 AUDIT_HISTORY_DIR="$AUDIT_HISTORY_DIR" bash bin/history.sh latest >/dev/null

@@ -19,6 +19,6 @@ mod_run(){
   read -r -a targets <<< "$TARGETS"
 
   # Bannières via nmap -sV
-  nmap -Pn -sV -oA "$out/sv" "${targets[@]}" || true
+  nmap -Pn -sV -oA "$out/sv" "${targets[@]}"
 }
 mod_post(){ return 0; }
