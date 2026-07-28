@@ -75,6 +75,8 @@ history_record_run() {
   record_tmp=""
   latest_tmp=""
 
+  # Called indirectly by the EXIT trap below.
+  # shellcheck disable=SC2317
   cleanup_history_record() {
     [[ -n "$record_tmp" ]] && rm -f "$record_tmp"
     [[ -n "$latest_tmp" ]] && rm -f "$latest_tmp"
