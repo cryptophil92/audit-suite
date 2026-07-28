@@ -4,8 +4,12 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import os
+import signal
 import subprocess
+import threading
+import time
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -15,6 +19,16 @@ from urllib.parse import parse_qs, urlparse
 REPO_DIR = Path(__file__).resolve().parent.parent
 WEB_INDEX = REPO_DIR / "web" / "index.html"
 OPENAPI_SPEC = REPO_DIR / "api" / "openapi.json"
+DEFAULT_MAX_OUTPUT_BYTES = 1024 * 1024
+ROUTE_TIMEOUT_SECONDS = {
+    "/api/status": 10.0,
+    "/api/modules": 10.0,
+    "/api/history": 10.0,
+    "/api/history/paths": 10.0,
+    "/api/latest": 10.0,
+    "/api/snapshot": 15.0,
+    "/api/plan": 10.0,
+}
 
 ROUTES: dict[str, list[str]] = {
     "/api/status": ["bash", "bin/status_json.sh"],
@@ -26,10 +40,17 @@ ROUTES: dict[str, list[str]] = {
 }
 
 
-def api_routes_payload() -> dict[str, Any]:
-    return {
+def api_routes_payload(
+    timeout_override: float | None = None,
+    max_output_bytes: int = DEFAULT_MAX_OUTPUT_BYTES,
+) -> dict[str, Any]:
+    payload: dict[str, Any] = {
         "kind": "audit-suite.api_routes",
         "schema_version": "1.0.0",
+        "limits": {
+            "max_output_bytes": max_output_bytes,
+            "timeout_override_seconds": timeout_override,
+        },
         "routes": [
             {"method": "GET", "path": "/", "type": "html"},
             {"method": "GET", "path": "/index.html", "type": "html"},
@@ -40,42 +61,228 @@ def api_routes_payload() -> dict[str, Any]:
             {"method": "GET", "path": "/api/history/paths", "type": "json"},
             {"method": "GET", "path": "/api/latest", "type": "json"},
             {"method": "GET", "path": "/api/snapshot", "type": "json"},
-            {"method": "GET", "path": "/api/plan", "type": "json", "requires_query": ["targets"]},
+            {
+                "method": "GET",
+                "path": "/api/plan",
+                "type": "json",
+                "requires_query": ["targets"],
+            },
             {"method": "GET", "path": "/api/openapi.json", "type": "json"},
             {"method": "GET", "path": "/api/routes", "type": "json"},
         ],
     }
+    for route in payload["routes"]:
+        path = route["path"]
+        if path in ROUTE_TIMEOUT_SECONDS:
+            route["timeout_seconds"] = timeout_override or ROUTE_TIMEOUT_SECONDS[path]
+    return payload
 
 
-def run_json_command(command: list[str]) -> tuple[int, dict[str, Any]]:
+def terminate_process(process: subprocess.Popen[bytes]) -> None:
+    if process.poll() is not None:
+        return
+
+    try:
+        if os.name == "posix":
+            os.killpg(process.pid, signal.SIGKILL)
+        elif os.name == "nt":
+            result = subprocess.run(
+                ["taskkill", "/PID", str(process.pid), "/T", "/F"],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                check=False,
+                timeout=1,
+            )
+            if result.returncode != 0:
+                process.kill()
+        else:
+            process.kill()
+    except (OSError, subprocess.SubprocessError):
+        try:
+            process.kill()
+        except OSError:
+            pass
+
+
+def read_bounded_stream(
+    stream: Any,
+    chunks: list[bytes],
+    state: dict[str, int],
+    state_lock: threading.Lock,
+    limit_exceeded: threading.Event,
+    process: subprocess.Popen[bytes],
+    max_output_bytes: int,
+) -> None:
+    try:
+        while True:
+            chunk = stream.read(65536)
+            if not chunk:
+                break
+
+            with state_lock:
+                remaining = max(0, max_output_bytes - state["captured_bytes"])
+                if remaining:
+                    captured = chunk[:remaining]
+                    chunks.append(captured)
+                    state["captured_bytes"] += len(captured)
+                state["observed_bytes"] += len(chunk)
+                exceeded = state["observed_bytes"] > max_output_bytes
+
+                should_terminate = exceeded and not limit_exceeded.is_set()
+                if should_terminate:
+                    limit_exceeded.set()
+
+            if should_terminate:
+                terminate_process(process)
+                break
+    except (OSError, ValueError):
+        return
+    finally:
+        stream.close()
+
+
+def run_json_command(
+    command: list[str],
+    *,
+    timeout_seconds: float = 10.0,
+    max_output_bytes: int = DEFAULT_MAX_OUTPUT_BYTES,
+) -> tuple[int, dict[str, Any]]:
     env = os.environ.copy()
-    result = subprocess.run(
-        command,
-        cwd=REPO_DIR,
-        env=env,
-        text=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        check=False,
-    )
+    started_at = time.monotonic()
+    popen_options: dict[str, Any] = {}
+    if os.name == "posix":
+        popen_options["start_new_session"] = True
+    elif os.name == "nt":
+        popen_options["creationflags"] = subprocess.CREATE_NEW_PROCESS_GROUP
 
-    if result.returncode != 0:
-        return result.returncode, {
+    try:
+        process = subprocess.Popen(
+            command,
+            cwd=REPO_DIR,
+            env=env,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            **popen_options,
+        )
+    except OSError as exc:
+        return 127, {
+            "kind": "audit-suite.api_error",
+            "error": "command_start_failed",
+            "returncode": 127,
+            "stderr": str(exc),
+            "duration_ms": round((time.monotonic() - started_at) * 1000),
+        }
+
+    assert process.stdout is not None
+    assert process.stderr is not None
+    stdout_chunks: list[bytes] = []
+    stderr_chunks: list[bytes] = []
+    state = {"captured_bytes": 0, "observed_bytes": 0}
+    state_lock = threading.Lock()
+    limit_exceeded = threading.Event()
+    readers = [
+        threading.Thread(
+            target=read_bounded_stream,
+            args=(
+                process.stdout,
+                stdout_chunks,
+                state,
+                state_lock,
+                limit_exceeded,
+                process,
+                max_output_bytes,
+            ),
+            daemon=True,
+        ),
+        threading.Thread(
+            target=read_bounded_stream,
+            args=(
+                process.stderr,
+                stderr_chunks,
+                state,
+                state_lock,
+                limit_exceeded,
+                process,
+                max_output_bytes,
+            ),
+            daemon=True,
+        ),
+    ]
+    for reader in readers:
+        reader.start()
+
+    timed_out = False
+    try:
+        process.wait(timeout=timeout_seconds)
+    except subprocess.TimeoutExpired:
+        timed_out = True
+        terminate_process(process)
+        try:
+            process.wait(timeout=1)
+        except subprocess.TimeoutExpired:
+            process.kill()
+            try:
+                process.wait(timeout=1)
+            except subprocess.TimeoutExpired:
+                pass
+
+    for reader in readers:
+        reader.join(timeout=1)
+    for stream in (process.stdout, process.stderr):
+        if not stream.closed:
+            stream.close()
+
+    duration_ms = round((time.monotonic() - started_at) * 1000)
+    stdout = b"".join(stdout_chunks).decode("utf-8", errors="replace")
+    stderr = b"".join(stderr_chunks).decode("utf-8", errors="replace")
+
+    if timed_out:
+        return 124, {
+            "kind": "audit-suite.api_error",
+            "error": "command_timeout",
+            "returncode": 124,
+            "timeout_seconds": timeout_seconds,
+            "duration_ms": duration_ms,
+        }
+
+    if limit_exceeded.is_set():
+        return 125, {
+            "kind": "audit-suite.api_error",
+            "error": "output_limit_exceeded",
+            "returncode": 125,
+            "max_output_bytes": max_output_bytes,
+            "duration_ms": duration_ms,
+        }
+
+    if process.returncode != 0:
+        return process.returncode, {
             "kind": "audit-suite.api_error",
             "command": command,
-            "returncode": result.returncode,
-            "stderr": result.stderr.strip(),
+            "returncode": process.returncode,
+            "stderr": stderr.strip(),
+            "duration_ms": duration_ms,
         }
 
     try:
-        return 0, json.loads(result.stdout)
+        return 0, json.loads(stdout)
     except json.JSONDecodeError as exc:
         return 1, {
             "kind": "audit-suite.api_error",
             "command": command,
             "returncode": 1,
             "stderr": f"Invalid JSON output: {exc}",
+            "duration_ms": duration_ms,
         }
+
+
+def command_error_status(
+    payload: dict[str, Any], fallback: HTTPStatus
+) -> HTTPStatus:
+    if payload.get("error") == "command_timeout":
+        return HTTPStatus.GATEWAY_TIMEOUT
+    if payload.get("error") == "output_limit_exceeded":
+        return HTTPStatus.BAD_GATEWAY
+    return fallback
 
 
 def first_query_value(query: dict[str, list[str]], key: str, default: str = "") -> str:
@@ -142,6 +349,14 @@ class AuditSuiteHandler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(body)
 
+    def _command_limits(self, path: str) -> tuple[float, int]:
+        timeout_override = getattr(self.server, "command_timeout", None)
+        timeout_seconds = timeout_override or ROUTE_TIMEOUT_SECONDS[path]
+        max_output_bytes = getattr(
+            self.server, "max_output_bytes", DEFAULT_MAX_OUTPUT_BYTES
+        )
+        return timeout_seconds, max_output_bytes
+
     def _write_json_file(self, status: HTTPStatus, json_path: Path) -> None:
         if not json_path.is_file():
             self._write_json(
@@ -189,7 +404,15 @@ class AuditSuiteHandler(BaseHTTPRequestHandler):
             return
 
         if path == "/api/routes":
-            self._write_json(HTTPStatus.OK, api_routes_payload())
+            self._write_json(
+                HTTPStatus.OK,
+                api_routes_payload(
+                    getattr(self.server, "command_timeout", None),
+                    getattr(
+                        self.server, "max_output_bytes", DEFAULT_MAX_OUTPUT_BYTES
+                    ),
+                ),
+            )
             return
 
         if path == "/api/openapi.json":
@@ -212,11 +435,18 @@ class AuditSuiteHandler(BaseHTTPRequestHandler):
             if error_payload is not None or command is None:
                 self._write_json(HTTPStatus.BAD_REQUEST, error_payload or {})
                 return
-            returncode, payload = run_json_command(command)
+            timeout_seconds, max_output_bytes = self._command_limits(path)
+            returncode, payload = run_json_command(
+                command,
+                timeout_seconds=timeout_seconds,
+                max_output_bytes=max_output_bytes,
+            )
             if returncode == 0:
                 self._write_json(HTTPStatus.OK, payload)
             else:
-                self._write_json(HTTPStatus.BAD_REQUEST, payload)
+                self._write_json(
+                    command_error_status(payload, HTTPStatus.BAD_REQUEST), payload
+                )
             return
 
         command = ROUTES.get(path)
@@ -231,11 +461,19 @@ class AuditSuiteHandler(BaseHTTPRequestHandler):
             )
             return
 
-        returncode, payload = run_json_command(command)
+        timeout_seconds, max_output_bytes = self._command_limits(path)
+        returncode, payload = run_json_command(
+            command,
+            timeout_seconds=timeout_seconds,
+            max_output_bytes=max_output_bytes,
+        )
         if returncode == 0:
             self._write_json(HTTPStatus.OK, payload)
         else:
-            self._write_json(HTTPStatus.INTERNAL_SERVER_ERROR, payload)
+            self._write_json(
+                command_error_status(payload, HTTPStatus.INTERNAL_SERVER_ERROR),
+                payload,
+            )
 
     def do_POST(self) -> None:  # noqa: N802
         self._write_json(
@@ -248,10 +486,36 @@ class AuditSuiteHandler(BaseHTTPRequestHandler):
         )
 
 
+def positive_float(value: str) -> float:
+    parsed = float(value)
+    if not math.isfinite(parsed) or parsed <= 0:
+        raise argparse.ArgumentTypeError("value must be greater than zero")
+    return parsed
+
+
+def positive_int(value: str) -> int:
+    parsed = int(value)
+    if parsed <= 0:
+        raise argparse.ArgumentTypeError("value must be greater than zero")
+    return parsed
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="AUDIT-SUITE local read-only API")
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=8765)
+    parser.add_argument(
+        "--command-timeout",
+        type=positive_float,
+        default=None,
+        help="override every dynamic route timeout in seconds",
+    )
+    parser.add_argument(
+        "--max-output-bytes",
+        type=positive_int,
+        default=DEFAULT_MAX_OUTPUT_BYTES,
+        help="combined stdout/stderr limit per command",
+    )
     parser.add_argument("--quiet", action="store_true")
     return parser.parse_args()
 
@@ -260,6 +524,8 @@ def main() -> int:
     args = parse_args()
     server = ThreadingHTTPServer((args.host, args.port), AuditSuiteHandler)
     server.quiet = args.quiet  # type: ignore[attr-defined]
+    server.command_timeout = args.command_timeout  # type: ignore[attr-defined]
+    server.max_output_bytes = args.max_output_bytes  # type: ignore[attr-defined]
     print(f"AUDIT-SUITE read-only API listening on http://{args.host}:{args.port}", flush=True)
     try:
         server.serve_forever()

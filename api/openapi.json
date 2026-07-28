@@ -27,6 +27,12 @@
         "responses": {
           "200": {
             "description": "Status JSON payload"
+          },
+          "502": {
+            "description": "Subprocess output limit exceeded"
+          },
+          "504": {
+            "description": "Subprocess timeout"
           }
         }
       }
@@ -37,6 +43,12 @@
         "responses": {
           "200": {
             "description": "Modules JSON payload"
+          },
+          "502": {
+            "description": "Subprocess output limit exceeded"
+          },
+          "504": {
+            "description": "Subprocess timeout"
           }
         }
       }
@@ -47,6 +59,12 @@
         "responses": {
           "200": {
             "description": "History JSON payload"
+          },
+          "502": {
+            "description": "Subprocess output limit exceeded"
+          },
+          "504": {
+            "description": "Subprocess timeout"
           }
         }
       }
@@ -57,6 +75,12 @@
         "responses": {
           "200": {
             "description": "History paths JSON payload"
+          },
+          "502": {
+            "description": "Subprocess output limit exceeded"
+          },
+          "504": {
+            "description": "Subprocess timeout"
           }
         }
       }
@@ -67,6 +91,12 @@
         "responses": {
           "200": {
             "description": "Latest run JSON payload"
+          },
+          "502": {
+            "description": "Subprocess output limit exceeded"
+          },
+          "504": {
+            "description": "Subprocess timeout"
           }
         }
       }
@@ -77,6 +107,12 @@
         "responses": {
           "200": {
             "description": "Snapshot JSON payload"
+          },
+          "502": {
+            "description": "Subprocess output limit exceeded"
+          },
+          "504": {
+            "description": "Subprocess timeout"
           }
         }
       }
@@ -128,6 +164,12 @@
           },
           "400": {
             "description": "Invalid or missing query parameter"
+          },
+          "502": {
+            "description": "Subprocess output limit exceeded"
+          },
+          "504": {
+            "description": "Subprocess timeout"
           }
         }
       }

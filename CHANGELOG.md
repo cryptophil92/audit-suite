@@ -16,9 +16,17 @@ Les changements notables d’Audit Suite sont documentés ici. Le projet adopter
 
 ### Important
 
-- aucune correction fonctionnelle du moteur n’est incluse dans ce lot ;
+- le lot documentaire initial n’incluait aucune correction fonctionnelle du
+  moteur ;
 - aucune nouvelle licence n’est choisie ;
 - les problèmes découverts sont suivis par des issues dédiées.
+
+### Performance
+
+- délais configurables et limites de sortie pour tous les sous-processus de
+  l’API ;
+- réponses HTTP structurées `504`/`502` lors des dépassements ;
+- agrégation parallèle des quatre sources du snapshot JSON.
 
 ## 0.2.34 — état de code non publié
 

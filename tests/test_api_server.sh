@@ -45,6 +45,7 @@ PY
 python3 - <<'PY'
 import json
 import os
+import time
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -53,8 +54,8 @@ port = os.environ.get("API_TEST_PORT", "9876")
 base = f"http://127.0.0.1:{port}"
 
 
-def get_json(path):
-    with urllib.request.urlopen(base + path, timeout=5) as response:
+def get_json(path, timeout=5):
+    with urllib.request.urlopen(base + path, timeout=timeout) as response:
         assert response.status == 200
         return json.loads(response.read().decode("utf-8"))
 
@@ -91,6 +92,8 @@ openapi = get_json("/api/openapi.json")
 assert openapi["openapi"] == "3.0.3"
 assert "/api/plan" in openapi["paths"]
 assert "/api/snapshot" in openapi["paths"]
+assert "502" in openapi["paths"]["/api/snapshot"]["get"]["responses"]
+assert "504" in openapi["paths"]["/api/snapshot"]["get"]["responses"]
 
 routes = get_json("/api/routes")
 assert routes["kind"] == "audit-suite.api_routes"
@@ -99,13 +102,18 @@ route_paths = {item["path"] for item in routes["routes"]}
 assert "/api/plan" in route_paths
 assert "/api/openapi.json" in route_paths
 assert "/api/routes" in route_paths
+snapshot_route = next(item for item in routes["routes"] if item["path"] == "/api/snapshot")
+assert snapshot_route["timeout_seconds"] == 15
+assert routes["limits"]["max_output_bytes"] == 1048576
 
 assert get_json("/api/health")["kind"] == "audit-suite.api_health"
 assert get_json("/api/status")["kind"] == "audit-suite.status"
 assert get_json("/api/modules")["kind"] == "audit-suite.modules"
 assert get_json("/api/history")["kind"] == "audit-suite.history"
 assert get_json("/api/latest")["kind"] == "audit-suite.history.latest"
-assert get_json("/api/snapshot")["kind"] == "audit-suite.api_snapshot"
+snapshot_started_at = time.monotonic()
+assert get_json("/api/snapshot", timeout=16)["kind"] == "audit-suite.api_snapshot"
+assert time.monotonic() - snapshot_started_at < 15
 
 query = urllib.parse.urlencode({
     "targets": "192.168.1.0/24",

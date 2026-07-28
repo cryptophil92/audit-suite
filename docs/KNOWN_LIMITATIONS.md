@@ -25,7 +25,6 @@ La pile contient :
 - le FIFO de logging peut bloquer une exécution POSIX faute de lecteur ;
 - plusieurs modules masquent les erreurs des outils ;
 - l’historique corrompu rend le snapshot indisponible ;
-- l’API ne borne pas la durée ni la taille des sous-processus ;
 - les versions publiées par les composants et les tags divergent.
 
 Ne pas considérer le moteur prêt pour une mission professionnelle avant traitement.
@@ -90,3 +89,10 @@ Elle pourra être enrichie après test local avec :
 ## Règle de prudence
 
 Tant que le test local réel n'est pas effectué, garder toutes les PR en brouillon et ne pas fusionner.
+
+## Limites corrigées dans l'état de code non publié
+
+- Les sous-processus des routes API ont des délais documentés, une limite de
+  sortie combinée et des erreurs structurées en cas de dépassement.
+- Le snapshot calcule ses quatre sources en parallèle et reste soumis au même
+  budget de 15 secondes sur Windows comme sur Linux.

@@ -69,6 +69,9 @@ jobs:
       - name: Run API server tests
         run: bash tests/test_api_server.sh
 
+      - name: Run API subprocess budget tests
+        run: python3 tests/test_api_limits.py
+
       - name: Run version JSON tests
         run: bash tests/test_version_json.sh
 

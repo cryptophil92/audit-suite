@@ -46,3 +46,6 @@ Ce format prépare :
 - Elle respecte `AUDIT_HISTORY_DIR` via les scripts appelés.
 - Elle ne crée pas de dossier de run.
 - Elle ne lance aucun module.
+- Les quatre sorties sources sont calculées en parallèle, puis agrégées
+  uniquement si toutes les commandes réussissent.
+- La route HTTP `/api/snapshot` applique un budget par défaut de 15 secondes.
