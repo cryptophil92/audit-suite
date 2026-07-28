@@ -1,0 +1,32 @@
+name: Runtime artifact guard
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  guard:
+    name: Reject new runtime artifacts
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout complete history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check changed tracked paths
+        env:
+          BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+          HEAD_SHA: ${{ github.sha }}
+        run: bash bin/check_no_new_runtime_artifacts.sh "$BASE_SHA" "$HEAD_SHA"
+
+      - name: Test guard behavior
+        run: bash tests/test_runtime_artifact_guard.sh
