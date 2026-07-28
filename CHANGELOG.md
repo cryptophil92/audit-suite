@@ -6,6 +6,10 @@ le format [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et
 
 ## Non publié
 
+### Corrigé
+
+- suppression du bus FIFO inutilisé afin que le logging ne puisse plus bloquer le moteur sur POSIX sans lecteur.
+
 ### Documentation
 
 - professionnalisation du README ;
@@ -24,7 +28,7 @@ le format [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et
 
 ### Important
 
-- aucune correction fonctionnelle du moteur n’est incluse dans ce lot ;
+- le lot documentaire fusionné par la PR #59 ne contenait aucune correction fonctionnelle du moteur ;
 - les problèmes découverts sont suivis par des issues dédiées.
 
 ## 0.2.34 — état de code non publié
