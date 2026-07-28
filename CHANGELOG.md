@@ -1,6 +1,8 @@
 # Changelog
 
-Les changements notables d’Audit Suite sont documentés ici. Le projet adoptera le format [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et une stratégie SemVer lorsque la source de version et le processus de release auront été stabilisés.
+Les changements notables d’Audit Suite sont documentés ici. Le projet adopte
+le format [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et
+[Semantic Versioning](https://semver.org/lang/fr/).
 
 ## Non publié
 
@@ -11,6 +13,10 @@ Les changements notables d’Audit Suite sont documentés ici. Le projet adopter
 - skip déterministe de Zeek et Suricata lorsqu’ils sont désactivés ;
 - historique, comparaison et rapport HTML adaptés au schéma manifest `1.1.0`.
 
+### Corrigé
+
+- suppression du bus FIFO inutilisé afin que le logging ne puisse plus bloquer le moteur sur POSIX sans lecteur.
+
 ### Documentation
 
 - professionnalisation du README ;
@@ -20,11 +26,16 @@ Les changements notables d’Audit Suite sont documentés ici. Le projet adopter
 - ajout de l’étude de faisabilité multiplateforme ;
 - ajout de modèles d’issues et de pull request ;
 - ajout d’une configuration Dependabot pour GitHub Actions.
+- adoption de la licence Apache 2.0 avec attribution publique à
+  Cryptophil (`cryptophil92`) ;
+- ajout d’un fichier `NOTICE` pour l’adaptation du Contributor Covenant 2.1.
+- ajout d'une source canonique `VERSION`, exposée avec le commit par le CLI,
+  l'API et les manifests ;
+- formalisation de la procédure de release et de son contrôle P0/P1.
 
 ### Important
 
-- aucune correction fonctionnelle du moteur n’est incluse dans ce lot ;
-- aucune nouvelle licence n’est choisie ;
+- le lot documentaire fusionné par la PR #59 ne contenait aucune correction fonctionnelle du moteur ;
 - les problèmes découverts sont suivis par des issues dédiées.
 
 ## 0.2.34 — état de code non publié

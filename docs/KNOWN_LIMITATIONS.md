@@ -22,16 +22,18 @@ La pile contient :
 ## Limites bloquantes ou importantes
 
 - des sorties d’audit sont encore suivies dans l’historique Git public ;
-- le FIFO de logging peut bloquer une exécution POSIX faute de lecteur ;
 - l’historique corrompu rend le snapshot indisponible ;
-- l’API ne borne pas la durée ni la taille des sous-processus ;
-- les versions publiées par les composants et les tags divergent.
+- l’API ne borne pas la durée ni la taille des sous-processus.
 
 Ne pas considérer le moteur prêt pour une mission professionnelle avant traitement.
 
 Les commandes structurantes des modules propagent désormais leurs erreurs et les étapes facultatives peuvent produire un état `partial`. Cette mécanique reste à valider sur un run Kali autorisé avant de considérer les résultats fiables en production.
 
 ## Limites non bloquantes
+
+### Bus d’événements désactivé
+
+Le logging écrit uniquement dans `logs/<RUN_ID>/combined.log`. L’ancien FIFO sans consommateur a été désactivé pour garantir que `emit` ne bloque pas sur POSIX. Toute réintroduction d’un bus d’événements devra définir le cycle de vie du lecteur et conserver un test de non-blocage.
 
 ### Pas encore validé sur Kali réel après audit
 

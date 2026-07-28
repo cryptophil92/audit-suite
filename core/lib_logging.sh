@@ -7,23 +7,19 @@ init_logging() {
   RUN_ID="$1"; shift || true
   LOG_DIR="logs/$RUN_ID"; mkdir -p "$LOG_DIR"
   LOG_FILE="$LOG_DIR/combined.log"
-  LOG_BUS="tmp/eventbus.$RUN_ID"
-  [[ -p "$LOG_BUS" ]] || mkfifo "$LOG_BUS" 2>/dev/null || true
+  # No event-bus consumer exists today. Keep the variable for compatibility,
+  # but never create or write to a FIFO that could block without a reader.
+  LOG_BUS=""
 }
 
 emit() { # emit LEVEL MODULE MSG...
   local lvl="$1" mod="$2"; shift 2
-  local msg log_file log_bus
+  local msg log_file
 
   log_file="${LOG_FILE:-/dev/stderr}"
-  log_bus="${LOG_BUS:-}"
   msg="$(date -Is) [$lvl] [$mod] $*"
 
   echo "$msg" | tee -a "$log_file" >/dev/null
-
-  if [[ -n "$log_bus" && -p "$log_bus" ]]; then
-    printf '%s\n' "$msg" > "$log_bus" 2>/dev/null || true
-  fi
 }
 
 with_log() { # with_log MODULE CMD...

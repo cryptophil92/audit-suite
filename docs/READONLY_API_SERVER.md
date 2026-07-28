@@ -49,7 +49,8 @@ no_suricata   1/true/yes/on
 
 ## Spécification
 
-`/api/openapi.json` sert le fichier `api/openapi.json`.
+`/api/openapi.json` sert le fichier `api/openapi.json` après injection de la
+version canonique et du commit courant. `/api/health` expose les mêmes valeurs.
 
 ## Comportement
 
