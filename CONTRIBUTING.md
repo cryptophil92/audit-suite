@@ -74,14 +74,21 @@ shellcheck \
   -e SC2154 \
   audit.sh core/*.sh bin/*.sh modules/*.sh ui/*.sh tests/*.sh
 
-for test_file in tests/test_*.sh; do
-  bash "$test_file"
-done
-
-bash bin/smoke_local.sh
+bash bin/test_all.sh
 ```
 
-N’exécutez aucun scan réel dans la CI. Les essais réseau doivent utiliser un laboratoire autorisé, documenter le périmètre et ne jamais committer leurs sorties.
+Le runner découvre automatiquement les fichiers `tests/test_*.sh` et
+`tests/test_*.py`, puis exécute le smoke local. Un nouveau test respectant cette
+convention est donc inclus sans modifier le workflow.
+
+Les scripts, tests Python et workflows doivent rester en LF ; cette politique
+est imposée par `.gitattributes`. Après un ancien checkout Windows en CRLF,
+exécutez `git add --renormalize .` uniquement dans une branche dédiée et
+relisez le diff avant de committer.
+
+N’exécutez aucun scan réel dans la CI. Les tests réseau emploient des doubles
+locaux ou le dry-run. Les essais réels doivent utiliser un laboratoire autorisé,
+documenter le périmètre et ne jamais committer leurs sorties.
 
 ## Licence des contributions
 

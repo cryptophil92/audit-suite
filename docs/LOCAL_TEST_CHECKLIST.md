@@ -16,16 +16,17 @@ Vérifier :
 - aucune nouvelle sortie runtime ajoutée par la branche ;
 - incident historique `output/`, `logs/` et `tmp/` suivi séparément.
 
-## 2. Contrôle JSON et dry-run
+## 2. Suite automatisée complète
 
 ```bash
-bash bin/smoke_local.sh
+bash bin/test_all.sh
 ```
 
-Attendu :
+Le runner découvre les tests Bash et Python, puis exécute le smoke sans scan
+réel. Attendu :
 
 ```text
-[OK] local smoke test passed
+[SUMMARY] ... checks passed; 0 failed
 ```
 
 ## 3. Aperçu de plan CLI
@@ -123,7 +124,7 @@ Vérifier :
 
 Les PR peuvent être passées en revue seulement si :
 
-- smoke local OK ;
+- suite auto-découverte et smoke local OK ;
 - dry-run OK ;
 - API locale OK ;
 - dashboard OK ;

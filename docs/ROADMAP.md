@@ -45,9 +45,8 @@ offensive. La direction complète est documentée dans
 
 ## État vérifié au 29 juillet 2026
 
-Dernier point de référence : `main` après la fusion de la PR
-[#74](https://github.com/cryptophil92/audit-suite/pull/74), commit
-`6d1a3b1ca50cf75bad2e6c4d1b0f89c73728b75d`.
+Dernier point de référence avant ce lot : `main` après la fusion de la PR #75,
+commit `e9518c9787c26f8cdfb87cff95036e7c307791cc`.
 
 | Domaine | État | Suite |
 |---|---|---|
@@ -55,7 +54,7 @@ Dernier point de référence : `main` après la fusion de la PR
 | Logging, états modules, historique, API | #38 à #42 fusionnés | Maintenir les tests |
 | Licence, version et procédure de release | Documentées et fusionnées | Pas de tag avant les gates P0/P1 |
 | Artefacts historiques publics | Décision privée encore requise | Issue #37 |
-| CI exhaustive et maintenance des actions | 25 tests Bash et 17 tests Python passent ; découverte automatique et maintenance restent ouvertes | Issues #43 et #44 |
+| CI exhaustive et maintenance des actions | 27 tests Bash, 17 tests Python et smoke découverts par un runner unique ; LF imposé | Maintenance #44 |
 | Préflight agréable et actionnable | Incomplet | Issue #47 |
 | Modèle de constats et notation | #70 fermé, contrat `1.0.0` implémenté | Brancher les adaptateurs de modules avec #48 |
 | Rapport premium | #71 fermé, HTML privé/partageable/technique implémenté | Valider sur cas réels et relier à #53/#54 |
@@ -68,7 +67,8 @@ Deux volets avancent sans mélanger leurs changements dans une même PR.
 ### Confiance et qualité de livraison
 
 1. décider du traitement privé de #37 ;
-2. automatiser la découverte complète des tests et imposer LF avec #43 ;
+2. maintenir la découverte complète des tests et la politique LF livrées par
+   #43 ;
 3. mettre à niveau la maintenance CI avec #44 ;
 4. construire le préflight guidé de #47.
 
@@ -83,10 +83,10 @@ Deux volets avancent sans mélanger leurs changements dans une même PR.
 
 ### Prochain lot non bloqué
 
-#43 est le prochain lot de confiance entièrement testable sans scan réel ni
-décision destructive. #44 vient ensuite, puis #47 pour améliorer directement
-le démarrage d’un audit. Le volet valeur peut préparer #48/#53 en parallèle,
-mais ne doit pas étendre le dashboard avant le rendu sûr de #51.
+#44 est le prochain lot de confiance entièrement testable sans scan réel ni
+décision destructive. #47 vient ensuite pour améliorer directement le
+démarrage d’un audit. Le volet valeur peut préparer #48/#53 en parallèle, mais
+ne doit pas étendre le dashboard avant le rendu sûr de #51.
 
 ## Phase 0 — Contenir les risques
 
@@ -115,8 +115,9 @@ L’évaluation privée et la décision sur l’historique public restent ouvert
 Critère de sortie : un manifest ne peut pas déclarer un succès lorsque la commande structurante a échoué.
 
 État : contrat `success/partial/failed/skipped`, chemins concurrents et tests
-principaux fusionnés. Le préflight des outils, capacités et privilèges reste à
-traiter dans #47.
+du runner fusionnés. La suite couvre aussi les retours de permission et
+d’interruption sans trafic réseau. Le préflight des outils, capacités et
+privilèges reste à traiter dans #47.
 
 ## Phase 2 — Stabiliser données et API
 
@@ -144,11 +145,11 @@ fusionnés. La cohérence générée des routes et d’OpenAPI reste suivie par 
 
 Critère de sortie : un nouveau contributeur peut installer, tester et identifier précisément la version.
 
-État : licence, version et procédure de release fusionnées. Les 25 tests Bash,
-les 17 tests Python et le smoke local passent dans l’environnement Windows Git
-Bash vérifié le 29 juillet 2026. La découverte automatique, la politique LF et
-la maintenance des actions restent suivies par #43 et #44. Aucune release ne
-doit contourner #37 ni les P1 retenues pour la release.
+État : licence, version et procédure de release fusionnées. Un runner unique
+découvre 27 tests Bash, deux suites Python totalisant 17 cas et le smoke local.
+Un test prouve qu’un nouveau fichier conforme est inclus automatiquement, et
+`.gitattributes` impose LF. La maintenance des actions reste suivie par #44.
+Aucune release ne doit contourner #37 ni les P1 retenues pour la release.
 
 ## Phase 4 — Cœur produit et rapport premium
 

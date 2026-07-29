@@ -8,6 +8,9 @@ le format [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et
 
 ### Fiabilité
 
+- runner unique avec découverte automatique des tests Bash/Python et du smoke ;
+- couverture des échecs de permission et des interruptions de modules ;
+- politique LF automatisée pour les scripts, tests et workflows ;
 - ajout du statut `partial` et d’un contrat explicite pour les états module ;
 - propagation des erreurs des commandes structurantes ;
 - skip déterministe de Zeek et Suricata lorsqu’ils sont désactivés ;
