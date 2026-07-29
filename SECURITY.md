@@ -40,6 +40,11 @@ Attendez l’accord sur le canal avant de transmettre :
 
 Audit Suite est destiné uniquement aux réseaux et systèmes explicitement autorisés. La politique fonctionnelle et les plages bloquées par défaut sont décrites dans `docs/SECURITY.md`.
 
+L'API de consultation est strictement locale. Elle accepte uniquement un bind
+sur une adresse IP loopback littérale (`127.0.0.0/8` ou `::1`) et ne fournit
+aucune option d'écoute distante. Toute évolution de cette politique exige une
+revue de sécurité dédiée et un mécanisme d'authentification adapté.
+
 ## Artefacts runtime
 
 Les répertoires `output/`, `logs/`, `tmp/` et `history/` sont réservés aux données locales et restent ignorés par Git. Une garde CI refuse tout ajout, modification, copie ou renommage entrant dans ces répertoires sans afficher les noms de fichiers dans les logs publics.

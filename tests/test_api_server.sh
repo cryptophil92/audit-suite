@@ -21,6 +21,16 @@ cleanup() {
 }
 trap cleanup EXIT
 
+if python3 api/server.py --host 0.0.0.0 --port "$PORT" --quiet >"$server_log" 2>&1; then
+  echo 'non-loopback bind accepted' >&2
+  exit 1
+fi
+grep -q 'non-loopback API binds are not supported' "$server_log"
+if grep -q 'listening on' "$server_log"; then
+  echo 'server started before rejecting non-loopback bind' >&2
+  exit 1
+fi
+
 python3 api/server.py --host 127.0.0.1 --port "$PORT" --quiet >"$server_log" 2>&1 &
 server_pid="$!"
 

@@ -10,6 +10,24 @@ python3 api/server.py --host 127.0.0.1 --port 8765
 
 Par défaut, l'écoute est limitée à `127.0.0.1`.
 
+`--host` accepte uniquement une adresse IP loopback littérale :
+
+```text
+127.0.0.0/8
+::1
+```
+
+Exemple IPv6 :
+
+```bash
+python3 api/server.py --host ::1 --port 8765
+```
+
+Les adresses non loopback (`0.0.0.0`, une adresse LAN ou une adresse publique)
+et les noms d'hôte sont refusés avant la création du serveur. Il n'existe aucun
+mode de contournement pour une écoute distante : cette capacité nécessiterait
+une revue dédiée et un mécanisme d'authentification.
+
 ## Routes disponibles
 
 ```text
@@ -59,6 +77,10 @@ version canonique et du commit courant. `/api/health` expose les mêmes valeurs.
 - Les méthodes non prévues sont refusées.
 - Les chemins inconnus retournent une erreur JSON.
 - Les réponses utilisent `Cache-Control: no-store`.
+- Les erreurs HTTP des sous-processus n'exposent ni la commande exécutée, ni
+  `stderr`, ni les chemins internes des ressources statiques.
+- Les détails nécessaires au diagnostic sont consignés uniquement dans le
+  journal privé du processus serveur.
 
 ## Commandes appelées
 
