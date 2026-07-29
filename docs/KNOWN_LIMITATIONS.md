@@ -70,16 +70,16 @@ Il ne doit pas encore :
 
 ### Rapport centré sur l’exécution
 
-Le rapport HTML actuel présente le contexte et l’état des modules. Il ne
-contient pas encore :
+Le manifest `1.2.0` accepte des constats structurés, mais les modules réels ne
+disposent pas encore tous d’un adaptateur. Le rapport HTML actuel présente
+uniquement le contexte et l’état des modules. Il ne contient pas encore :
 
-- de constats de sécurité structurés ;
-- de gravité, confiance ou notation justifiée ;
-- de preuves normalisées ;
-- de remédiation et méthode de vérification ;
+- l’affichage des constats, gravités, confiances et notes ;
+- les preuves et remédiations du contrat `findings[]` ;
 - de résumé exécutif ou plan d’action.
 
-Voir [`PREMIUM_REPORT_SPEC.md`](PREMIUM_REPORT_SPEC.md) et les issues #70/#71.
+Voir [`FINDINGS_CONTRACT.md`](FINDINGS_CONTRACT.md),
+[`PREMIUM_REPORT_SPEC.md`](PREMIUM_REPORT_SPEC.md) et l’issue #71.
 
 ### OpenAPI basique
 

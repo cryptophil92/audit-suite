@@ -24,7 +24,8 @@ bash bin/report_html.sh output/AUDIT_1/manifest.json output/AUDIT_1/rapport.html
 
 ## Entrée
 
-Le script lit un manifest AUDIT-SUITE, idéalement au schéma `1.0.0` décrit dans :
+Le script lit les manifests AUDIT-SUITE `1.0.0`, `1.1.0` et `1.2.0` décrits
+dans :
 
 ```text
 docs/REPORT_SCHEMA.md
@@ -59,13 +60,11 @@ Le rapport contient :
 ## Limite actuelle
 
 Ce rapport indique si les vérifications techniques ont réussi, échoué, été
-ignorées ou produit un résultat partiel. Il ne présente pas encore des failles
-ou constats structurés, une note de risque, des preuves normalisées ni un plan
-de remédiation.
+ignorées ou produit un résultat partiel. Le manifest `1.2.0` peut contenir des
+constats structurés, mais le HTML actuel ne les présente pas encore.
 
 La cible du rapport premium est documentée dans
 [`PREMIUM_REPORT_SPEC.md`](PREMIUM_REPORT_SPEC.md) et suivie par
-[#70](https://github.com/cryptophil92/audit-suite/issues/70) puis
 [#71](https://github.com/cryptophil92/audit-suite/issues/71).
 
 ## Sécurité d'affichage

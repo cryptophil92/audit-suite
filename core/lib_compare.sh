@@ -67,6 +67,15 @@ compare_runs_json() {
       partial_count: ($m.summary.partial_count // ([($m.modules // [])[] | select(.status == "partial")] | length)),
       failed_count: ($m.summary.failed_count // ([($m.modules // [])[] | select(.status == "failed")] | length)),
       skipped_count: ($m.summary.skipped_count // ([($m.modules // [])[] | select(.status == "skipped")] | length)),
+      finding_count: ($m.summary.findings.total_count // (($m.findings // []) | length)),
+      scored_finding_count: (
+        $m.summary.findings.scored_count
+        // ([($m.findings // [])[] | select(.scoring.status == "scored")] | length)
+      ),
+      unscored_finding_count: (
+        $m.summary.findings.unscored_count
+        // ([($m.findings // [])[] | select(.scoring.status == "unscored")] | length)
+      ),
       total_duration_seconds: ($m.summary.total_duration_seconds // ([($m.modules // [])[].duration_seconds] | add // 0))
     };
 

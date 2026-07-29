@@ -11,7 +11,11 @@ le format [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et
 - ajout du statut `partial` et d’un contrat explicite pour les états module ;
 - propagation des erreurs des commandes structurantes ;
 - skip déterministe de Zeek et Suricata lorsqu’ils sont désactivés ;
-- historique, comparaison et rapport HTML adaptés au schéma manifest `1.1.0`.
+- historique, comparaison et rapport HTML adaptés au schéma manifest `1.1.0` ;
+- manifest `1.2.0` avec contrat `findings[]` `1.0.0`, comptes de gravité et
+  confiance, validation stricte et normalisation des schémas hérités ;
+- conservation des constats structurés dans le dernier run et de leurs comptes
+  dans l’index d’historique.
 
 ### Corrigé
 
@@ -41,8 +45,8 @@ le format [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et
 - formalisation de la procédure de release et de son contrôle P0/P1.
 - clarification de la vision produit autour d’un audit guidé, local et orienté
   remédiation, distinct des plateformes red team/blue team ;
-- définition du contrat cible des constats, de la notation responsable et du
-  rapport premium.
+- définition du rapport premium et publication du contrat machine des constats,
+  de la notation responsable et des fixtures synthétiques.
 
 ### Important
 

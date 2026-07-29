@@ -20,6 +20,7 @@ output/RUN_1/RUN_1_report_pack.tar.gz
 Après l'exécution des modules, `audit.sh` effectue maintenant :
 
 ```text
+validation de findings.json s’il existe
 write_manifest_json
 finalize_run_outputs
 history_record_run
@@ -28,6 +29,7 @@ history_record_run
 Cela garantit que :
 
 - le manifest existe avant génération HTML ;
+- un fichier de constats invalide ne peut pas être intégré au manifest ;
 - le pack peut inclure le rapport HTML ;
 - l'historique reste enregistré après génération des fichiers finaux.
 

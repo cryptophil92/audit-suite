@@ -1,0 +1,181 @@
+{
+  "schema_version": "1.2.0",
+  "kind": "audit-suite.manifest",
+  "findings_schema_version": "1.0.0",
+  "version": "0.2.34",
+  "commit": "synthetic",
+  "run_id": "AUDIT_SYNTHETIC_FINDINGS_120",
+  "created_at": "2026-07-29T10:10:00Z",
+  "profile": "fast",
+  "targets": [
+    "192.0.2.0/24"
+  ],
+  "options": {
+    "no_udp": false,
+    "no_zeek": true,
+    "no_suricata": true,
+    "allow_public": false
+  },
+  "paths": {
+    "output": "output/AUDIT_SYNTHETIC_FINDINGS_120",
+    "logs": "logs/AUDIT_SYNTHETIC_FINDINGS_120",
+    "manifest": "output/AUDIT_SYNTHETIC_FINDINGS_120/manifest.json"
+  },
+  "selected_modules": [
+    "30_vuln_nmap_nse.sh"
+  ],
+  "summary": {
+    "module_count": 0,
+    "success_count": 0,
+    "partial_count": 0,
+    "failed_count": 0,
+    "skipped_count": 0,
+    "total_duration_seconds": 0,
+    "status": "empty",
+    "findings": {
+      "total_count": 2,
+      "scored_count": 1,
+      "unscored_count": 1,
+      "by_severity": {
+        "informational": 1,
+        "low": 0,
+        "medium": 1,
+        "high": 0,
+        "critical": 0,
+        "unknown": 0
+      },
+      "by_confidence": {
+        "low": 0,
+        "medium": 1,
+        "high": 1
+      }
+    }
+  },
+  "modules": [],
+  "findings": [
+    {
+      "id": "finding.synthetic.tls-legacy.001",
+      "type": "potential_vulnerability",
+      "title": "Protocole TLS ancien potentiellement accepté",
+      "category": "transport_security",
+      "asset": {
+        "id": "asset.synthetic.web-01",
+        "address": "192.0.2.10",
+        "hostname": "web-01.example.invalid"
+      },
+      "scope": {
+        "target": "192.0.2.0/24",
+        "relation": "direct"
+      },
+      "service": {
+        "transport": "tcp",
+        "port": 443,
+        "name": "https"
+      },
+      "severity": "medium",
+      "scoring": {
+        "status": "scored",
+        "score": 5.3,
+        "scale": 10,
+        "method": "cvss-v3.1",
+        "method_version": "3.1",
+        "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N",
+        "rationale": "Vecteur complet fourni par la fixture synthétique.",
+        "source": "fixture_synthetic"
+      },
+      "confidence": "medium",
+      "validation_status": "potential",
+      "observation": "La fixture indique une configuration TLS ancienne à confirmer.",
+      "impact": "Un protocole ancien peut réduire la robustesse du transport.",
+      "evidence": [
+        {
+          "id": "evidence.synthetic.tls-legacy.001",
+          "kind": "file_reference",
+          "source": "30_vuln_nmap_nse",
+          "path": "30_vuln_nmap_nse/synthetic-tls-check.json",
+          "captured_at": "2026-07-29T10:10:00Z"
+        }
+      ],
+      "source": {
+        "module": "30_vuln_nmap_nse",
+        "tool": "synthetic-fixture",
+        "tool_version": "1.0.0",
+        "collected_at": "2026-07-29T10:10:00Z",
+        "provenance": "Donnée entièrement synthétique réservée aux tests."
+      },
+      "remediation": {
+        "priority": "short_term",
+        "effort": "medium",
+        "action": "Vérifier la configuration TLS puis désactiver les protocoles obsolètes.",
+        "rationale": "Réduire l’exposition aux protocoles de transport anciens.",
+        "prerequisites": [
+          "Vérifier la compatibilité des clients autorisés."
+        ],
+        "change_risk": "Une désactivation sans test peut interrompre un client ancien.",
+        "compensating_control": "Restreindre temporairement l’accès au service.",
+        "verification": "Relancer uniquement la vérification TLS synthétique après changement."
+      },
+      "references": [
+        "https://www.rfc-editor.org/rfc/rfc7525"
+      ],
+      "limitations": [
+        "Le résultat synthétique ne confirme aucun service réel."
+      ]
+    },
+    {
+      "id": "finding.synthetic.banner.001",
+      "type": "observation",
+      "title": "Bannière de service synthétique <à examiner>",
+      "category": "service_inventory",
+      "asset": {
+        "id": "asset.synthetic.web-01",
+        "address": "192.0.2.10"
+      },
+      "scope": {
+        "target": "192.0.2.0/24",
+        "relation": "derived"
+      },
+      "service": {
+        "transport": "tcp",
+        "port": 443,
+        "name": "https"
+      },
+      "severity": "informational",
+      "scoring": {
+        "status": "unscored",
+        "rationale": "Une observation d’inventaire ne justifie pas de score de risque."
+      },
+      "confidence": "high",
+      "validation_status": "observed",
+      "observation": "Une bannière synthétique est disponible dans une preuve référencée.",
+      "impact": "Cette information sert à confirmer l’inventaire du service.",
+      "evidence": [
+        {
+          "id": "evidence.synthetic.banner.001",
+          "kind": "data_reference",
+          "source": "40_service_enum",
+          "path": "40_service_enum/synthetic-banner.json",
+          "captured_at": "2026-07-29T10:10:00Z"
+        }
+      ],
+      "source": {
+        "module": "40_service_enum",
+        "tool": "synthetic-fixture",
+        "collected_at": "2026-07-29T10:10:00Z",
+        "provenance": "Donnée entièrement synthétique réservée aux tests."
+      },
+      "remediation": {
+        "priority": "monitor",
+        "effort": "low",
+        "action": "Confirmer que la bannière publiée correspond au besoin d’exploitation.",
+        "rationale": "Limiter les informations inutiles sans casser le service.",
+        "change_risk": "Une modification peut compliquer le diagnostic opérationnel.",
+        "verification": "Comparer la bannière synthétique avant et après le changement."
+      },
+      "references": [],
+      "limitations": [
+        "Aucune vulnérabilité n’est déduite de cette bannière."
+      ]
+    }
+  ]
+}

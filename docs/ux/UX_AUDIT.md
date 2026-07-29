@@ -201,7 +201,8 @@ Chaque erreur doit dire :
 - comparaison disponible uniquement en CLI ;
 - aucun lien direct depuis l’interface ;
 - aucune hiérarchie d’alertes ;
-- aucun modèle de constats, notation, preuve ou remédiation dans le manifest.
+- contrat de constats disponible dans le manifest `1.2.0`, mais sans
+  restitution dans l’interface ni adaptateurs complets pour les modules réels.
 
 ### Besoin
 

@@ -15,7 +15,8 @@ Type logique :
 ```json
 {
   "kind": "audit-suite.manifest",
-  "schema_version": "1.1.0",
+  "schema_version": "1.2.0",
+  "findings_schema_version": "1.0.0",
   "version": "X.Y.Z",
   "commit": "0123456789abcdef"
 }
@@ -26,6 +27,7 @@ Type logique :
 | Champ | Type | Description |
 |---|---:|---|
 | `schema_version` | string | Version du schéma manifest. |
+| `findings_schema_version` | string | Version du contrat `findings[]`. |
 | `kind` | string | Type logique du document. |
 | `version` | string | Version applicative lue depuis `VERSION`. |
 | `commit` | string | Commit Git du code exécuté, ou `unknown`. |
@@ -38,6 +40,7 @@ Type logique :
 | `selected_modules` | array | Modules demandés. |
 | `summary` | object | Résumé exploitable par API/export. |
 | `modules` | array | Résultat détaillé par module. |
+| `findings` | array | Constats de sécurité structurés. |
 
 ## `summary`
 
@@ -49,7 +52,25 @@ Type logique :
   "failed_count": 0,
   "skipped_count": 1,
   "total_duration_seconds": 42,
-  "status": "partial"
+  "status": "partial",
+  "findings": {
+    "total_count": 0,
+    "scored_count": 0,
+    "unscored_count": 0,
+    "by_severity": {
+      "informational": 0,
+      "low": 0,
+      "medium": 0,
+      "high": 0,
+      "critical": 0,
+      "unknown": 0
+    },
+    "by_confidence": {
+      "low": 0,
+      "medium": 0,
+      "high": 0
+    }
+  }
 }
 ```
 
@@ -95,7 +116,30 @@ Valeurs possibles pour `modules[].status` :
 
 Un module peut appeler `module_mark_partial "raison"` uniquement pour une étape réellement facultative. Les options `OPTS_NO_ZEEK` et `OPTS_NO_SURICATA` sont évaluées avant les dépendances afin de produire un état `skipped` déterministe, que les outils soient installés ou non.
 
-Le schéma `1.1.0` ajoute `partial` et `summary.partial_count`. Les lecteurs doivent continuer à accepter les manifests `1.0.0`, où ce compteur est absent.
+Le schéma `1.1.0` ajoute `partial` et `summary.partial_count`.
+
+Le schéma `1.2.0` ajoute :
+
+- `findings_schema_version` ;
+- `findings[]` ;
+- `summary.findings`.
+
+Le contrat détaillé, les vocabulaires et les règles de notation sont décrits
+dans [`FINDINGS_CONTRACT.md`](FINDINGS_CONTRACT.md).
+
+Les lecteurs doivent continuer à accepter les manifests `1.0.0` et `1.1.0`.
+La commande suivante les normalise en lecture avec une liste vide sans modifier
+le fichier source :
+
+```bash
+bash bin/manifest_json.sh normalize output/AUDIT_1/manifest.json
+```
+
+Validation explicite :
+
+```bash
+bash bin/manifest_json.sh validate output/AUDIT_1/manifest.json
+```
 
 ## Objectif
 
@@ -107,14 +151,15 @@ Ce schéma prépare :
 - la comparaison entre deux audits ;
 - l'exploitation des résultats sans relire les logs bruts.
 
-## Limite actuelle
+## Limites actuelles
 
-Le schéma `1.1.0` décrit l’état d’exécution des modules. Il ne contient pas
-encore de collection structurée de constats, de gravité, de confiance, de
-preuve, de notation ou de remédiation.
+Le contrat permet désormais de transporter des constats structurés, mais les
+modules réels ne disposent pas encore tous d’un adaptateur vers `findings[]`.
+Une liste vide signifie uniquement qu’aucun constat structuré n’a été fourni ;
+elle ne démontre pas l’absence de faille.
 
-Le futur contrat `findings[]` est suivi par l’issue
-[#70](https://github.com/cryptophil92/audit-suite/issues/70). Sa cible produit
-et ses règles de compatibilité sont décrites dans
-[`PREMIUM_REPORT_SPEC.md`](PREMIUM_REPORT_SPEC.md). Aucun lecteur ne doit
-interpréter un statut de module comme une note de risque.
+Le rapport HTML actuel n’affiche pas encore `findings[]`. Sa cible est décrite
+dans [`PREMIUM_REPORT_SPEC.md`](PREMIUM_REPORT_SPEC.md) et suivie par
+[#71](https://github.com/cryptophil92/audit-suite/issues/71).
+
+Aucun lecteur ne doit interpréter un statut de module comme une note de risque.

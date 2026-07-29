@@ -122,6 +122,8 @@ jq -e '.schema_version == "1.0.0"' "$compare_json" >/dev/null
 jq -e '.before.run_id == "AUDIT_BEFORE"' "$compare_json" >/dev/null
 jq -e '.after.run_id == "AUDIT_AFTER"' "$compare_json" >/dev/null
 jq -e '.after.partial_count == 1' "$compare_json" >/dev/null
+jq -e '.before.finding_count == 0 and .after.finding_count == 0' "$compare_json" >/dev/null
+jq -e '.before.scored_finding_count == 0 and .after.unscored_finding_count == 0' "$compare_json" >/dev/null
 jq -e '.summary.total_modules_compared == 4' "$compare_json" >/dev/null
 jq -e '.summary.added_count == 1' "$compare_json" >/dev/null
 jq -e '.summary.removed_count == 1' "$compare_json" >/dev/null

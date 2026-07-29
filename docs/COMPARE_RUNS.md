@@ -28,7 +28,10 @@ Les manifests doivent contenir au minimum :
 - `run_id` ;
 - `modules[]`.
 
-Les schémas manifest `1.0.0` et `1.1.0` issus de `docs/REPORT_SCHEMA.md` sont supportés.
+Les schémas manifest `1.0.0`, `1.1.0` et `1.2.0` issus de
+`docs/REPORT_SCHEMA.md` sont supportés. Le résumé de comparaison expose le
+nombre de constats notés et non notés ; la comparaison détaillée des constats
+reste prévue avec l’interface des résultats.
 
 ## Sortie JSON
 

@@ -40,7 +40,8 @@ preuves traçables et des recommandations actionnables. Voir
 - détection/énumération initiale de services SMB et HTTP ;
 - orchestration modulaire avec délai maximal par module ;
 - dry-run et aperçu JSON sans exécution ;
-- manifest JSON, historique local et comparaison de runs ;
+- manifest JSON `1.2.0`, contrat versionné des constats, historique local et
+  comparaison de runs ;
 - rapport HTML technique et archive de rapport ;
 - API HTTP locale en lecture seule ;
 - tableau de bord Web local sans dépendance front-end externe.
@@ -50,8 +51,7 @@ preuves traçables et des recommandations actionnables. Voir
 - les modules SNMP, Zeek et Suricata sont encore des squelettes ou placeholders ;
 - le module SMB ne réalise qu’une détection initiale ;
 - l’interface Web prépare et consulte, mais ne lance pas d’audit ;
-- le manifest ne contient pas encore de constats structurés, de notation des
-  risques ni de remédiations ;
+- les modules réels ne produisent pas encore tous des constats structurés ;
 - le rapport HTML actuel décrit l’exécution des modules, pas encore un rapport
   premium orienté décision ;
 - la portabilité hors Kali/Linux n’est pas garantie ;
@@ -72,6 +72,7 @@ VERSION                 Source canonique de la version applicative
 web/index.html          Tableau de bord local statique
 ui/                     Aides d’interface terminal
 tests/                  Tests Bash et test fonctionnel de l’API
+schemas/                JSON Schema et règles runtime des contrats de données
 docs/                   Documentation produit, technique, UX et sécurité
 ```
 
@@ -86,7 +87,7 @@ Préflight des dépendances et détection de l’environnement
       ↓
 Exécution séquentielle des modules
       ↓
-Manifest → rapport HTML → archive → historique local
+Constats structurés → manifest → rapport HTML → archive → historique local
 ```
 
 L’inventaire détaillé se trouve dans [`docs/audit/REPOSITORY_INVENTORY.md`](docs/audit/REPOSITORY_INVENTORY.md).
@@ -206,7 +207,7 @@ Ces données peuvent révéler la topologie, les services et les vulnérabilité
 
 ## Tests
 
-La suite contient 24 scripts `tests/test_*.sh`, deux suites Python et un smoke
+La suite contient 25 scripts `tests/test_*.sh`, deux suites Python et un smoke
 test :
 
 ```bash
@@ -217,7 +218,7 @@ done
 bash bin/smoke_local.sh
 ```
 
-La CI exécute ShellCheck, les 24 tests Bash et les deux suites Python sous
+La CI exécute ShellCheck, les 25 tests Bash et les deux suites Python sous
 Ubuntu. Leur liste reste déclarée explicitement dans le workflow : l’issue
 [#43](https://github.com/cryptophil92/audit-suite/issues/43) prévoit une
 découverte automatique afin qu’un futur test ne puisse pas être oublié.
@@ -246,7 +247,7 @@ Ordre recommandé :
 
 1. sécuriser les données déjà publiées et corriger les blocages du moteur ;
 2. terminer la CI reproductible et le préflight guidé ;
-3. structurer les constats, preuves, gravité, confiance et notation ;
+3. connecter progressivement les modules au contrat de constats versionné ;
 4. construire le rapport premium et son plan de remédiation ;
 5. relier rapports, historique, onboarding et accessibilité ;
 6. valider les parcours avec des utilisateurs autorisés ;
@@ -255,7 +256,9 @@ Ordre recommandé :
 La roadmap détaillée est disponible dans [`docs/ROADMAP.md`](docs/ROADMAP.md)
 et dans l’[issue GitHub #58](https://github.com/cryptophil92/audit-suite/issues/58).
 La cible des rapports est définie dans
-[`docs/PREMIUM_REPORT_SPEC.md`](docs/PREMIUM_REPORT_SPEC.md). Le registre
+[`docs/PREMIUM_REPORT_SPEC.md`](docs/PREMIUM_REPORT_SPEC.md) et le contrat de
+données dans
+[`docs/FINDINGS_CONTRACT.md`](docs/FINDINGS_CONTRACT.md). Le registre
 complet des constats est conservé dans
 [`docs/audit/ISSUE_REGISTER.md`](docs/audit/ISSUE_REGISTER.md).
 

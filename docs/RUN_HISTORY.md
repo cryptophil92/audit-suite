@@ -38,12 +38,17 @@ Chaque ligne contient notamment :
 - `partial_count`
 - `failed_count`
 - `skipped_count`
+- `finding_count`
+- `scored_finding_count`
+- `unscored_finding_count`
+- `findings_by_severity`
 - `output_path`
 - `manifest_path`
 
 ## `latest.json`
 
-`latest.json` contient le dernier audit sous forme lisible, avec le détail des modules.
+`latest.json` contient le dernier audit sous forme lisible, avec le détail des
+modules et les constats structurés du manifest `1.2.0`.
 
 ## Résilience et concurrence
 
@@ -63,7 +68,10 @@ La création des dossiers `output/<run_id>` et `logs/<run_id>` est également
 réservée de manière exclusive. Deux processus ne peuvent donc pas partager les
 dossiers d'un même identifiant.
 
-Les historiques issus d’un manifest `1.0.0` peuvent ne pas contenir `partial_count`. Les lecteurs doivent alors utiliser `0` ou recompter les modules dont le statut vaut `partial`.
+Les historiques issus d’un manifest `1.0.0` peuvent ne pas contenir
+`partial_count`. Les manifests `1.0.0` et `1.1.0` ne contiennent pas
+`findings[]`. Les lecteurs utilisent alors `0` pour les compteurs associés et
+une liste vide pour le dernier run.
 
 ## Commandes
 
