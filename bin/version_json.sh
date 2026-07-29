@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 # bin/version_json.sh
-# @version 0.2.27
 set -Eeuo pipefail
 
-VERSION="0.2.27"
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+REPO_DIR="$(cd -- "$SCRIPT_DIR/.." && pwd)"
+# shellcheck source=../core/lib_version.sh
+source "$REPO_DIR/core/lib_version.sh"
 
 usage_version_json() {
   cat <<'EOF'
@@ -22,11 +24,22 @@ require_jq() {
 }
 
 emit_version_json() {
+  local version commit
+
+  version="$(audit_suite_version)"
+  commit="$(audit_suite_commit)"
+
   jq -n \
     --arg kind "audit-suite.version" \
     --arg schema_version "1.0.0" \
-    --arg version "$VERSION" \
-    '{kind: $kind, schema_version: $schema_version, version: $version}'
+    --arg version "$version" \
+    --arg commit "$commit" \
+    '{
+      kind: $kind,
+      schema_version: $schema_version,
+      version: $version,
+      commit: $commit
+    }'
 }
 
 case "${1:-}" in

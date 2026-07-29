@@ -15,6 +15,8 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import parse_qs, urlparse
 
+from version import APP_COMMIT, APP_VERSION
+
 REPO_DIR = Path(__file__).resolve().parent.parent
 WEB_INDEX = REPO_DIR / "web" / "index.html"
 OPENAPI_SPEC = REPO_DIR / "api" / "openapi.json"
@@ -135,7 +137,7 @@ def build_plan_command(query: dict[str, list[str]]) -> tuple[list[str] | None, d
 
 
 class AuditSuiteHandler(BaseHTTPRequestHandler):
-    server_version = "AuditSuiteReadOnlyAPI/0.2.34"
+    server_version = f"AuditSuiteReadOnlyAPI/{APP_VERSION}"
 
     def log_message(self, format: str, *args: Any) -> None:  # noqa: A002
         if getattr(self.server, "quiet", False):
@@ -169,6 +171,35 @@ class AuditSuiteHandler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(body)
 
+    def _write_openapi(self) -> None:
+        if not OPENAPI_SPEC.is_file():
+            self._write_json(
+                HTTPStatus.NOT_FOUND,
+                {
+                    "kind": "audit-suite.api_error",
+                    "error": "json_file_missing",
+                    "path": str(OPENAPI_SPEC),
+                },
+            )
+            return
+
+        try:
+            payload = json.loads(OPENAPI_SPEC.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError) as exc:
+            self._write_json(
+                HTTPStatus.INTERNAL_SERVER_ERROR,
+                {
+                    "kind": "audit-suite.api_error",
+                    "error": "invalid_openapi_document",
+                    "detail": str(exc),
+                },
+            )
+            return
+
+        payload.setdefault("info", {})["version"] = APP_VERSION
+        payload["info"]["x-audit-suite-commit"] = APP_COMMIT
+        self._write_json(HTTPStatus.OK, payload)
+
     def _write_html(self, status: HTTPStatus, html_path: Path) -> None:
         if not html_path.is_file():
             self._write_json(
@@ -200,7 +231,7 @@ class AuditSuiteHandler(BaseHTTPRequestHandler):
             return
 
         if path == "/api/openapi.json":
-            self._write_json_file(HTTPStatus.OK, OPENAPI_SPEC)
+            self._write_openapi()
             return
 
         if path == "/api/health":
@@ -210,6 +241,8 @@ class AuditSuiteHandler(BaseHTTPRequestHandler):
                     "kind": "audit-suite.api_health",
                     "status": "ok",
                     "read_only": True,
+                    "version": APP_VERSION,
+                    "commit": APP_COMMIT,
                 },
             )
             return

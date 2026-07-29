@@ -2,6 +2,10 @@
 
 `bin/history_json.sh run RUN_ID` retourne un run précis depuis l'index local `history/runs.jsonl`.
 
+La lecture ignore les lignes invalides ou tronquées de l'index. La réponse
+reste exploitable et expose `degraded`, `error_count` et
+`degradation.invalid_line_count`.
+
 ## Exemple
 
 ```bash

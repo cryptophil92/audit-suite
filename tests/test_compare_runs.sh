@@ -28,6 +28,7 @@ cat > "$before_manifest" <<'JSON'
   "summary": {
     "module_count": 3,
     "success_count": 2,
+    "partial_count": 0,
     "failed_count": 0,
     "skipped_count": 1,
     "total_duration_seconds": 12,
@@ -67,7 +68,7 @@ JSON
 
 cat > "$after_manifest" <<'JSON'
 {
-  "schema_version": "1.0.0",
+  "schema_version": "1.1.0",
   "kind": "audit-suite.manifest",
   "run_id": "AUDIT_AFTER",
   "created_at": "2026-07-01T01:00:00+00:00",
@@ -75,11 +76,12 @@ cat > "$after_manifest" <<'JSON'
   "targets": ["192.168.1.0/24"],
   "summary": {
     "module_count": 3,
-    "success_count": 2,
-    "failed_count": 1,
+    "success_count": 1,
+    "partial_count": 1,
+    "failed_count": 0,
     "skipped_count": 0,
     "total_duration_seconds": 17,
-    "status": "failed"
+    "status": "partial"
   },
   "modules": [
     {
@@ -95,10 +97,10 @@ cat > "$after_manifest" <<'JSON'
       "id": "20_portscan_nmap",
       "name": "Portscan Nmap",
       "path": "modules/20_portscan_nmap.sh",
-      "status": "failed",
-      "rc": 1,
+      "status": "partial",
+      "rc": 0,
       "duration_seconds": 8,
-      "reason": "module returned rc=1"
+      "reason": "optional UDP scan returned rc=8"
     },
     {
       "id": "30_vuln_nmap_nse",
@@ -119,6 +121,7 @@ jq -e '.kind == "audit-suite.compare"' "$compare_json" >/dev/null
 jq -e '.schema_version == "1.0.0"' "$compare_json" >/dev/null
 jq -e '.before.run_id == "AUDIT_BEFORE"' "$compare_json" >/dev/null
 jq -e '.after.run_id == "AUDIT_AFTER"' "$compare_json" >/dev/null
+jq -e '.after.partial_count == 1' "$compare_json" >/dev/null
 jq -e '.summary.total_modules_compared == 4' "$compare_json" >/dev/null
 jq -e '.summary.added_count == 1' "$compare_json" >/dev/null
 jq -e '.summary.removed_count == 1' "$compare_json" >/dev/null

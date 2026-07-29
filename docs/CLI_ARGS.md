@@ -85,8 +85,18 @@ Cette commande affiche les modules disponibles puis quitte.
 --allow-public
 --dry-run
 --list-modules
+--version
 -h, --help
 ```
+
+## Afficher la version
+
+```bash
+./audit.sh --version
+```
+
+La commande affiche la version canonique et le commit Git sans démarrer
+d'audit.
 
 Les formats suivants sont acceptés :
 

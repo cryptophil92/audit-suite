@@ -99,6 +99,8 @@ assert "renderRoutes" in body
 
 openapi = get_json("/api/openapi.json")
 assert openapi["openapi"] == "3.0.3"
+assert openapi["info"]["version"]
+assert openapi["info"]["x-audit-suite-commit"]
 assert "/api/plan" in openapi["paths"]
 assert "/api/snapshot" in openapi["paths"]
 
@@ -110,7 +112,10 @@ assert "/api/plan" in route_paths
 assert "/api/openapi.json" in route_paths
 assert "/api/routes" in route_paths
 
-assert get_json("/api/health")["kind"] == "audit-suite.api_health"
+health = get_json("/api/health")
+assert health["kind"] == "audit-suite.api_health"
+assert health["version"] == openapi["info"]["version"]
+assert health["commit"] == openapi["info"]["x-audit-suite-commit"]
 assert get_json("/api/status")["kind"] == "audit-suite.status"
 assert get_json("/api/modules")["kind"] == "audit-suite.modules"
 assert get_json("/api/history")["kind"] == "audit-suite.history"

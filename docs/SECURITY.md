@@ -87,7 +87,7 @@ Déjà traité dans la branche `feat/v0.2-hardening-bash` :
 ## Prochains contrôles
 
 - traiter les sorties d’audit suivies dans Git ;
-- corriger le blocage potentiel du FIFO de logging ;
+- maintenir le test de non-blocage du logging sur POSIX ;
 - rendre les statuts modules fidèles aux codes retour ;
 - limiter l’API à loopback et borner ses sous-processus ;
 - tester un run réel sur lab local après correction ;

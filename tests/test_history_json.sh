@@ -15,10 +15,12 @@ printf '%s\n' "$empty_list" | jq -e '.kind == "audit-suite.history"' >/dev/null
 printf '%s\n' "$empty_list" | jq -e '.schema_version == "1.0.0"' >/dev/null
 printf '%s\n' "$empty_list" | jq -e '.count == 0' >/dev/null
 printf '%s\n' "$empty_list" | jq -e '.runs == []' >/dev/null
+printf '%s\n' "$empty_list" | jq -e '.degraded == false and .error_count == 0' >/dev/null
 
 empty_latest="$(bash bin/history_json.sh latest)"
 printf '%s\n' "$empty_latest" | jq -e '.kind == "audit-suite.history.latest"' >/dev/null
 printf '%s\n' "$empty_latest" | jq -e '.latest == null' >/dev/null
+printf '%s\n' "$empty_latest" | jq -e '.degraded == false and .error_count == 0' >/dev/null
 
 mkdir -p "$AUDIT_HISTORY_DIR"
 cat >"$AUDIT_HISTORY_DIR/runs.jsonl" <<'JSONL'
@@ -34,10 +36,36 @@ list_json="$(bash bin/history_json.sh list)"
 printf '%s\n' "$list_json" | jq -e '.count == 2' >/dev/null
 printf '%s\n' "$list_json" | jq -e '.runs[0].run_id == "RUN_1"' >/dev/null
 printf '%s\n' "$list_json" | jq -e '.runs[1].run_id == "RUN_2"' >/dev/null
+printf '%s\n' "$list_json" | jq -e '.degraded == false and .error_count == 0' >/dev/null
 
 latest_json="$(bash bin/history_json.sh latest)"
 printf '%s\n' "$latest_json" | jq -e '.latest.run_id == "RUN_2"' >/dev/null
 printf '%s\n' "$latest_json" | jq -e '.latest.summary.status == "failed"' >/dev/null
+
+cat >>"$AUDIT_HISTORY_DIR/runs.jsonl" <<'JSONL'
+not-json
+{"run_id":"RUN_TRUNCATED"
+
+JSONL
+
+degraded_list="$(bash bin/history_json.sh list)"
+printf '%s\n' "$degraded_list" | jq -e '.degraded == true' >/dev/null
+printf '%s\n' "$degraded_list" | jq -e '.error_count == 2' >/dev/null
+printf '%s\n' "$degraded_list" | jq -e '.degradation.invalid_line_count == 2' >/dev/null
+printf '%s\n' "$degraded_list" | jq -e '.degradation.ignored_line_count == 1' >/dev/null
+printf '%s\n' "$degraded_list" | jq -e '.count == 2' >/dev/null
+printf '%s\n' "$degraded_list" | jq -e '[.runs[].run_id] == ["RUN_1", "RUN_2"]' >/dev/null
+
+degraded_run="$(bash bin/history_json.sh run RUN_2)"
+printf '%s\n' "$degraded_run" | jq -e '.found == true and .run.run_id == "RUN_2"' >/dev/null
+printf '%s\n' "$degraded_run" | jq -e '.degraded == true and .error_count == 2' >/dev/null
+bash bin/history.sh list | grep -q 'RUN_2'
+
+printf '{"run_id":"RUN_TRUNCATED"' >"$AUDIT_HISTORY_DIR/latest.json"
+degraded_latest="$(bash bin/history_json.sh latest)"
+printf '%s\n' "$degraded_latest" | jq -e '.degraded == true and .error_count == 1' >/dev/null
+printf '%s\n' "$degraded_latest" | jq -e '.degradation.code == "invalid_latest_json"' >/dev/null
+printf '%s\n' "$degraded_latest" | jq -e '.latest == null' >/dev/null
 
 paths_json="$(bash bin/history_json.sh paths)"
 printf '%s\n' "$paths_json" | jq -e '.kind == "audit-suite.history.paths"' >/dev/null

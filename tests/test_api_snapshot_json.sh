@@ -30,6 +30,20 @@ printf '%s\n' "$snapshot_json" | jq -e '.latest.kind == "audit-suite.history.lat
 printf '%s\n' "$snapshot_json" | jq -e '.history.count == 1' >/dev/null
 printf '%s\n' "$snapshot_json" | jq -e '.latest.latest.run_id == "RUN_API_1"' >/dev/null
 printf '%s\n' "$snapshot_json" | jq -e '.modules.count > 0' >/dev/null
+printf '%s\n' "$snapshot_json" | jq -e '.degraded == false and .error_count == 0' >/dev/null
+
+cat >>"$AUDIT_HISTORY_DIR/runs.jsonl" <<'JSONL'
+not-json
+JSONL
+printf '{"run_id":"RUN_API_TRUNCATED"' >"$AUDIT_HISTORY_DIR/latest.json"
+
+degraded_snapshot="$(bash bin/api_snapshot_json.sh)"
+printf '%s\n' "$degraded_snapshot" | jq -e '.kind == "audit-suite.api_snapshot"' >/dev/null
+printf '%s\n' "$degraded_snapshot" | jq -e '.degraded == true and .error_count == 2' >/dev/null
+printf '%s\n' "$degraded_snapshot" | jq -e '.history.count == 1 and .history.runs[0].run_id == "RUN_API_1"' >/dev/null
+printf '%s\n' "$degraded_snapshot" | jq -e '.history.degradation.invalid_line_count == 1' >/dev/null
+printf '%s\n' "$degraded_snapshot" | jq -e '.latest.latest == null' >/dev/null
+printf '%s\n' "$degraded_snapshot" | jq -e '.latest.degradation.code == "invalid_latest_json"' >/dev/null
 
 if bash bin/api_snapshot_json.sh --unknown >/tmp/api-snapshot.out 2>/tmp/api-snapshot.err; then
   echo 'unknown option accepted' >&2

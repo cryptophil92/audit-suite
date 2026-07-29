@@ -20,6 +20,6 @@ mod_run(){
 
   emit INFO "$MOD_ID" "Ping sweep / ARP / Top hosts"
   # Ping sweep de base via nmap (fallback si arp-scan indisponible)
-  nmap -sn -oA "$out/pingsweep" "${targets[@]}" || true
+  nmap -sn -oA "$out/pingsweep" "${targets[@]}"
 }
 mod_post(){ return 0; }

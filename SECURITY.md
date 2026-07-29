@@ -45,6 +45,12 @@ sur une adresse IP loopback littérale (`127.0.0.0/8` ou `::1`) et ne fournit
 aucune option d'écoute distante. Toute évolution de cette politique exige une
 revue de sécurité dédiée et un mécanisme d'authentification adapté.
 
+## Artefacts runtime
+
+Les répertoires `output/`, `logs/`, `tmp/` et `history/` sont réservés aux données locales et restent ignorés par Git. Une garde CI refuse tout ajout, modification, copie ou renommage entrant dans ces répertoires sans afficher les noms de fichiers dans les logs publics.
+
+Cette garde empêche de nouvelles expositions mais ne retire pas les artefacts déjà présents dans l’historique. Leur examen, toute rotation de secret et une éventuelle réécriture Git doivent suivre un processus privé et une validation explicite du propriétaire.
+
 ## Divulgation
 
 Le calendrier de correction et de divulgation est défini avec le rapporteur selon la gravité, la disponibilité d’un correctif et le risque pour les utilisateurs. Aucun engagement de délai n’est garanti tant que le projet reste expérimental.
