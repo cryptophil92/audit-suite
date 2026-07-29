@@ -159,15 +159,25 @@ Les mesures cibles seront validées par recherche utilisateur :
 
 ## Séquence de réalisation
 
-1. terminer le socle de fiabilité et le préflight ;
+1. terminer le socle de livraison avec
+   [#43](https://github.com/cryptophil92/audit-suite/issues/43) et
+   [#44](https://github.com/cryptophil92/audit-suite/issues/44), puis le
+   préflight guidé
+   [#47](https://github.com/cryptophil92/audit-suite/issues/47) ;
 2. maintenir le contrat de constats `1.0.0` et connecter progressivement les
    modules, en coordination avec
    [#48](https://github.com/cryptophil92/audit-suite/issues/48) ;
-3. relier historique, constats et rapports dans l’interface — issue
+3. rendre le dashboard sûr pour les données locales — issue
+   [#51](https://github.com/cryptophil92/audit-suite/issues/51) ;
+4. relier historique, constats et rapports dans l’interface — issue
    [#53](https://github.com/cryptophil92/audit-suite/issues/53) ;
-4. déployer l’onboarding, le design system et l’accessibilité — issues
+5. déployer l’onboarding, le design system et l’accessibilité — issues
    [#52](https://github.com/cryptophil92/audit-suite/issues/52) et
    [#54](https://github.com/cryptophil92/audit-suite/issues/54) ;
-5. valider les rapports et parcours avec des utilisateurs et sur Kali/Linux.
+6. valider les rapports et parcours avec des utilisateurs et sur Kali/Linux.
+
+Le contrat de constats et le premier rapport premium sont fusionnés. Ils
+constituent désormais le socle à connecter aux modules réels et aux vues de
+résultats, pas une cible encore à construire.
 
 Voir [`ROADMAP.md`](ROADMAP.md) pour le pilotage complet.

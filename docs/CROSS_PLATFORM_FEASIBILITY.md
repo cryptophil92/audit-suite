@@ -1,5 +1,9 @@
 # Faisabilité multiplateforme
 
+État technique actualisé le 29 juillet 2026. Les mesures de l’audit initial du
+28 juillet sont conservées dans
+[`audit/TEST_RESULTS_2026-07-28.md`](audit/TEST_RESULTS_2026-07-28.md).
+
 ## Synthèse
 
 Audit Suite est aujourd’hui un moteur Bash/Linux entouré d’une API Python et d’une interface Web portable. La bonne stratégie n’est pas une réécriture immédiate : il faut d’abord stabiliser le contrat du moteur, isoler les dépendances système et conserver Kali/Linux comme référence.
@@ -23,7 +27,7 @@ Ordre recommandé :
 | Scans | Nmap et scripts NSE |
 | Installation | `apt-get`, éventuellement `sudo` |
 | UI terminal | tmux, whiptail, zenity, fzf |
-| Fichiers temporaires | `/tmp`, `mktemp`, FIFO POSIX |
+| Fichiers temporaires | `/tmp`, `mktemp` ; l’ancien FIFO de logging est désactivé |
 | Permissions | raw sockets, SYN scan, OS detection |
 | Rapport | `tar`, `gzip`, `jq` |
 | Shell | tableaux Bash, `mapfile`, substitution de processus |
@@ -33,7 +37,7 @@ Ordre recommandé :
 | Dimension | Évaluation |
 |---|---|
 | Compatibilité actuelle | Cible principale |
-| Blocages | FIFO logging, erreurs masquées, privilèges non diagnostiqués |
+| Blocages | préflight incomplet, privilèges non diagnostiqués, adaptateurs réels de constats incomplets |
 | Permissions | Root/capabilities possibles selon profil |
 | Packaging | Aucun |
 | Mise à jour | Git manuel |
@@ -76,8 +80,8 @@ WSL est préférable à un port Windows natif tant que le moteur dépend forteme
 | Dimension | Évaluation |
 |---|---|
 | Compatibilité actuelle | Partielle avec Git Bash |
-| Faits observés | 19 tests réussis, test API > 5 s, CRLF sans `.gitattributes`, FIFO absent |
-| Blocages | `ip`, GNU `timeout`, FIFO, privilèges Nmap, outils optionnels |
+| Faits observés | 25 tests Bash, 17 tests Python et smoke local réussis sous Windows Git Bash le 29 juillet ; CRLF non imposé par `.gitattributes` |
+| Blocages | `ip`, GNU `timeout`, privilèges Nmap, outils optionnels, aucune validation de scan réel |
 | Packaging | bundle d’outils ou réécriture d’adaptateurs |
 | Effort | XL |
 | Valeur | Moyenne à élevée |

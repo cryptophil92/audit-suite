@@ -35,6 +35,8 @@ le format [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et
 
 ### Documentation
 
+- synchronisation de la roadmap, du registre d’issues et des contextes produit
+  après les contrats de constats et rapports premium ;
 - professionnalisation du README ;
 - ajout des fichiers de contribution, conduite et signalement responsable ;
 - ajout de l’inventaire et de l’audit technique du 28 juillet 2026 ;

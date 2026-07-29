@@ -1,5 +1,19 @@
 # Documentation Audit Suite
 
+## Sources de vérité
+
+- [`ROADMAP.md`](ROADMAP.md) décrit l’état courant, les gates et l’ordre des
+  prochains lots ;
+- l’[issue GitHub #58](https://github.com/cryptophil92/audit-suite/issues/58)
+  est la checklist opérationnelle ;
+- [`PRODUCT_VISION.md`](PRODUCT_VISION.md) fixe la direction produit ;
+- [`ux/UX_ROADMAP.md`](ux/UX_ROADMAP.md) détaille le chantier UX ;
+- les documents datés sous [`audit/`](audit/) conservent les preuves de leur
+  date et ne doivent pas être interprétés comme l’état courant.
+
+Après une fusion qui clôt un jalon, mettre à jour la roadmap versionnée,
+l’issue #58 et le registre des issues dans le même cycle de suivi.
+
 ## Commencer
 
 - [`../README.md`](../README.md) — présentation et démarrage ;

@@ -1,5 +1,20 @@
 # Roadmap UX
 
+## État des lots au 29 juillet 2026
+
+| Lot | État | Reste principal |
+|---|---|---|
+| UX-0 — Fiabilité | Socle principal fusionné | CI automatique, maintenance et préflight (#43, #44, #47) |
+| UX-1 — Constats | Contrat `1.0.0` fusionné | Adaptateurs des modules réels (#48) |
+| UX-2 — Rapport premium | Première version fusionnée | Audit transversal et validation utilisateur (#54, #55) |
+| UX-3 à UX-9 | Documentés, non implémentés dans le dashboard | #51 à #54 |
+| UX-10 à UX-11 | Non réalisés | Recherche et captures synthétiques (#55) |
+
+Séquence d’interface recommandée : clarifier les modules avec #48, sécuriser
+le rendu avec #51, puis construire les vues résultats de #53. L’onboarding et
+l’accessibilité de #52/#54 s’intègrent à chaque écran sans réintroduire
+l’exécution Web.
+
 ## Lot UX-0 — Fiabilité avant habillage
 
 Priorité P1.
@@ -86,7 +101,7 @@ Mesure : un utilisateur cible prépare un plan privé sans aide externe.
 - provenance ;
 - états partiels ;
 - comparaison ;
-- accès rapports.
+- accès rapports ;
 - constats et plan de remédiation.
 
 Mesure : l’utilisateur identifie ce qui a réussi, échoué et changé.

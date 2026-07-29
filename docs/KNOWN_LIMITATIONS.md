@@ -1,10 +1,12 @@
 # Limites connues
 
-> État révisé après l’audit du 28 juillet 2026. Voir
+> État courant révisé le 29 juillet 2026 après la fusion de la PR #74. Voir
 > [`audit/TECHNICAL_AUDIT_2026-07-28.md`](audit/TECHNICAL_AUDIT_2026-07-28.md)
-> pour les preuves, priorités et recommandations.
+> pour les preuves historiques, puis [`ROADMAP.md`](ROADMAP.md) pour les
+> priorités actives.
 
-Ce document liste les limites connues de la pile actuelle avant validation sur machine locale.
+Ce document liste les limites connues de la pile actuelle avant validation
+représentative sur Kali et lab autorisé.
 
 ## État actuel
 
@@ -13,7 +15,7 @@ La pile contient :
 - un moteur Bash renforcé ;
 - des sorties JSON locales ;
 - un historique local ;
-- des rapports HTML et archives ;
+- des rapports HTML premium privés, partageables et techniques, plus archives ;
 - un smoke test ;
 - une API locale en lecture seule ;
 - un premier dashboard local ;
@@ -22,6 +24,8 @@ La pile contient :
 ## Limites bloquantes ou importantes
 
 - des sorties d’audit sont encore suivies dans l’historique Git public ;
+- le préflight ne décrit pas encore toutes les capacités, dépendances et
+  exigences de privilèges avant lancement.
 
 Ne pas considérer le moteur prêt pour une mission professionnelle avant traitement.
 
@@ -57,7 +61,7 @@ Elle ne doit pas encore :
 - créer un run ;
 - exposer l'écoute hors d’une adresse loopback littérale.
 
-### Dashboard volontairement limité
+### Dashboard volontairement limité et à rendre sûr
 
 Le dashboard sert à consulter et préparer.
 
@@ -67,6 +71,9 @@ Il ne doit pas encore :
 - modifier des fichiers ;
 - gérer une authentification ;
 - exposer des fonctions hors usage local.
+
+Le rendu de données locales par `innerHTML` reste suivi par #51. Cette
+correction précède l’extension des vues historique, constats et rapports.
 
 ### Rapport premium et adaptateurs
 
@@ -113,7 +120,7 @@ documentaires, gardes et tests déterministes peuvent être fusionnés après
 contrôles automatisés et validation explicite du propriétaire, sans créer de
 release.
 
-## Limites corrigées dans l'état de code non publié
+## Limites corrigées depuis l’audit
 
 - Les sous-processus des routes API ont des délais documentés, une limite de
   sortie combinée et des erreurs structurées en cas de dépassement.
@@ -124,3 +131,7 @@ release.
   dégradation est signalée.
 - Les écritures de l'historique sont sérialisées, `latest.json` est remplacé
   atomiquement et un `run_id` ne peut plus être réservé par deux processus.
+- Le contrat `findings[]` `1.0.0` et le manifest `1.2.0` valident les constats,
+  preuves, scores et remédiations structurés sans inventer de notation.
+- Le rapport premium privé/partageable/technique est fusionné avec échappement
+  strict, tri des constats, plan d’action, styles responsive et impression A4.
