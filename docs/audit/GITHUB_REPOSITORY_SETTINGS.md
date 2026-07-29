@@ -15,7 +15,7 @@ Le site Web reste vide, faute d’URL publique vérifiée. Les protections de br
 ### Description
 
 ```text
-Suite expérimentale et locale d’audit réseau défensif pour Kali Linux, avec rapports JSON/HTML et tableau de bord en lecture seule.
+Assistant local expérimental d’audit de sécurité réseau pour Kali Linux, avec rapports JSON/HTML et interface de consultation.
 ```
 
 ### Site Web
@@ -105,8 +105,8 @@ Première release recommandée uniquement après correction des P0/P1 de fiabili
 |---|---|
 | `P0 — Containment` | données publiques et blocages |
 | `0.2.x — Reliability` | statuts, historique, API, tests |
-| `0.3.0 — Engine contract` | contrats et installation |
-| `0.4.0 — Read-only UX` | navigation, résultats, accessibilité |
+| `0.3.0 — Findings contract` | contrats moteur/API, constats et notation |
+| `0.4.0 — Guided UX & reports` | rapport premium, navigation, résultats et accessibilité |
 | `Cross-platform discovery` | études WSL/macOS/Windows |
 
 ## Dette GitHub

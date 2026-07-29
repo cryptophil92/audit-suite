@@ -19,9 +19,12 @@ Ces wireframes décrivent une direction. Ils ne représentent pas une interface 
 │                │ 6 terminées • 1 ignorée • 1 échouée             │
 │                │ [Voir le détail] [Voir le rapport]              │
 │                │                                                 │
+│                │ Constats prioritaires                            │
+│                │ 1 élevé à confirmer • 2 moyens • confiance mixte │
+│                │                                                 │
 │                │ Actions recommandées                            │
-│                │ 1. Corriger la dépendance manquante             │
-│                │ 2. Vérifier le résultat partiel                 │
+│                │ 1. Confirmer le constat à confiance moyenne     │
+│                │ 2. Corriger la dépendance manquante             │
 └────────────────┴─────────────────────────────────────────────────┘
 ```
 
@@ -81,6 +84,10 @@ Ces wireframes décrivent une direction. Ils ne représentent pas une interface 
 │ Résumé     Périmètre     Version     Durée                        │
 │ Partiel    Privé         0.x.y       12 min                       │
 ├──────────────────────────────────────────────────────────────────┤
+│ Constats                                                        │
+│ Élevé • à confirmer • score justifié          [Voir la preuve]   │
+│ Moyen • confiance élevée • observation        [Voir le détail]   │
+├──────────────────────────────────────────────────────────────────┤
 │ Vérifications                                                    │
 │ ✓ Découverte réseau          Terminée                            │
 │ ! Ports principaux           Résultat partiel [Pourquoi ?]       │
@@ -89,6 +96,33 @@ Ces wireframes décrivent une direction. Ils ne représentent pas une interface 
 │ [Voir le rapport] [Préparer un audit similaire] [Détail JSON]    │
 └──────────────────────────────────────────────────────────────────┘
 ```
+
+## Rapport premium
+
+```text
+┌──────────────────────────────────────────────────────────────────┐
+│ Rapport AUDIT_LAB_012                         Données sensibles   │
+│ Sommaire  Constats  Plan d’action  Couverture  Annexe            │
+├──────────────────────────────────────────────────────────────────┤
+│ Résumé exécutif                                                  │
+│ Audit partiel • 1 constat élevé à confirmer • 2 moyens           │
+│ Limite principale : vérification UDP incomplète                  │
+├──────────────────────────────────────────────────────────────────┤
+│ Priorités                                                        │
+│ 1. Confirmer puis corriger le service synthétique concerné       │
+│ 2. Terminer la vérification manquante                            │
+├──────────────────────────────────────────────────────────────────┤
+│ Constat                                                          │
+│ Élevé • Score 7,2/10 (méthode affichée) • Confiance moyenne      │
+│ Actif • Observation • Impact • Remédiation • Vérification        │
+│ [Ouvrir la preuve] [Voir les limites]                             │
+├──────────────────────────────────────────────────────────────────┤
+│ [Prévisualiser l’export] [Imprimer/PDF] [Annexe technique]       │
+└──────────────────────────────────────────────────────────────────┘
+```
+
+La note et les constats de ce wireframe sont synthétiques. L’interface réelle
+doit afficher « non noté » lorsqu’aucune méthode fiable n’est disponible.
 
 ## Erreur récupérable
 

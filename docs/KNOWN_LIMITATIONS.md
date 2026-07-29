@@ -55,7 +55,7 @@ Elle ne doit pas encore :
 - lancer un audit réel ;
 - modifier l'historique ;
 - créer un run ;
-- exposer l'écoute hors `127.0.0.1`.
+- exposer l'écoute hors d’une adresse loopback littérale.
 
 ### Dashboard volontairement limité
 
@@ -67,6 +67,19 @@ Il ne doit pas encore :
 - modifier des fichiers ;
 - gérer une authentification ;
 - exposer des fonctions hors usage local.
+
+### Rapport centré sur l’exécution
+
+Le rapport HTML actuel présente le contexte et l’état des modules. Il ne
+contient pas encore :
+
+- de constats de sécurité structurés ;
+- de gravité, confiance ou notation justifiée ;
+- de preuves normalisées ;
+- de remédiation et méthode de vérification ;
+- de résumé exécutif ou plan d’action.
+
+Voir [`PREMIUM_REPORT_SPEC.md`](PREMIUM_REPORT_SPEC.md) et les issues #70/#71.
 
 ### OpenAPI basique
 
@@ -90,7 +103,11 @@ Elle pourra être enrichie après test local avec :
 
 ## Règle de prudence
 
-Tant que le test local réel n'est pas effectué, garder toutes les PR en brouillon et ne pas fusionner.
+Une correction qui dépend du comportement réel des outils réseau ne doit pas
+être déclarée validée en production sans test Kali/lab autorisé. Les lots
+documentaires, gardes et tests déterministes peuvent être fusionnés après
+contrôles automatisés et validation explicite du propriétaire, sans créer de
+release.
 
 ## Limites corrigées dans l'état de code non publié
 

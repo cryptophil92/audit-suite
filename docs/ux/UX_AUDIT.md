@@ -160,7 +160,8 @@ Conserver le terme technique en aide contextuelle lorsque nécessaire.
 - le chargement initial affiche « Chargement... » ;
 - l’échec snapshot remplace plusieurs zones par du texte générique ;
 - `loadPlan` n’affiche pas de busy state et n’a pas de gestion d’exception explicite ;
-- l’API renvoie parfois stderr et commande ;
+- l’API borne désormais ses sous-processus et masque les détails internes dans
+  les erreurs publiques ;
 - aucune progression pour une opération réelle, qui n’est pas exposée au Web.
 
 ### Problèmes
@@ -199,7 +200,8 @@ Chaque erreur doit dire :
 - rapport HTML séparé généré localement ;
 - comparaison disponible uniquement en CLI ;
 - aucun lien direct depuis l’interface ;
-- aucune hiérarchie d’alertes.
+- aucune hiérarchie d’alertes ;
+- aucun modèle de constats, notation, preuve ou remédiation dans le manifest.
 
 ### Besoin
 
@@ -227,9 +229,8 @@ Points faibles :
 
 - données sensibles suivies historiquement dans Git ;
 - limites des modules peu visibles ;
-- succès potentiellement trompeurs ;
+- rapport encore centré sur l’exécution des modules ;
 - absence de statut de fraîcheur ;
-- possibilité technique d’écouter hors loopback ;
 - aucune explication de conservation/suppression des données dans l’UI.
 
 ## Responsive
@@ -284,7 +285,8 @@ Voir `ACCESSIBILITY.md`.
 - rendre l’état du moteur et des données fiable ;
 - expliquer plan versus exécution ;
 - présenter les erreurs et états partiels ;
-- protéger la confiance autour des résultats.
+- protéger la confiance autour des résultats ;
+- définir le modèle de constats et la notation avant le rapport premium.
 
 ### P2
 

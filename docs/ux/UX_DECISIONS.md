@@ -111,6 +111,44 @@ Chaque décision contient :
 
 **Décision :** viser WCAG 2.2 AA pour Web et rapports, sans revendiquer de conformité avant audit.
 
+## UX-011 — Assistant d’audit, pas plateforme red/blue team
+
+**Date :** 29 juillet 2026
+
+**Statut :** validé par le propriétaire
+
+**Décision :** concevoir le produit pour des audits locaux guidés, la
+compréhension des constats et la remédiation. Ne pas organiser l’interface
+autour de tactiques offensives, de files d’incidents SOC ou de rôles red
+team/blue team.
+
+**Conséquence :** la navigation privilégie préparer, comprendre, corriger,
+vérifier et rapporter.
+
+## UX-012 — Notation traçable et facultative
+
+**Date :** 29 juillet 2026
+
+**Statut :** validé
+
+**Décision :** un score est affiché uniquement avec une méthode, une échelle et
+une justification. Un constat peut rester non noté.
+
+**Conséquence :** aucune note globale par moyenne simple et aucune conversion
+automatique d’une sortie d’outil en vulnérabilité confirmée.
+
+## UX-013 — Rapport en deux niveaux
+
+**Date :** 29 juillet 2026
+
+**Statut :** validé
+
+**Décision :** le rapport premium commence par une synthèse décisionnelle et un
+plan d’action, puis conserve les preuves et annexes techniques en second niveau.
+
+**Conséquence :** le maximum d’information reste disponible sans imposer un
+dump technique comme vue principale.
+
 ## Décisions ouvertes
 
 - framework ou maintien du Web natif ;
@@ -121,3 +159,5 @@ Chaque décision contient :
 - position du diagnostic API ;
 - support WSL officiel ;
 - canal de recherche utilisateur.
+- formule éventuelle d’une note globale de posture ;
+- formats PDF et partage anonymisé.

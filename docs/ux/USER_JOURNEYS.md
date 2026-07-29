@@ -133,6 +133,24 @@ Le moteur actuel ne fournit pas encore un modèle d’appareil consolidé.
 
 Ce parcours nécessite un modèle de données absent aujourd’hui.
 
+## Comprendre et traiter un constat
+
+### Cible
+
+1. lire un titre et une explication en langage clair ;
+2. identifier l’actif et le service concernés ;
+3. distinguer observation, risque potentiel et vulnérabilité confirmée ;
+4. voir séparément gravité, score éventuel, confiance et statut de validation ;
+5. comprendre la méthode et la justification de la note ;
+6. consulter la preuve et sa provenance ;
+7. comprendre l’impact sans dramatisation ;
+8. appliquer une remédiation avec effort et risque du changement ;
+9. suivre une procédure de vérification ;
+10. marquer le traitement ou comparer avec un audit ultérieur.
+
+Un constat insuffisamment documenté reste `unscored` ou à confirmer. L’interface
+ne complète jamais les champs manquants par une supposition.
+
 ## Consulter les recommandations
 
 Chaque recommandation doit contenir :
@@ -144,6 +162,9 @@ Chaque recommandation doit contenir :
 - prérequis et risque de l’action ;
 - source ;
 - statut de validation.
+
+La structure cible est détaillée dans
+[`../PREMIUM_REPORT_SPEC.md`](../PREMIUM_REPORT_SPEC.md).
 
 ## Exporter un rapport
 
@@ -191,5 +212,6 @@ Parcours cible :
 | Préparer | plan valide sans création de run |
 | Suivre | état et résultats partiels compris |
 | Comprendre résultats | tâches prioritaires identifiées |
+| Traiter un constat | preuve, risque, action et vérification reformulés correctement |
 | Exporter | contenu sensible maîtrisé |
 | Erreur | cause/action comprises sans documentation externe |

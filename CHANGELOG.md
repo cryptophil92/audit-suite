@@ -39,6 +39,10 @@ le format [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et
 - ajout d'une source canonique `VERSION`, exposée avec le commit par le CLI,
   l'API et les manifests ;
 - formalisation de la procédure de release et de son contrôle P0/P1.
+- clarification de la vision produit autour d’un audit guidé, local et orienté
+  remédiation, distinct des plateformes red team/blue team ;
+- définition du contrat cible des constats, de la notation responsable et du
+  rapport premium.
 
 ### Important
 
