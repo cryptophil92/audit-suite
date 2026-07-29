@@ -12,7 +12,38 @@ Priorité P1.
 
 Le design ne doit pas masquer un résultat incertain.
 
-## Lot UX-1 — Architecture et contenu
+## Lot UX-1 — Modèle de constats et notation
+
+Priorité P1.
+
+- objet `findings[]` versionné ;
+- observation, potentiel, confirmé et information ;
+- gravité, confiance et validation séparées ;
+- preuve et provenance ;
+- score facultatif et justifié ;
+- impact, remédiation et vérification ;
+- compatibilité des manifests hérités.
+
+Livrable : contrat de l’issue
+[#70](https://github.com/cryptophil92/audit-suite/issues/70).
+
+## Lot UX-2 — Rapport premium
+
+Priorité P1.
+
+- résumé exécutif ;
+- couverture et limites ;
+- constats priorisés ;
+- plan d’action ;
+- détail technique ;
+- impression/PDF ;
+- confidentialité et anonymisation.
+
+Livrable : cible de l’issue
+[#71](https://github.com/cryptophil92/audit-suite/issues/71) et
+[`../PREMIUM_REPORT_SPEC.md`](../PREMIUM_REPORT_SPEC.md).
+
+## Lot UX-3 — Architecture et contenu
 
 Priorité P2.
 
@@ -29,7 +60,7 @@ Livrables :
 - prototype basse fidélité ;
 - test de compréhension.
 
-## Lot UX-2 — Onboarding
+## Lot UX-4 — Onboarding
 
 - état de l’environnement ;
 - périmètre autorisé ;
@@ -39,7 +70,7 @@ Livrables :
 
 Mesure : un utilisateur cible prépare un plan privé sans aide externe.
 
-## Lot UX-3 — Historique et résultats
+## Lot UX-5 — Historique et résultats
 
 - liste d’audits ;
 - détail synthétique ;
@@ -47,10 +78,11 @@ Mesure : un utilisateur cible prépare un plan privé sans aide externe.
 - états partiels ;
 - comparaison ;
 - accès rapports.
+- constats et plan de remédiation.
 
 Mesure : l’utilisateur identifie ce qui a réussi, échoué et changé.
 
-## Lot UX-4 — Design system
+## Lot UX-6 — Design system
 
 - tokens ;
 - composants ;
@@ -61,7 +93,7 @@ Mesure : l’utilisateur identifie ce qui a réussi, échoué et changé.
 
 Commencer par les composants nécessaires aux lots précédents.
 
-## Lot UX-5 — Accessibilité et responsive
+## Lot UX-7 — Accessibilité et responsive
 
 - clavier ;
 - lecteurs d’écran ;
@@ -73,7 +105,7 @@ Commencer par les composants nécessaires aux lots précédents.
 
 L’accessibilité est intégrée à chaque lot, puis auditée transversalement.
 
-## Lot UX-6 — Erreurs et diagnostic
+## Lot UX-8 — Erreurs et diagnostic
 
 - erreurs actionnables ;
 - retry ;
@@ -84,7 +116,7 @@ L’accessibilité est intégrée à chaque lot, puis auditée transversalement.
 
 Mesure : l’utilisateur sait quoi faire après les cinq erreurs les plus fréquentes.
 
-## Lot UX-7 — Rapports et partage
+## Lot UX-9 — Export et partage
 
 - prévisualisation ;
 - anonymisation ;
@@ -93,7 +125,7 @@ Mesure : l’utilisateur sait quoi faire après les cinq erreurs les plus fréqu
 - empreinte ;
 - avertissement de confidentialité.
 
-## Lot UX-8 — Recherche utilisateur
+## Lot UX-10 — Recherche utilisateur
 
 ### Entretiens
 
@@ -120,7 +152,7 @@ Mesure : l’utilisateur sait quoi faire après les cinq erreurs les plus fréqu
 - confiance ;
 - charge perçue.
 
-## Lot UX-9 — Captures et démonstration
+## Lot UX-11 — Captures et démonstration
 
 - fixtures synthétiques ;
 - captures clair/sombre ;
@@ -134,13 +166,17 @@ Mesure : l’utilisateur sait quoi faire après les cinq erreurs les plus fréqu
 ```text
 Fiabilité
    ↓
+Modèle de constats
+   ↓
+Rapport premium
+   ↓
 Architecture → Onboarding
    ↓             ↓
 Historique/Résultats
    ↓
 Design system + Accessibilité
    ↓
-Rapports + Démonstration
+Export + Démonstration
 ```
 
 ## No-Go

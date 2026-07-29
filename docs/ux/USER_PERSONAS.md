@@ -2,6 +2,10 @@
 
 Ces personas sont des hypothèses de conception. Ils ne sont pas validés par une recherche utilisateur.
 
+Le cœur de cible n’est pas organisé autour de rôles red team, blue team ou SOC.
+Il est organisé autour de la tâche : comprendre un environnement autorisé,
+prioriser des corrections et remettre un rapport clair.
+
 ## Persona A — Particulier avancé
 
 **Contexte :** administre son réseau domestique et comprend les notions IP de base.
@@ -81,32 +85,34 @@ Ces personas sont des hypothèses de conception. Ils ne sont pas validés par un
 - installation reproductible ;
 - logs structurés.
 
-## Persona D — Professionnel cybersécurité autorisé
+## Persona D — Référent sécurité de proximité
 
-**Contexte :** utilise plusieurs outils spécialisés dans un lab ou une mission cadrée.
+**Contexte :** accompagne une petite organisation, une association ou un client
+autorisé sans disposer d’une équipe sécurité dédiée.
 
 **Objectifs :**
 
-- comprendre exactement les commandes exécutées ;
-- contrôler l’intrusivité ;
-- distinguer détection et validation ;
+- expliquer les risques à des interlocuteurs non spécialistes ;
+- distinguer ce qui est observé, potentiel ou confirmé ;
+- remettre un plan de correction priorisé ;
 - conserver preuves et métadonnées ;
-- éviter toute fuite de données.
+- vérifier les améliorations lors d’un nouvel audit.
 
 **Freins :**
 
-- placeholders non identifiés ;
-- erreurs masquées ;
-- version et provenance ambiguës ;
-- contrôle incomplet des privilèges.
+- rapport actuel centré sur les modules ;
+- absence de notation et de confiance structurées ;
+- preuves dispersées ;
+- remédiations non normalisées ;
+- risque de partager des données sensibles.
 
 **Besoins :**
 
-- transparence par module ;
-- niveaux d’intrusivité ;
-- export sécurisé ;
-- état `partial` ;
-- politiques de conservation.
+- résumé exécutif et détail technique ;
+- notation justifiée ;
+- preuves sourcées ;
+- remédiation et méthode de vérification ;
+- export anonymisable.
 
 ## Persona E — Utilisateur non expert accompagné
 

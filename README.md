@@ -7,7 +7,9 @@
 ![Bash](https://img.shields.io/badge/Bash-5%2B-4EAA25?logo=gnubash&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)
 
-Suite expérimentale et locale d’audit réseau défensif, conçue en priorité pour Kali Linux et les environnements de laboratoire autorisés.
+Assistant expérimental et local d’audit de sécurité réseau, conçu pour aider à
+comprendre les constats, prioriser les corrections et produire des rapports
+clairs sur Kali Linux et dans des environnements autorisés.
 
 > [!WARNING]
 > Audit Suite peut lancer des outils de découverte, de scan de ports et d’énumération de services. Utilisez-le uniquement sur un réseau personnel, un laboratoire, un CTF/HTB ou un périmètre client explicitement autorisé. Les cibles IPv4 publiques sont bloquées par défaut, mais ce garde-fou ne remplace ni l’autorisation écrite ni le respect du droit applicable.
@@ -17,6 +19,17 @@ Suite expérimentale et locale d’audit réseau défensif, conçue en priorité
 Le projet est en phase expérimentale. Le moteur Bash, les sorties JSON, l’historique local, les rapports, l’API locale en lecture seule et un premier tableau de bord sont présents. Plusieurs modules restent partiels ou servent de base de travail. Aucun support de production ni garantie de résultat exhaustif n’est annoncé.
 
 L’audit de professionnalisation du 28 juillet 2026 est documenté dans [`docs/audit/`](docs/audit/). Les problèmes confirmés et les évolutions proposées sont suivis dans les [issues GitHub](https://github.com/cryptophil92/audit-suite/issues), avec une [roadmap de pilotage dédiée](https://github.com/cryptophil92/audit-suite/issues/58).
+
+### Positionnement produit
+
+Audit Suite vise en priorité les particuliers avancés, techniciens,
+administrateurs et utilisateurs accompagnés qui souhaitent réaliser un audit
+local autorisé et comprendre comment améliorer leur environnement.
+
+Le projet ne vise pas une plateforme red team, blue team, SOC ou d’exploitation
+offensive. La cible est une expérience guidée, prudente et agréable, avec des
+preuves traçables et des recommandations actionnables. Voir
+[`docs/PRODUCT_VISION.md`](docs/PRODUCT_VISION.md).
 
 ## Fonctionnalités présentes
 
@@ -28,7 +41,7 @@ L’audit de professionnalisation du 28 juillet 2026 est documenté dans [`docs/
 - orchestration modulaire avec délai maximal par module ;
 - dry-run et aperçu JSON sans exécution ;
 - manifest JSON, historique local et comparaison de runs ;
-- rapport HTML et archive de rapport ;
+- rapport HTML technique et archive de rapport ;
 - API HTTP locale en lecture seule ;
 - tableau de bord Web local sans dépendance front-end externe.
 
@@ -37,6 +50,10 @@ L’audit de professionnalisation du 28 juillet 2026 est documenté dans [`docs/
 - les modules SNMP, Zeek et Suricata sont encore des squelettes ou placeholders ;
 - le module SMB ne réalise qu’une détection initiale ;
 - l’interface Web prépare et consulte, mais ne lance pas d’audit ;
+- le manifest ne contient pas encore de constats structurés, de notation des
+  risques ni de remédiations ;
+- le rapport HTML actuel décrit l’exécution des modules, pas encore un rapport
+  premium orienté décision ;
 - la portabilité hors Kali/Linux n’est pas garantie ;
 - certains problèmes de fiabilité et de sécurité identifiés par l’audit restent ouverts.
 
@@ -189,7 +206,8 @@ Ces données peuvent révéler la topologie, les services et les vulnérabilité
 
 ## Tests
 
-La suite contient 20 scripts `tests/test_*.sh` et un smoke test :
+La suite contient 24 scripts `tests/test_*.sh`, deux suites Python et un smoke
+test :
 
 ```bash
 for test_file in tests/test_*.sh; do
@@ -199,7 +217,10 @@ done
 bash bin/smoke_local.sh
 ```
 
-La CI exécute ShellCheck et la majorité des tests sous Ubuntu. L’audit du 28 juillet 2026 a relevé un écart de couverture CI et un dépassement du délai du test API sous Windows Git Bash ; voir [`docs/audit/TEST_RESULTS_2026-07-28.md`](docs/audit/TEST_RESULTS_2026-07-28.md).
+La CI exécute ShellCheck, les 24 tests Bash et les deux suites Python sous
+Ubuntu. Leur liste reste déclarée explicitement dans le workflow : l’issue
+[#43](https://github.com/cryptophil92/audit-suite/issues/43) prévoit une
+découverte automatique afin qu’un futur test ne puisse pas être oublié.
 
 ## Captures et démonstration
 
@@ -224,13 +245,19 @@ Voir [`docs/CROSS_PLATFORM_FEASIBILITY.md`](docs/CROSS_PLATFORM_FEASIBILITY.md).
 Ordre recommandé :
 
 1. sécuriser les données déjà publiées et corriger les blocages du moteur ;
-2. fiabiliser les statuts, l’historique, l’API et la CI ;
-3. stabiliser l’installation, les versions et les releases ;
-4. améliorer le tableau de bord, l’accessibilité et les rapports ;
-5. valider les parcours avec des utilisateurs autorisés ;
-6. étudier la portabilité sans réécriture prématurée.
+2. terminer la CI reproductible et le préflight guidé ;
+3. structurer les constats, preuves, gravité, confiance et notation ;
+4. construire le rapport premium et son plan de remédiation ;
+5. relier rapports, historique, onboarding et accessibilité ;
+6. valider les parcours avec des utilisateurs autorisés ;
+7. étudier la portabilité sans réécriture prématurée.
 
-La roadmap détaillée est disponible dans [`docs/ROADMAP.md`](docs/ROADMAP.md) et dans l’[issue GitHub #58](https://github.com/cryptophil92/audit-suite/issues/58). Le registre complet des constats est conservé dans [`docs/audit/ISSUE_REGISTER.md`](docs/audit/ISSUE_REGISTER.md).
+La roadmap détaillée est disponible dans [`docs/ROADMAP.md`](docs/ROADMAP.md)
+et dans l’[issue GitHub #58](https://github.com/cryptophil92/audit-suite/issues/58).
+La cible des rapports est définie dans
+[`docs/PREMIUM_REPORT_SPEC.md`](docs/PREMIUM_REPORT_SPEC.md). Le registre
+complet des constats est conservé dans
+[`docs/audit/ISSUE_REGISTER.md`](docs/audit/ISSUE_REGISTER.md).
 
 ## Contribution
 

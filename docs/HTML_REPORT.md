@@ -56,6 +56,18 @@ Le rapport contient :
 - chemins de sortie ;
 - tableau détaillé des modules.
 
+## Limite actuelle
+
+Ce rapport indique si les vérifications techniques ont réussi, échoué, été
+ignorées ou produit un résultat partiel. Il ne présente pas encore des failles
+ou constats structurés, une note de risque, des preuves normalisées ni un plan
+de remédiation.
+
+La cible du rapport premium est documentée dans
+[`PREMIUM_REPORT_SPEC.md`](PREMIUM_REPORT_SPEC.md) et suivie par
+[#70](https://github.com/cryptophil92/audit-suite/issues/70) puis
+[#71](https://github.com/cryptophil92/audit-suite/issues/71).
+
 ## Sécurité d'affichage
 
 Les valeurs issues du JSON sont échappées avant insertion dans le HTML via `jq @html`.

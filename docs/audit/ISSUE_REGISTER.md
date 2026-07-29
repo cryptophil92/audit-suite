@@ -31,13 +31,16 @@ Ce registre relie les constats de l’audit aux issues GitHub créées. Les dét
 | [#55](https://github.com/cryptophil92/audit-suite/issues/55) | P3 | Recherche UX | Valider les personas, parcours et captures avec des utilisateurs |
 | [#56](https://github.com/cryptophil92/audit-suite/issues/56) | P2 | Multiplateforme | Valider Kali/Linux et isoler les dépendances OS avant tout port |
 | [#57](https://github.com/cryptophil92/audit-suite/issues/57) | P2 | Dette GitHub | Fermer proprement les anciennes PR et archiver les branches consolidées |
+| [#70](https://github.com/cryptophil92/audit-suite/issues/70) | P1 | Produit | Structurer les constats, preuves, gravité et notation des risques |
+| [#71](https://github.com/cryptophil92/audit-suite/issues/71) | P1 | UX/Rapport | Produire un rapport premium, priorisé et orienté remédiation |
 
 ## Ordre recommandé
 
 1. Confinement et correction des P0 : #37 et #38.
 2. Fiabilité, sécurité, tests et gouvernance : #39 à #47.
-3. Architecture et dette technique : #48 à #51 et #57.
-4. Refonte UX et accessibilité : #52 à #54.
-5. Validation utilisateur et plateforme : #55 et #56.
+3. Contrat de constats et rapport premium : #70 puis #71.
+4. Architecture et dette technique : #48 à #51 et #57.
+5. Refonte UX et accessibilité : #52 à #54, en coordination avec #70 et #71.
+6. Validation utilisateur et plateforme : #55 et #56.
 
 Toute opération irréversible sur l’historique, les branches ou les anciennes pull requests exige un accord explicite du propriétaire.

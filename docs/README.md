@@ -10,6 +10,10 @@
 
 ## Audit et pilotage
 
+- [`PRODUCT_VISION.md`](PRODUCT_VISION.md) — positionnement, utilisateurs et
+  non-objectifs ;
+- [`PREMIUM_REPORT_SPEC.md`](PREMIUM_REPORT_SPEC.md) — contrat produit du
+  rapport premium et règles de notation ;
 - [`audit/REPOSITORY_INVENTORY.md`](audit/REPOSITORY_INVENTORY.md) ;
 - [`audit/TECHNICAL_AUDIT_2026-07-28.md`](audit/TECHNICAL_AUDIT_2026-07-28.md) ;
 - [`audit/TEST_RESULTS_2026-07-28.md`](audit/TEST_RESULTS_2026-07-28.md) ;
@@ -32,6 +36,7 @@
 ## Moteur et résultats
 
 - [`REPORT_SCHEMA.md`](REPORT_SCHEMA.md) ;
+- [`PREMIUM_REPORT_SPEC.md`](PREMIUM_REPORT_SPEC.md) ;
 - [`RUN_HISTORY.md`](RUN_HISTORY.md) ;
 - [`COMPARE_RUNS.md`](COMPARE_RUNS.md) ;
 - [`HTML_REPORT.md`](HTML_REPORT.md) ;

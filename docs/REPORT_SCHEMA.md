@@ -106,3 +106,15 @@ Ce schéma prépare :
 - l'interface web ;
 - la comparaison entre deux audits ;
 - l'exploitation des résultats sans relire les logs bruts.
+
+## Limite actuelle
+
+Le schéma `1.1.0` décrit l’état d’exécution des modules. Il ne contient pas
+encore de collection structurée de constats, de gravité, de confiance, de
+preuve, de notation ou de remédiation.
+
+Le futur contrat `findings[]` est suivi par l’issue
+[#70](https://github.com/cryptophil92/audit-suite/issues/70). Sa cible produit
+et ses règles de compatibilité sont décrites dans
+[`PREMIUM_REPORT_SPEC.md`](PREMIUM_REPORT_SPEC.md). Aucun lecteur ne doit
+interpréter un statut de module comme une note de risque.

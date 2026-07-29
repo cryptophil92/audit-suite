@@ -158,6 +158,26 @@ Une carte ne doit pas être cliquable sans affordance explicite.
 
 Ne pas confondre gravité d’une observation réseau et état technique d’un module.
 
+## Notation des constats
+
+Une note ne doit jamais apparaître seule. Le composant associe :
+
+- score ou libellé « non noté » ;
+- échelle ;
+- méthode ;
+- gravité textuelle ;
+- confiance ;
+- état de validation ;
+- accès à la justification.
+
+La gravité, la confiance et le statut de validation utilisent des libellés et
+repères distincts. Une faible confiance ne transforme pas automatiquement une
+gravité élevée en faible gravité ; elle indique que le constat doit être
+confirmé.
+
+Une future note globale ne doit pas être représentée comme une jauge avant que
+sa formule, sa couverture et ses limites soient validées.
+
 ## Messages
 
 Structure :
@@ -218,6 +238,9 @@ Le thème système reste le défaut. Les deux thèmes doivent avoir :
 8. panneau de détail technique ;
 9. dialogue d’export ;
 10. navigation.
+11. carte de constat ;
+12. résumé exécutif ;
+13. plan de remédiation.
 
 ## Gouvernance
 

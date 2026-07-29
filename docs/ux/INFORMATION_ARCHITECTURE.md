@@ -11,6 +11,7 @@ Audit Suite
 ├── Vue d’ensemble
 │   ├── État local
 │   ├── Dernier audit
+│   ├── Constats prioritaires
 │   ├── Actions recommandées
 │   └── Limites actives
 ├── Préparer un audit
@@ -25,6 +26,8 @@ Audit Suite
 │   └── Comparaison
 ├── Rapports
 │   ├── Rapports disponibles
+│   ├── Résumé exécutif
+│   ├── Constats et plan d’action
 │   ├── Prévisualisation
 │   └── Export/anonymisation
 ├── Diagnostic
@@ -130,11 +133,30 @@ Les routes API, chemins locaux et JSON bruts doivent être secondaires et replia
 - sortie ;
 - confiance.
 
+### Constat
+
+- identifiant stable ;
+- type : observation, potentiel, confirmé ou information ;
+- actif et service ;
+- gravité ;
+- score optionnel, méthode et justification ;
+- confiance ;
+- état de validation ;
+- observation et impact ;
+- preuves et provenance ;
+- remédiation, effort et risque du changement ;
+- méthode de vérification ;
+- références et limites.
+
 ### Rapport
 
 - format ;
 - date ;
 - source ;
+- couverture et limites ;
+- résumé exécutif ;
+- constats priorisés ;
+- plan de remédiation ;
 - contenu sensible ;
 - empreinte ;
 - destination.
