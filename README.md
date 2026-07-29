@@ -221,21 +221,22 @@ Ces données peuvent révéler la topologie, les services et les vulnérabilité
 
 ## Tests
 
-La suite contient 25 scripts `tests/test_*.sh`, deux suites Python et un smoke
-test :
+La suite contient actuellement 27 scripts `tests/test_*.sh`, deux suites Python
+et un smoke test. Le runner unique les découvre automatiquement :
 
 ```bash
-for test_file in tests/test_*.sh; do
-  bash "$test_file"
-done
-
-bash bin/smoke_local.sh
+bash bin/test_all.sh
 ```
 
-La CI exécute ShellCheck, les 25 tests Bash et les deux suites Python sous
-Ubuntu. Leur liste reste déclarée explicitement dans le workflow : l’issue
-[#43](https://github.com/cryptophil92/audit-suite/issues/43) prévoit une
-découverte automatique afin qu’un futur test ne puisse pas être oublié.
+La CI exécute ShellCheck, tous les tests découverts et le smoke sous Ubuntu.
+Le runner continue après un échec pour fournir un bilan complet, puis renvoie
+un code non nul si un contrôle a échoué. Les tests couvrent notamment le
+logging POSIX, les états module, la corruption/concurrence de l’historique,
+les permissions et les signaux, uniquement avec des fixtures ou doubles
+locaux. Aucun scan réseau réel n’est lancé.
+
+`.gitattributes` impose LF aux scripts, tests Python, workflows et contrats
+JSON afin que le même checkout reste analysable sous Linux et Windows Git Bash.
 
 ## Captures et démonstration
 

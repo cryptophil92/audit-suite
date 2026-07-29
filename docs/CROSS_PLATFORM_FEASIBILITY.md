@@ -80,7 +80,7 @@ WSL est préférable à un port Windows natif tant que le moteur dépend forteme
 | Dimension | Évaluation |
 |---|---|
 | Compatibilité actuelle | Partielle avec Git Bash |
-| Faits observés | 25 tests Bash, 17 tests Python et smoke local réussis sous Windows Git Bash le 29 juillet ; CRLF non imposé par `.gitattributes` |
+| Faits observés | 27 tests Bash, 17 tests Python et smoke local ; `.gitattributes` impose LF aux scripts, tests et workflows |
 | Blocages | `ip`, GNU `timeout`, privilèges Nmap, outils optionnels, aucune validation de scan réel |
 | Packaging | bundle d’outils ou réécriture d’adaptateurs |
 | Effort | XL |

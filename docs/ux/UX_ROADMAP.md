@@ -4,7 +4,7 @@
 
 | Lot | État | Reste principal |
 |---|---|---|
-| UX-0 — Fiabilité | Socle principal fusionné | CI automatique, maintenance et préflight (#43, #44, #47) |
+| UX-0 — Fiabilité | Runner CI automatique et socle principal fusionnés | Maintenance et préflight (#44, #47) |
 | UX-1 — Constats | Contrat `1.0.0` fusionné | Adaptateurs des modules réels (#48) |
 | UX-2 — Rapport premium | Première version fusionnée | Audit transversal et validation utilisateur (#54, #55) |
 | UX-3 à UX-9 | Documentés, non implémentés dans le dashboard | #51 à #54 |
