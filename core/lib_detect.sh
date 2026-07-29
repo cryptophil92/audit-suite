@@ -9,8 +9,9 @@ detect_env() {
   DEF_CIDR=""
   if command -v ip >/dev/null 2>&1; then
     DEF_IFACE="$(ip route show default 2>/dev/null | awk '/default/ {print $5; exit}')" || true
-    [[ -z "${DEF_IFACE:-}" ]] && \
+    if [[ -z "${DEF_IFACE:-}" ]]; then
       DEF_IFACE="$(ip -o link show 2>/dev/null | awk -F': ' '$2!~/(lo)/{print $2; exit}')" || true
+    fi
     if [[ -n "${DEF_IFACE:-}" ]]; then
       DEF_CIDR="$(ip -o -f inet addr show "$DEF_IFACE" 2>/dev/null | awk '{print $4; exit}')" || true
     fi
