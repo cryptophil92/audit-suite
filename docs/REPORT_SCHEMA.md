@@ -158,8 +158,8 @@ modules réels ne disposent pas encore tous d’un adaptateur vers `findings[]`.
 Une liste vide signifie uniquement qu’aucun constat structuré n’a été fourni ;
 elle ne démontre pas l’absence de faille.
 
-Le rapport HTML actuel n’affiche pas encore `findings[]`. Sa cible est décrite
-dans [`PREMIUM_REPORT_SPEC.md`](PREMIUM_REPORT_SPEC.md) et suivie par
-[#71](https://github.com/cryptophil92/audit-suite/issues/71).
+Le rapport HTML premium affiche `findings[]` avec une synthèse, les preuves
+référencées et le plan de remédiation. Sa conception et ses limites sont
+décrites dans [`PREMIUM_REPORT_SPEC.md`](PREMIUM_REPORT_SPEC.md).
 
 Aucun lecteur ne doit interpréter un statut de module comme une note de risque.

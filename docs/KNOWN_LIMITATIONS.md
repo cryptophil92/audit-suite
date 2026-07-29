@@ -68,18 +68,22 @@ Il ne doit pas encore :
 - gérer une authentification ;
 - exposer des fonctions hors usage local.
 
-### Rapport centré sur l’exécution
+### Rapport premium et adaptateurs
 
 Le manifest `1.2.0` accepte des constats structurés, mais les modules réels ne
-disposent pas encore tous d’un adaptateur. Le rapport HTML actuel présente
-uniquement le contexte et l’état des modules. Il ne contient pas encore :
+disposent pas encore tous d’un adaptateur. Le rapport premium présente les
+constats disponibles sans compléter les champs manquants. Limites restantes :
 
-- l’affichage des constats, gravités, confiances et notes ;
-- les preuves et remédiations du contrat `findings[]` ;
-- de résumé exécutif ou plan d’action.
+- le mode partageable masque les identifiants directs et chemins, mais les
+  textes libres exigent une revue humaine ;
+- le statut de traitement et la comparaison détaillée avant/après restent à
+  relier aux vues résultats ;
+- l’enregistrement PDF utilise la fonction d’impression du navigateur ;
+- la mise en page n’est pas encore validée sur des rapports issus d’audits
+  réels autorisés.
 
 Voir [`FINDINGS_CONTRACT.md`](FINDINGS_CONTRACT.md),
-[`PREMIUM_REPORT_SPEC.md`](PREMIUM_REPORT_SPEC.md) et l’issue #71.
+[`PREMIUM_REPORT_SPEC.md`](PREMIUM_REPORT_SPEC.md) et les issues #48/#53.
 
 ### OpenAPI basique
 

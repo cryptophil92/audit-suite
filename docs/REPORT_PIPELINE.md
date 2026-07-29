@@ -15,6 +15,13 @@ output/RUN_1/report.html
 output/RUN_1/RUN_1_report_pack.tar.gz
 ```
 
+`report.html` est le rapport premium privé. Une copie partageable doit être
+générée explicitement après revue :
+
+```bash
+bash bin/report_html.sh --shareable output/RUN_1/manifest.json
+```
+
 ## Intégration dans `audit.sh`
 
 Après l'exécution des modules, `audit.sh` effectue maintenant :
@@ -31,6 +38,8 @@ Cela garantit que :
 - le manifest existe avant génération HTML ;
 - un fichier de constats invalide ne peut pas être intégré au manifest ;
 - le pack peut inclure le rapport HTML ;
+- les copies partageables ou techniques ne sont pas ajoutées par erreur dans
+  les résultats du pack privé ;
 - l'historique reste enregistré après génération des fichiers finaux.
 
 ## Comportement en cas d'erreur

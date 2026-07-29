@@ -197,10 +197,10 @@ Chaque erreur doit dire :
 ### État
 
 - dernier run affiché en JSON brut ;
-- rapport HTML séparé généré localement ;
+- rapport HTML premium privé ou partageable généré localement ;
 - comparaison disponible uniquement en CLI ;
 - aucun lien direct depuis l’interface ;
-- aucune hiérarchie d’alertes ;
+- hiérarchie des constats disponible dans le rapport, pas dans le dashboard ;
 - contrat de constats disponible dans le manifest `1.2.0`, mais sans
   restitution dans l’interface ni adaptateurs complets pour les modules réels.
 
@@ -287,7 +287,7 @@ Voir `ACCESSIBILITY.md`.
 - expliquer plan versus exécution ;
 - présenter les erreurs et états partiels ;
 - protéger la confiance autour des résultats ;
-- définir le modèle de constats et la notation avant le rapport premium.
+- relier le rapport premium et les constats au dashboard.
 
 ### P2
 

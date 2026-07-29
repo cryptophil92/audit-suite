@@ -57,6 +57,8 @@ printf 'module output A\n' > "$run_dir/module_a/result.txt"
 printf 'module output B\n' > "$run_dir/module_b/result.txt"
 printf 'combined log\n' > "$logs_dir/combined.log"
 printf 'should be excluded\n' > "$run_dir/old_report_pack.tar.gz"
+printf 'shareable copy\n' > "$run_dir/report-shareable.html"
+printf 'technical copy\n' > "$run_dir/report-technical.html"
 mkdir -p "$run_dir/tmp" "$run_dir/temp"
 printf 'tmp file\n' > "$run_dir/tmp/file.txt"
 printf 'temp file\n' > "$run_dir/temp/file.txt"
@@ -86,6 +88,16 @@ fi
 
 if grep -q 'old_report_pack.tar.gz' "$TMP_ROOT/list.txt"; then
   echo 'old report pack leaked into report pack' >&2
+  exit 1
+fi
+
+if grep -q 'report-shareable.html' "$TMP_ROOT/list.txt"; then
+  echo 'shareable report leaked into private report pack results' >&2
+  exit 1
+fi
+
+if grep -q 'report-technical.html' "$TMP_ROOT/list.txt"; then
+  echo 'technical report leaked into private report pack results' >&2
   exit 1
 fi
 

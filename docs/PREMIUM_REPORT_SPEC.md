@@ -4,9 +4,10 @@
 
 Spécification produit initiale du 29 juillet 2026. Le contrat de données de
 l’issue [#70](https://github.com/cryptophil92/audit-suite/issues/70) est
-implémenté dans le manifest `1.2.0`. La restitution premium de
-[#71](https://github.com/cryptophil92/audit-suite/issues/71) reste une cible et
-ne doit pas être présentée comme déjà disponible.
+implémenté dans le manifest `1.2.0`. Le rendu HTML premium de
+[#71](https://github.com/cryptophil92/audit-suite/issues/71) est disponible en
+mode privé ou partageable. La validation sur des audits réels et le suivi
+avant/après restent hors de ce lot.
 
 ## État actuel confirmé
 
@@ -14,20 +15,23 @@ Le manifest `1.2.0` prend en charge le contrat `findings[]` version `1.0.0`,
 sa validation stricte et la normalisation des manifests `1.0.0/1.1.0`. Les
 modules réels ne disposent pas encore tous d’un adaptateur de constats.
 
-Le rapport HTML actuel affiche encore uniquement :
+Le rapport HTML premium affiche :
 
-- le statut global ;
-- les comptes de modules ;
-- le contexte d’exécution ;
-- les options et chemins ;
-- un tableau des modules.
+- un résumé exécutif prudent ;
+- la couverture et les vérifications incomplètes ;
+- les constats priorisés ;
+- les notes justifiées et les états `Non noté` ;
+- les preuves, impacts, remédiations et vérifications ;
+- un plan d’action ;
+- une annexe technique ;
+- une checklist de confidentialité.
 
-Le rapport actuel ne présente donc pas encore les constats, notes, preuves et
-remédiations structurés disponibles dans un manifest `1.2.0`.
+Le mode partageable masque les identifiants directs et chemins. Il impose
+toujours une revue des textes libres avant diffusion.
 
 ## Objectifs
 
-Le rapport cible doit :
+Le rapport doit :
 
 - être compréhensible sans lire les logs ;
 - permettre de décider quoi traiter en premier ;
@@ -397,3 +401,12 @@ Toutes les fixtures publiques doivent être synthétiques.
 6. impression/PDF et accessibilité ;
 7. anonymisation et export ;
 8. comparaison avant/après.
+
+État :
+
+- étapes 1, 2, 4 et 5 implémentées ;
+- styles écran, mobile et impression de l’étape 6 implémentés, validation
+  utilisateur encore requise ;
+- anonymisation directe de l’étape 7 implémentée pour les identifiants et
+  chemins, avec revue manuelle obligatoire des textes libres ;
+- adaptateurs des modules réels et comparaison avant/après encore à réaliser.

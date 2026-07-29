@@ -40,7 +40,7 @@ offensive. La direction complète est documentée dans
 | CI exhaustive et maintenance des actions | Incomplètes | Issues #43 et #44 |
 | Préflight agréable et actionnable | Incomplet | Issue #47 |
 | Modèle de constats et notation | Contrat `1.0.0` implémenté | Brancher les adaptateurs de modules avec #48 |
-| Rapport premium | Absent | Issue #71 |
+| Rapport premium | HTML privé/partageable implémenté | Valider sur cas réels et relier à #53/#54 |
 | Onboarding, vues résultats et accessibilité | Documentés, non implémentés | Issues #52 à #54 |
 
 ## Séquence active
@@ -57,11 +57,9 @@ Deux volets avancent sans mélanger leurs changements dans une même PR.
 ### Valeur utilisateur
 
 1. maintenir le contrat de constats `1.0.0` et connecter les modules avec #48 ;
-2. construire le rapport premium avec
-   [#71](https://github.com/cryptophil92/audit-suite/issues/71) ;
-3. relier historique, constats et rapports avec #53 ;
-4. déployer onboarding, navigation et accessibilité avec #52 et #54 ;
-5. valider les parcours avec #55.
+2. relier historique, constats et rapports avec #53 ;
+3. déployer onboarding, navigation et accessibilité avec #52 et #54 ;
+4. valider les parcours avec #55.
 
 ## Phase 0 — Contenir les risques
 
@@ -141,7 +139,10 @@ Spécification : [`PREMIUM_REPORT_SPEC.md`](PREMIUM_REPORT_SPEC.md).
 
 État : contrat `findings[]` `1.0.0`, manifest `1.2.0`, validation stricte,
 compatibilité `1.0.0/1.1.0` et fixtures synthétiques implémentés. Les
-adaptateurs des modules et la restitution premium restent à réaliser.
+adaptateurs des modules restent à réaliser. Le rapport HTML premium privé et
+partageable, le tri, le plan d’action, l’annexe et les styles d’impression sont
+implémentés sur données synthétiques ; la validation utilisateur et sur
+rapports réels autorisés reste requise.
 
 ## Phase 5 — Expérience guidée en lecture seule
 
