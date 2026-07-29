@@ -22,14 +22,16 @@ La pile contient :
 ## Limites bloquantes ou importantes
 
 - des sorties d’audit sont encore suivies dans l’historique Git public ;
-- le FIFO de logging peut bloquer une exécution POSIX faute de lecteur ;
-- plusieurs modules masquent les erreurs des outils ;
-- l’historique corrompu rend le snapshot indisponible ;
-- les versions publiées par les composants et les tags divergent.
 
 Ne pas considérer le moteur prêt pour une mission professionnelle avant traitement.
 
+Les commandes structurantes des modules propagent désormais leurs erreurs et les étapes facultatives peuvent produire un état `partial`. Cette mécanique reste à valider sur un run Kali autorisé avant de considérer les résultats fiables en production.
+
 ## Limites non bloquantes
+
+### Bus d’événements désactivé
+
+Le logging écrit uniquement dans `logs/<RUN_ID>/combined.log`. L’ancien FIFO sans consommateur a été désactivé pour garantir que `emit` ne bloque pas sur POSIX. Toute réintroduction d’un bus d’événements devra définir le cycle de vie du lecteur et conserver un test de non-blocage.
 
 ### Pas encore validé sur Kali réel après audit
 
@@ -96,3 +98,8 @@ Tant que le test local réel n'est pas effectué, garder toutes les PR en brouil
   sortie combinée et des erreurs structurées en cas de dépassement.
 - Le snapshot calcule ses quatre sources en parallèle et reste soumis au même
   budget de 15 secondes sur Windows comme sur Linux.
+- Une ligne JSONL invalide ou tronquée ne rend plus l'historique et le
+  snapshot indisponibles : les entrées valides sont conservées et la
+  dégradation est signalée.
+- Les écritures de l'historique sont sérialisées, `latest.json` est remplacé
+  atomiquement et un `run_id` ne peut plus être réservé par deux processus.

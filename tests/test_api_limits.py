@@ -12,6 +12,7 @@ from pathlib import Path
 
 REPO_DIR = Path(__file__).resolve().parent.parent
 SERVER_PATH = REPO_DIR / "api" / "server.py"
+sys.path.insert(0, str(SERVER_PATH.parent))
 SPEC = importlib.util.spec_from_file_location("audit_suite_api_server", SERVER_PATH)
 assert SPEC is not None and SPEC.loader is not None
 server_module = importlib.util.module_from_spec(SPEC)

@@ -46,25 +46,27 @@ history_json_list() {
   local index_path
   index_path="$(history_index_path)"
 
-  if [[ ! -s "$index_path" ]]; then
-    jq -n \
-      --arg kind "audit-suite.history" \
-      --arg schema_version "1.0.0" \
-      --arg index_path "$index_path" \
-      '{kind: $kind, schema_version: $schema_version, count: 0, paths: {index: $index_path}, runs: []}'
-    return 0
-  fi
-
-  jq -s \
+  history_read_index_json | jq \
     --arg kind "audit-suite.history" \
     --arg schema_version "1.0.0" \
     --arg index_path "$index_path" \
-    '{kind: $kind, schema_version: $schema_version, count: length, paths: {index: $index_path}, runs: .}' \
-    "$index_path"
+    '{
+      kind: $kind,
+      schema_version: $schema_version,
+      degraded: (.invalid_line_count > 0),
+      error_count: .invalid_line_count,
+      degradation: {
+        invalid_line_count: .invalid_line_count,
+        ignored_line_count: .ignored_line_count
+      },
+      count: (.runs | length),
+      paths: {index: $index_path},
+      runs: .runs
+    }'
 }
 
 history_json_latest() {
-  local latest_path
+  local latest_path latest
   latest_path="$(history_latest_path)"
 
   if [[ ! -s "$latest_path" ]]; then
@@ -72,21 +74,38 @@ history_json_latest() {
       --arg kind "audit-suite.history.latest" \
       --arg schema_version "1.0.0" \
       --arg latest_path "$latest_path" \
-      '{kind: $kind, schema_version: $schema_version, paths: {latest: $latest_path}, latest: null}'
+      '{kind: $kind, schema_version: $schema_version, degraded: false, error_count: 0, paths: {latest: $latest_path}, latest: null}'
     return 0
   fi
 
-  jq \
+  if ! latest="$(jq -ce 'select(type == "object")' "$latest_path" 2>/dev/null)" || [[ -z "$latest" ]]; then
+    jq -n \
+      --arg kind "audit-suite.history.latest" \
+      --arg schema_version "1.0.0" \
+      --arg latest_path "$latest_path" \
+      '{
+        kind: $kind,
+        schema_version: $schema_version,
+        degraded: true,
+        error_count: 1,
+        degradation: {code: "invalid_latest_json"},
+        paths: {latest: $latest_path},
+        latest: null
+      }'
+    return 0
+  fi
+
+  jq -n \
     --arg kind "audit-suite.history.latest" \
     --arg schema_version "1.0.0" \
     --arg latest_path "$latest_path" \
-    '{kind: $kind, schema_version: $schema_version, paths: {latest: $latest_path}, latest: .}' \
-    "$latest_path"
+    --argjson latest "$latest" \
+    '{kind: $kind, schema_version: $schema_version, degraded: false, error_count: 0, paths: {latest: $latest_path}, latest: $latest}'
 }
 
 history_json_run() {
   local run_id="$1"
-  local index_path entry
+  local index_path
   index_path="$(history_index_path)"
 
   if [[ -z "$run_id" ]]; then
@@ -101,21 +120,23 @@ history_json_run() {
     return 0
   fi
 
-  if [[ ! -s "$index_path" ]]; then
-    jq -n --arg kind "audit-suite.history.run" --arg schema_version "1.0.0" --arg run_id "$run_id" --arg index_path "$index_path" \
-      '{kind: $kind, schema_version: $schema_version, run_id: $run_id, found: false, paths: {index: $index_path}, run: null}'
-    return 0
-  fi
-
-  entry="$(jq -cs --arg run_id "$run_id" 'map(select(.run_id == $run_id)) | last // empty' "$index_path")"
-  if [[ -z "$entry" ]]; then
-    jq -n --arg kind "audit-suite.history.run" --arg schema_version "1.0.0" --arg run_id "$run_id" --arg index_path "$index_path" \
-      '{kind: $kind, schema_version: $schema_version, run_id: $run_id, found: false, paths: {index: $index_path}, run: null}'
-    return 0
-  fi
-
-  jq -n --arg kind "audit-suite.history.run" --arg schema_version "1.0.0" --arg run_id "$run_id" --arg index_path "$index_path" --argjson run "$entry" \
-    '{kind: $kind, schema_version: $schema_version, run_id: $run_id, found: true, paths: {index: $index_path}, run: $run}'
+  history_read_index_json | jq \
+    --arg kind "audit-suite.history.run" \
+    --arg schema_version "1.0.0" \
+    --arg run_id "$run_id" \
+    --arg index_path "$index_path" \
+    '(.runs | map(select(.run_id == $run_id)) | last // null) as $run
+    | {
+        kind: $kind,
+        schema_version: $schema_version,
+        run_id: $run_id,
+        found: ($run != null),
+        degraded: (.invalid_line_count > 0),
+        error_count: .invalid_line_count,
+        degradation: {invalid_line_count: .invalid_line_count},
+        paths: {index: $index_path},
+        run: $run
+      }'
 }
 
 cmd="${1:-list}"

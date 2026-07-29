@@ -20,7 +20,7 @@ mkdir -p "$TMP_ROOT/default"
 
 cat > "$manifest_path" <<'JSON'
 {
-  "schema_version": "1.0.0",
+  "schema_version": "1.1.0",
   "kind": "audit-suite.manifest",
   "run_id": "AUDIT_HTML_TEST",
   "created_at": "2026-07-01T00:00:00+00:00",
@@ -38,8 +38,9 @@ cat > "$manifest_path" <<'JSON'
     "manifest": "output/AUDIT_HTML_TEST/manifest.json"
   },
   "summary": {
-    "module_count": 2,
+    "module_count": 3,
     "success_count": 1,
+    "partial_count": 1,
     "failed_count": 1,
     "skipped_count": 0,
     "total_duration_seconds": 7,
@@ -55,6 +56,16 @@ cat > "$manifest_path" <<'JSON'
       "duration_seconds": 2,
       "output_path": "output/AUDIT_HTML_TEST/10_network_discovery",
       "reason": ""
+    },
+    {
+      "id": "20_portscan_nmap",
+      "name": "Portscan Nmap",
+      "path": "modules/20_portscan_nmap.sh",
+      "status": "partial",
+      "rc": 0,
+      "duration_seconds": 2,
+      "output_path": "output/AUDIT_HTML_TEST/20_portscan_nmap",
+      "reason": "optional UDP scan returned rc=8"
     },
     {
       "id": "xss_test",
@@ -77,6 +88,8 @@ grep -q '<!doctype html>' "$report_path"
 grep -q 'Rapport AUDIT-SUITE' "$report_path"
 grep -q 'AUDIT_HTML_TEST' "$report_path"
 grep -q 'status-failed' "$report_path"
+grep -q 'status-partial' "$report_path"
+grep -q 'Partiels' "$report_path"
 grep -q 'xss_test' "$report_path"
 grep -q '&lt;script&gt;alert' "$report_path"
 grep -q 'module returned rc=1 &lt;unsafe&gt;' "$report_path"

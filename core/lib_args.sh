@@ -4,6 +4,7 @@
 set -Eeuo pipefail
 
 AUDIT_ARG_HELP=0
+AUDIT_ARG_VERSION=0
 AUDIT_ARG_ALLOW_PUBLIC=0
 AUDIT_ARG_DRY_RUN=0
 AUDIT_ARG_LIST_MODULES=0
@@ -28,6 +29,7 @@ Options:
   --allow-public                      Autorise les cibles publiques avec autorisation explicite.
   --dry-run                           Valide et affiche le plan sans exécuter de modules.
   --list-modules                      Liste les modules disponibles puis quitte.
+  --version                           Affiche la version et le commit puis quitte.
   -h, --help                          Affiche cette aide.
 
 Par défaut, AUDIT-SUITE refuse les IP/plages publiques et accepte uniquement les périmètres locaux/lab.
@@ -90,6 +92,7 @@ _args_append_opt() {
 
 parse_audit_args() {
   AUDIT_ARG_HELP=0
+  AUDIT_ARG_VERSION=0
   AUDIT_ARG_ALLOW_PUBLIC=0
   AUDIT_ARG_DRY_RUN=0
   AUDIT_ARG_LIST_MODULES=0
@@ -166,6 +169,10 @@ parse_audit_args() {
         ;;
       --list-modules)
         AUDIT_ARG_LIST_MODULES=1
+        shift
+        ;;
+      --version)
+        AUDIT_ARG_VERSION=1
         shift
         ;;
       -h|--help)

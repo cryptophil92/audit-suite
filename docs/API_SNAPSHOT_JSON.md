@@ -17,6 +17,16 @@ La commande inclut :
 - `history` : sortie de `bin/history_json.sh list` ;
 - `latest` : sortie de `bin/history_json.sh latest`.
 
+Le snapshot expose aussi :
+
+- `degraded` : `true` si l'index ou `latest.json` contient des données
+  illisibles ;
+- `error_count` : somme des erreurs de lecture de l'historique.
+
+Une corruption partielle n'empêche donc plus la production du snapshot. Les
+runs valides restent disponibles dans `history.runs` et le détail de la
+dégradation reste présent dans les objets `history` et `latest`.
+
 ## Sortie
 
 ```json

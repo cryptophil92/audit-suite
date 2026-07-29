@@ -57,6 +57,9 @@ jobs:
       - name: Run module validation tests
         run: bash tests/test_modules.sh
 
+      - name: Run module outcome tests
+        run: bash tests/test_module_outcomes.sh
+
       - name: Run modules JSON tests
         run: bash tests/test_modules_json.sh
 
@@ -72,8 +75,14 @@ jobs:
       - name: Run API subprocess budget tests
         run: python3 tests/test_api_limits.py
 
+      - name: Run API security tests
+        run: python3 tests/test_api_security.py
+
       - name: Run version JSON tests
         run: bash tests/test_version_json.sh
+
+      - name: Run version consistency tests
+        run: bash tests/test_version_consistency.sh
 
       - name: Run routes JSON tests
         run: bash tests/test_routes_json.sh
@@ -83,6 +92,9 @@ jobs:
 
       - name: Run path tests
         run: bash tests/test_run_paths.sh
+
+      - name: Run logging tests
+        run: bash tests/test_logging.sh
 
       - name: Run dry-run tests
         run: bash tests/test_dry_run.sh
@@ -99,6 +111,9 @@ jobs:
       - name: Run history JSON tests
         run: bash tests/test_history_json.sh
 
+      - name: Run history detail JSON tests
+        run: bash tests/test_run_detail_json.sh
+
       - name: Run manifest schema tests
         run: bash tests/test_manifest_schema.sh
 
@@ -113,6 +128,9 @@ jobs:
 
       - name: Run report pipeline tests
         run: bash tests/test_report_pipeline.sh
+
+      - name: Run runtime artifact guard tests
+        run: bash tests/test_runtime_artifact_guard.sh
 
       - name: Fail if ShellCheck failed
         run: |

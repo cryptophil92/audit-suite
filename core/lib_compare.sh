@@ -64,10 +64,19 @@ compare_runs_json() {
       status: ($m.summary.status // "unknown"),
       module_count: ($m.summary.module_count // (($m.modules // []) | length)),
       success_count: ($m.summary.success_count // ([($m.modules // [])[] | select(.status == "success")] | length)),
+      partial_count: ($m.summary.partial_count // ([($m.modules // [])[] | select(.status == "partial")] | length)),
       failed_count: ($m.summary.failed_count // ([($m.modules // [])[] | select(.status == "failed")] | length)),
       skipped_count: ($m.summary.skipped_count // ([($m.modules // [])[] | select(.status == "skipped")] | length)),
       total_duration_seconds: ($m.summary.total_duration_seconds // ([($m.modules // [])[].duration_seconds] | add // 0))
     };
+
+    def status_rank($status):
+      if $status == "success" then 3
+      elif $status == "partial" then 2
+      elif $status == "skipped" then 1
+      elif $status == "failed" then 0
+      else null
+      end;
 
     ($before[0]) as $b |
     ($after[0]) as $a |
@@ -108,17 +117,15 @@ compare_runs_json() {
         unchanged_count: ([$changes[] | select(.change == "unchanged")] | length),
         regression_count: ([
           $changes[] |
-          select(
-            (.before.status == "success" and (.after.status == "failed" or .after.status == "skipped")) or
-            (.before.status == "skipped" and .after.status == "failed")
-          )
+          (status_rank(.before.status)) as $before_rank |
+          (status_rank(.after.status)) as $after_rank |
+          select($before_rank != null and $after_rank != null and $after_rank < $before_rank)
         ] | length),
         improvement_count: ([
           $changes[] |
-          select(
-            ((.before.status == "failed" or .before.status == "skipped") and .after.status == "success") or
-            (.before.status == "failed" and .after.status == "skipped")
-          )
+          (status_rank(.before.status)) as $before_rank |
+          (status_rank(.after.status)) as $after_rank |
+          select($before_rank != null and $after_rank != null and $after_rank > $before_rank)
         ] | length)
       },
       modules: $changes

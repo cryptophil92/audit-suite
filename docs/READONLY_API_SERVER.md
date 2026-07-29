@@ -10,6 +10,24 @@ python3 api/server.py --host 127.0.0.1 --port 8765
 
 Par défaut, l'écoute est limitée à `127.0.0.1`.
 
+`--host` accepte uniquement une adresse IP loopback littérale :
+
+```text
+127.0.0.0/8
+::1
+```
+
+Exemple IPv6 :
+
+```bash
+python3 api/server.py --host ::1 --port 8765
+```
+
+Les adresses non loopback (`0.0.0.0`, une adresse LAN ou une adresse publique)
+et les noms d'hôte sont refusés avant la création du serveur. Il n'existe aucun
+mode de contournement pour une écoute distante : cette capacité nécessiterait
+une revue dédiée et un mécanisme d'authentification.
+
 ## Budgets des sous-processus
 
 Chaque route dynamique possède un délai maximal :
@@ -84,7 +102,8 @@ no_suricata   1/true/yes/on
 
 ## Spécification
 
-`/api/openapi.json` sert le fichier `api/openapi.json`.
+`/api/openapi.json` sert le fichier `api/openapi.json` après injection de la
+version canonique et du commit courant. `/api/health` expose les mêmes valeurs.
 
 ## Comportement
 
@@ -95,6 +114,10 @@ no_suricata   1/true/yes/on
 - Les réponses utilisent `Cache-Control: no-store`.
 - Les routes dynamiques bornent leur durée et le volume capturé de leurs
   sous-processus.
+- Les erreurs HTTP des sous-processus n'exposent ni la commande exécutée, ni
+  `stderr`, ni les chemins internes des ressources statiques.
+- Les détails nécessaires au diagnostic sont consignés uniquement dans le
+  journal privé du processus serveur.
 
 Sous Windows Git Bash, les quatre sources du snapshot sont calculées en
 parallèle afin de rester dans le budget documenté de 15 secondes. Ce budget

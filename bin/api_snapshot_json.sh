@@ -66,6 +66,8 @@ emit_api_snapshot_json() (
       kind: $kind,
       schema_version: $schema_version,
       generated_at: $generated_at,
+      degraded: (($history[0].degraded // false) or ($latest[0].degraded // false)),
+      error_count: (($history[0].error_count // 0) + ($latest[0].error_count // 0)),
       status: $status[0],
       modules: $modules[0],
       history: $history[0],

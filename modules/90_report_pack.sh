@@ -16,7 +16,7 @@ mod_run(){
   local archive_path="$RUN_DIR/../${RUN_ID}.tar.gz"
 
   mkdir -p "$out"
-  tar -C "$RUN_DIR/.." -czf "$archive_path" "$RUN_ID" || true
+  tar -C "$RUN_DIR/.." -czf "$archive_path" "$RUN_ID"
   printf 'Run: %s\nProfile: %s\nTargets: %s\n' "$RUN_ID" "$PROFILE" "$TARGETS" > "$out/summary.txt"
   emit INFO "$MOD_ID" "Archive créée: $archive_path"
 }

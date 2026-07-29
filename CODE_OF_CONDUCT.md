@@ -34,4 +34,10 @@ Ce code s’applique au dépôt, aux issues, pull requests, discussions et espac
 
 ## Attribution
 
-Ce document reprend les principes du Contributor Covenant 2.1 dans une formulation adaptée au projet. Il ne modifie pas la licence du code, qui reste à déterminer.
+Ce document est adapté du
+[Contributor Covenant 2.1](https://www.contributor-covenant.org/version/2/1/code_of_conduct/),
+utilisé sous
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
+Il a été traduit, condensé et adapté au contexte d’Audit Suite. Cette exception
+documentaire est également déclarée dans [`NOTICE`](NOTICE) et ne modifie pas
+la licence Apache 2.0 du reste du projet.

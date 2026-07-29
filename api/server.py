@@ -3,10 +3,13 @@
 from __future__ import annotations
 
 import argparse
+import ipaddress
 import json
+import logging
 import math
 import os
 import signal
+import socket
 import subprocess
 import threading
 import time
@@ -15,6 +18,8 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Any
 from urllib.parse import parse_qs, urlparse
+
+from version import APP_COMMIT, APP_VERSION
 
 REPO_DIR = Path(__file__).resolve().parent.parent
 WEB_INDEX = REPO_DIR / "web" / "index.html"
@@ -29,6 +34,7 @@ ROUTE_TIMEOUT_SECONDS = {
     "/api/snapshot": 15.0,
     "/api/plan": 10.0,
 }
+LOGGER = logging.getLogger("audit_suite.api")
 
 ROUTES: dict[str, list[str]] = {
     "/api/status": ["bash", "bin/status_json.sh"],
@@ -165,11 +171,11 @@ def run_json_command(
             **popen_options,
         )
     except OSError as exc:
+        LOGGER.error("JSON command failed to start: command=%r error=%s", command, exc)
         return 127, {
             "kind": "audit-suite.api_error",
             "error": "command_start_failed",
             "returncode": 127,
-            "stderr": str(exc),
             "duration_ms": round((time.monotonic() - started_at) * 1000),
         }
 
@@ -237,6 +243,11 @@ def run_json_command(
     stderr = b"".join(stderr_chunks).decode("utf-8", errors="replace")
 
     if timed_out:
+        LOGGER.error(
+            "JSON command timed out: command=%r timeout_seconds=%s",
+            command,
+            timeout_seconds,
+        )
         return 124, {
             "kind": "audit-suite.api_error",
             "error": "command_timeout",
@@ -246,6 +257,11 @@ def run_json_command(
         }
 
     if limit_exceeded.is_set():
+        LOGGER.error(
+            "JSON command output limit exceeded: command=%r max_output_bytes=%d",
+            command,
+            max_output_bytes,
+        )
         return 125, {
             "kind": "audit-suite.api_error",
             "error": "output_limit_exceeded",
@@ -255,22 +271,27 @@ def run_json_command(
         }
 
     if process.returncode != 0:
+        LOGGER.error(
+            "JSON command failed: command=%r returncode=%d stderr=%s",
+            command,
+            process.returncode,
+            stderr.strip(),
+        )
         return process.returncode, {
             "kind": "audit-suite.api_error",
-            "command": command,
+            "error": "command_failed",
             "returncode": process.returncode,
-            "stderr": stderr.strip(),
             "duration_ms": duration_ms,
         }
 
     try:
         return 0, json.loads(stdout)
     except json.JSONDecodeError as exc:
+        LOGGER.error("JSON command returned invalid JSON: command=%r error=%s", command, exc)
         return 1, {
             "kind": "audit-suite.api_error",
-            "command": command,
+            "error": "invalid_command_output",
             "returncode": 1,
-            "stderr": f"Invalid JSON output: {exc}",
             "duration_ms": duration_ms,
         }
 
@@ -333,7 +354,7 @@ def build_plan_command(query: dict[str, list[str]]) -> tuple[list[str] | None, d
 
 
 class AuditSuiteHandler(BaseHTTPRequestHandler):
-    server_version = "AuditSuiteReadOnlyAPI/0.2.34"
+    server_version = f"AuditSuiteReadOnlyAPI/{APP_VERSION}"
 
     def log_message(self, format: str, *args: Any) -> None:  # noqa: A002
         if getattr(self.server, "quiet", False):
@@ -364,7 +385,6 @@ class AuditSuiteHandler(BaseHTTPRequestHandler):
                 {
                     "kind": "audit-suite.api_error",
                     "error": "json_file_missing",
-                    "path": str(json_path),
                 },
             )
             return
@@ -376,6 +396,39 @@ class AuditSuiteHandler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(body)
 
+    def _write_openapi(self) -> None:
+        if not OPENAPI_SPEC.is_file():
+            LOGGER.error("OpenAPI document is missing: path=%s", OPENAPI_SPEC)
+            self._write_json(
+                HTTPStatus.NOT_FOUND,
+                {
+                    "kind": "audit-suite.api_error",
+                    "error": "json_file_missing",
+                },
+            )
+            return
+
+        try:
+            payload = json.loads(OPENAPI_SPEC.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError) as exc:
+            LOGGER.error(
+                "OpenAPI document could not be loaded: path=%s error=%s",
+                OPENAPI_SPEC,
+                exc,
+            )
+            self._write_json(
+                HTTPStatus.INTERNAL_SERVER_ERROR,
+                {
+                    "kind": "audit-suite.api_error",
+                    "error": "invalid_openapi_document",
+                },
+            )
+            return
+
+        payload.setdefault("info", {})["version"] = APP_VERSION
+        payload["info"]["x-audit-suite-commit"] = APP_COMMIT
+        self._write_json(HTTPStatus.OK, payload)
+
     def _write_html(self, status: HTTPStatus, html_path: Path) -> None:
         if not html_path.is_file():
             self._write_json(
@@ -383,7 +436,6 @@ class AuditSuiteHandler(BaseHTTPRequestHandler):
                 {
                     "kind": "audit-suite.api_error",
                     "error": "web_index_missing",
-                    "path": str(html_path),
                 },
             )
             return
@@ -416,7 +468,7 @@ class AuditSuiteHandler(BaseHTTPRequestHandler):
             return
 
         if path == "/api/openapi.json":
-            self._write_json_file(HTTPStatus.OK, OPENAPI_SPEC)
+            self._write_openapi()
             return
 
         if path == "/api/health":
@@ -426,6 +478,8 @@ class AuditSuiteHandler(BaseHTTPRequestHandler):
                     "kind": "audit-suite.api_health",
                     "status": "ok",
                     "read_only": True,
+                    "version": APP_VERSION,
+                    "commit": APP_COMMIT,
                 },
             )
             return
@@ -500,9 +554,44 @@ def positive_int(value: str) -> int:
     return parsed
 
 
+def loopback_host(value: str) -> str:
+    try:
+        address = ipaddress.ip_address(value)
+    except ValueError as exc:
+        raise argparse.ArgumentTypeError(
+            "host must be a literal loopback IPv4 or IPv6 address"
+        ) from exc
+
+    if not address.is_loopback:
+        raise argparse.ArgumentTypeError(
+            "non-loopback API binds are not supported; use 127.0.0.1 or ::1"
+        )
+    return str(address)
+
+
+class ThreadingIPv6HTTPServer(ThreadingHTTPServer):
+    address_family = socket.AF_INET6
+
+
+def create_server(host: str, port: int) -> ThreadingHTTPServer:
+    safe_host = loopback_host(host)
+    server_class = ThreadingIPv6HTTPServer if ":" in safe_host else ThreadingHTTPServer
+    return server_class((safe_host, port), AuditSuiteHandler)
+
+
+def server_url(host: str, port: int) -> str:
+    formatted_host = f"[{host}]" if ":" in host else host
+    return f"http://{formatted_host}:{port}"
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="AUDIT-SUITE local read-only API")
-    parser.add_argument("--host", default="127.0.0.1")
+    parser.add_argument(
+        "--host",
+        type=loopback_host,
+        default="127.0.0.1",
+        help="literal loopback address only (default: 127.0.0.1; IPv6: ::1)",
+    )
     parser.add_argument("--port", type=int, default=8765)
     parser.add_argument(
         "--command-timeout",
@@ -522,11 +611,14 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> int:
     args = parse_args()
-    server = ThreadingHTTPServer((args.host, args.port), AuditSuiteHandler)
+    server = create_server(args.host, args.port)
     server.quiet = args.quiet  # type: ignore[attr-defined]
     server.command_timeout = args.command_timeout  # type: ignore[attr-defined]
     server.max_output_bytes = args.max_output_bytes  # type: ignore[attr-defined]
-    print(f"AUDIT-SUITE read-only API listening on http://{args.host}:{args.port}", flush=True)
+    print(
+        f"AUDIT-SUITE read-only API listening on {server_url(args.host, args.port)}",
+        flush=True,
+    )
     try:
         server.serve_forever()
     except KeyboardInterrupt:

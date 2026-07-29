@@ -33,7 +33,7 @@ case "$cmd" in
       exit 0
     fi
 
-    printf 'created_at\trun_id\tprofile\ttargets\tsuccess\tfailed\tskipped\n'
+    printf 'created_at\trun_id\tprofile\ttargets\tstatus\tsuccess\tpartial\tfailed\tskipped\n'
     history_list_runs
     ;;
   latest)
