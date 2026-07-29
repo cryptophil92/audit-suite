@@ -11,6 +11,8 @@ le format [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et
 - runner unique avec découverte automatique des tests Bash/Python et du smoke ;
 - couverture des échecs de permission et des interruptions de modules ;
 - politique LF automatisée pour les scripts, tests et workflows ;
+- GitHub Actions officielles mises à niveau et épinglées par SHA complet avec
+  permissions minimales ;
 - ajout du statut `partial` et d’un contrat explicite pour les états module ;
 - propagation des erreurs des commandes structurantes ;
 - skip déterministe de Zeek et Suricata lorsqu’ils sont désactivés ;
@@ -46,7 +48,8 @@ le format [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et
 - création du socle UX, accessibilité et design system ;
 - ajout de l’étude de faisabilité multiplateforme ;
 - ajout de modèles d’issues et de pull request ;
-- ajout d’une configuration Dependabot pour GitHub Actions.
+- ajout d’une configuration Dependabot hebdomadaire limitée pour GitHub
+  Actions, d’une procédure de revue et activation des protections Dependabot ;
 - adoption de la licence Apache 2.0 avec attribution publique à
   Cryptophil (`cryptophil92`) ;
 - ajout d’un fichier `NOTICE` pour l’adaptation du Contributor Covenant 2.1.

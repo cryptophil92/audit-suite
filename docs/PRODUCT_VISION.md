@@ -160,8 +160,8 @@ Les mesures cibles seront validées par recherche utilisateur :
 ## Séquence de réalisation
 
 1. maintenir la découverte automatique des tests livrée par
-   [#43](https://github.com/cryptophil92/audit-suite/issues/43), mettre à
-   niveau la maintenance CI avec
+   [#43](https://github.com/cryptophil92/audit-suite/issues/43) et
+   l’épinglage des Actions avec la surveillance Dependabot livrés par
    [#44](https://github.com/cryptophil92/audit-suite/issues/44), puis construire
    le préflight guidé
    [#47](https://github.com/cryptophil92/audit-suite/issues/47) ;

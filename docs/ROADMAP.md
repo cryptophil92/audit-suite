@@ -45,8 +45,8 @@ offensive. La direction complète est documentée dans
 
 ## État vérifié au 29 juillet 2026
 
-Dernier point de référence avant ce lot : `main` après la fusion de la PR #75,
-commit `e9518c9787c26f8cdfb87cff95036e7c307791cc`.
+Dernier point de référence avant ce lot : `main` après la fusion de la PR #76,
+commit `110e545283360616f2142e23cbad86be851cb6c7`.
 
 | Domaine | État | Suite |
 |---|---|---|
@@ -54,7 +54,7 @@ commit `e9518c9787c26f8cdfb87cff95036e7c307791cc`.
 | Logging, états modules, historique, API | #38 à #42 fusionnés | Maintenir les tests |
 | Licence, version et procédure de release | Documentées et fusionnées | Pas de tag avant les gates P0/P1 |
 | Artefacts historiques publics | Décision privée encore requise | Issue #37 |
-| CI exhaustive et maintenance des actions | 27 tests Bash, 17 tests Python et smoke découverts par un runner unique ; LF imposé | Maintenance #44 |
+| CI exhaustive et maintenance des actions | Runner automatique livré par #43 ; Actions épinglées et protections Dependabot activées par #44 | Surveiller les mises à jour hebdomadaires |
 | Préflight agréable et actionnable | Incomplet | Issue #47 |
 | Modèle de constats et notation | #70 fermé, contrat `1.0.0` implémenté | Brancher les adaptateurs de modules avec #48 |
 | Rapport premium | #71 fermé, HTML privé/partageable/technique implémenté | Valider sur cas réels et relier à #53/#54 |
@@ -69,7 +69,8 @@ Deux volets avancent sans mélanger leurs changements dans une même PR.
 1. décider du traitement privé de #37 ;
 2. maintenir la découverte complète des tests et la politique LF livrées par
    #43 ;
-3. mettre à niveau la maintenance CI avec #44 ;
+3. maintenir l’épinglage des Actions et la surveillance Dependabot livrés par
+   #44 ;
 4. construire le préflight guidé de #47.
 
 ### Valeur utilisateur
@@ -83,10 +84,10 @@ Deux volets avancent sans mélanger leurs changements dans une même PR.
 
 ### Prochain lot non bloqué
 
-#44 est le prochain lot de confiance entièrement testable sans scan réel ni
-décision destructive. #47 vient ensuite pour améliorer directement le
-démarrage d’un audit. Le volet valeur peut préparer #48/#53 en parallèle, mais
-ne doit pas étendre le dashboard avant le rendu sûr de #51.
+#47 est le prochain lot de confiance entièrement testable sans scan réel ni
+décision destructive. Il améliore directement le démarrage d’un audit. Le
+volet valeur peut ensuite préparer #48/#53, mais ne doit pas étendre le
+dashboard avant le rendu sûr de #51.
 
 ## Phase 0 — Contenir les risques
 
@@ -148,8 +149,10 @@ Critère de sortie : un nouveau contributeur peut installer, tester et identifie
 État : licence, version et procédure de release fusionnées. Un runner unique
 découvre 27 tests Bash, deux suites Python totalisant 17 cas et le smoke local.
 Un test prouve qu’un nouveau fichier conforme est inclus automatiquement, et
-`.gitattributes` impose LF. La maintenance des actions reste suivie par #44.
-Aucune release ne doit contourner #37 ni les P1 retenues pour la release.
+`.gitattributes` impose LF. Les Actions officielles sont épinglées sur des SHA
+complets, leurs permissions sont minimales et Dependabot surveille les mises à
+jour et vulnérabilités. Aucune release ne doit contourner #37 ni les P1
+retenues pour la release.
 
 ## Phase 4 — Cœur produit et rapport premium
 

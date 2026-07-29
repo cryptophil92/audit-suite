@@ -7,7 +7,9 @@ updates:
       day: monday
       time: "06:00"
       timezone: Europe/Paris
+    target-branch: main
     open-pull-requests-limit: 5
+    rebase-strategy: auto
     labels:
       - ci
       - technical-debt

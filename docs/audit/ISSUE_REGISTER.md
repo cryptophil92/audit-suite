@@ -3,7 +3,7 @@
 Ce registre relie les constats de l’audit aux issues GitHub créées. Les détails potentiellement sensibles restent volontairement absents des tickets publics.
 
 État des issues vérifié sur GitHub le 29 juillet 2026 et préparé pour la
-livraison du lot #43. Les descriptions de l’audit restent historiques ; la
+livraison du lot #44. Les descriptions de l’audit restent historiques ; la
 colonne `Statut` indique l’état opérationnel après fusion du lot.
 
 ## Pilotage
@@ -21,7 +21,7 @@ colonne `Statut` indique l’état opérationnel après fusion du lot.
 | [#41](https://github.com/cryptophil92/audit-suite/issues/41) | P1 | Sécurité | Fermée | Empêcher l’exposition accidentelle de l’API hors loopback |
 | [#42](https://github.com/cryptophil92/audit-suite/issues/42) | P1 | Performance | Fermée | Borner les sous-processus et le budget des routes API |
 | [#43](https://github.com/cryptophil92/audit-suite/issues/43) | P1 | Tests | Fermée | Couvrir le moteur, les erreurs et tous les scripts dans une CI reproductible |
-| [#44](https://github.com/cryptophil92/audit-suite/issues/44) | P1 | CI | Ouverte | Mettre à niveau les GitHub Actions et activer la maintenance des dépendances |
+| [#44](https://github.com/cryptophil92/audit-suite/issues/44) | P1 | CI | Fermée | Mettre à niveau les GitHub Actions et activer la maintenance des dépendances |
 | [#45](https://github.com/cryptophil92/audit-suite/issues/45) | P1 | Refactoring | Fermée | Unifier la version et formaliser les releases |
 | [#46](https://github.com/cryptophil92/audit-suite/issues/46) | P1 | Documentation | Fermée | Choisir et publier une licence explicite |
 | [#47](https://github.com/cryptophil92/audit-suite/issues/47) | P1 | Bug | Ouverte | Ajouter un préflight des capacités, outils et privilèges |
@@ -41,7 +41,7 @@ colonne `Statut` indique l’état opérationnel après fusion du lot.
 ## Ordre recommandé
 
 1. Décision privée sur le dernier P0 : #37.
-2. Confiance de livraison : maintenir #43, puis traiter #44 et #47.
+2. Confiance de livraison : maintenir #43 et #44, puis traiter #47.
 3. Adaptateurs et rendu sûr : #48 et #51.
 4. Vues résultats et rapport : #53, sur les lots #70/#71 livrés.
 5. Architecture, dette, UX et accessibilité : #49, #50, #52 et #54.

@@ -34,6 +34,8 @@ l’issue #58 et le registre des issues dans le même cycle de suivi.
 - [`audit/TECHNICAL_AUDIT_2026-07-28.md`](audit/TECHNICAL_AUDIT_2026-07-28.md) ;
 - [`audit/TEST_RESULTS_2026-07-28.md`](audit/TEST_RESULTS_2026-07-28.md) ;
 - [`audit/GITHUB_REPOSITORY_SETTINGS.md`](audit/GITHUB_REPOSITORY_SETTINGS.md) ;
+- [`DEPENDENCY_MAINTENANCE.md`](DEPENDENCY_MAINTENANCE.md) — versions
+  épinglées, surveillance Dependabot et procédure de revue ;
 - [`ROADMAP.md`](ROADMAP.md) ;
 - [`CROSS_PLATFORM_FEASIBILITY.md`](CROSS_PLATFORM_FEASIBILITY.md).
 
