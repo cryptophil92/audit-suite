@@ -46,6 +46,24 @@ printf '%s\n' "$degraded_output" | grep -Fq \
 printf '%s\n' "$degraded_output" | grep -Fq \
   '[PRÊT] Le lancement peut continuer avec les limites annoncées ci-dessus.'
 
+partial_output="$(
+  AUDIT_PREFLIGHT_FORCE_AVAILABLE_COMMANDS="jq timeout tar gzip nmap" \
+  AUDIT_PREFLIGHT_FORCE_RAW_SOCKET=1 \
+  preflight_run "60_smb_enum.sh"
+)"
+printf '%s\n' "$partial_output" | grep -Fq \
+  '[LIMITÉ] Module : Détection SMB prêt pour une couverture partielle.'
+printf '%s\n' "$partial_output" | grep -Fq \
+  'Détecte uniquement les ports SMB 139/445 ouverts'
+
+placeholder_output="$(
+  AUDIT_PREFLIGHT_FORCE_AVAILABLE_COMMANDS="jq timeout tar gzip snmpwalk" \
+  AUDIT_PREFLIGHT_FORCE_RAW_SOCKET=1 \
+  preflight_run "50_snmp_enum.sh"
+)"
+printf '%s\n' "$placeholder_output" | grep -Fq \
+  '[INDISPONIBLE] SNMP — placeholder non disponible : maturité placeholder.'
+
 if blocker_output="$(
   AUDIT_PREFLIGHT_FORCE_MISSING_COMMANDS="timeout" \
   AUDIT_PREFLIGHT_FORCE_AVAILABLE_COMMANDS="jq" \

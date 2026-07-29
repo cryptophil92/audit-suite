@@ -409,4 +409,5 @@ Toutes les fixtures publiques doivent être synthétiques.
   utilisateur encore requise ;
 - anonymisation directe de l’étape 7 implémentée pour les identifiants et
   chemins, avec revue manuelle obligatoire des textes libres ;
-- adaptateurs des modules réels et comparaison avant/après encore à réaliser.
+- adaptateurs des sorties réelles (#79) et comparaison avant/après encore à
+  réaliser.

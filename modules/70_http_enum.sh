@@ -9,6 +9,12 @@ MOD_PRIO=70
 MOD_REQUIRES=( "whatweb" "nmap" )
 MOD_TIMEOUT=7200
 MOD_TAGS=("http" "web")
+MOD_MATURITY="experimental"
+MOD_CAPABILITIES=("http_port_detection" "web_fingerprinting")
+MOD_INTRUSIVENESS="moderate"
+MOD_PRIVILEGES=("standard_user")
+MOD_SELECTABLE=1
+MOD_LIMITATIONS="Empreinte WhatWeb sur les services 80/443 détectés ; ne remplace pas un audit applicatif."
 
 mod_pre(){ return 0; }
 mod_run(){

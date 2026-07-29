@@ -165,17 +165,18 @@ Les mesures cibles seront validées par recherche utilisateur :
    [#44](https://github.com/cryptophil92/audit-suite/issues/44), ainsi que le
    préflight guidé livré par
    [#47](https://github.com/cryptophil92/audit-suite/issues/47) ;
-2. maintenir le contrat de constats `1.0.0` et connecter progressivement les
-   modules, en coordination avec
+2. maintenir le catalogue de maturité et le pack canonique livrés par
    [#48](https://github.com/cryptophil92/audit-suite/issues/48) ;
 3. rendre le dashboard sûr pour les données locales — issue
    [#51](https://github.com/cryptophil92/audit-suite/issues/51) ;
-4. relier historique, constats et rapports dans l’interface — issue
+4. connecter progressivement les sorties au contrat de constats — issue
+   [#79](https://github.com/cryptophil92/audit-suite/issues/79) ;
+5. relier historique, constats et rapports dans l’interface — issue
    [#53](https://github.com/cryptophil92/audit-suite/issues/53) ;
-5. déployer l’onboarding, le design system et l’accessibilité — issues
+6. déployer l’onboarding, le design system et l’accessibilité — issues
    [#52](https://github.com/cryptophil92/audit-suite/issues/52) et
    [#54](https://github.com/cryptophil92/audit-suite/issues/54) ;
-6. valider les rapports et parcours avec des utilisateurs et sur Kali/Linux.
+7. valider les rapports et parcours avec des utilisateurs et sur Kali/Linux.
 
 Le contrat de constats et le premier rapport premium sont fusionnés. Ils
 constituent désormais le socle à connecter aux modules réels et aux vues de

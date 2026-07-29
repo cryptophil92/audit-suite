@@ -3,12 +3,18 @@
 # @version 0.1.0
 set -Eeuo pipefail
 MOD_ID="80_zeek"
-MOD_NAME="Zeek PCAP (option)"
+MOD_NAME="Zeek — placeholder non disponible"
 MOD_PRIO=80
 MOD_REQUIRES=( "zeek" )
 MOD_TIMEOUT=7200
 MOD_TAGS=("pcap" "ids")
 MOD_SKIP_OPTION="OPTS_NO_ZEEK"
+MOD_MATURITY="placeholder"
+MOD_CAPABILITIES=()
+MOD_INTRUSIVENESS="none"
+MOD_PRIVILEGES=("standard_user")
+MOD_SELECTABLE=0
+MOD_LIMITATIONS="Aucune capture ni analyse Zeek n’est implémentée ; le module reste désactivé."
 
 mod_pre(){ return 0; }
 mod_run(){

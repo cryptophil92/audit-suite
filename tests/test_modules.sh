@@ -17,6 +17,18 @@ source "core/lib_modules.sh"
 
 module_exists '10_network_discovery.sh'
 module_exists 'modules/10_network_discovery.sh'
+module_exists '50_snmp_enum.sh'
+module_is_selectable '10_network_discovery.sh'
+
+if module_is_selectable '50_snmp_enum.sh'; then
+  echo 'placeholder module is selectable' >&2
+  exit 1
+fi
+
+if module_is_selectable '90_report_pack.sh'; then
+  echo 'deprecated report module is selectable' >&2
+  exit 1
+fi
 
 validate_selected_modules '10_network_discovery.sh,20_portscan_nmap.sh'
 validate_selected_modules 'modules/10_network_discovery.sh modules/20_portscan_nmap.sh'
@@ -25,6 +37,10 @@ validate_selected_modules 'all'
 all_modules="$(selected_modules_to_runner_args 'all')"
 printf '%s\n' "$all_modules" | grep -q '10_network_discovery.sh'
 printf '%s\n' "$all_modules" | grep -q '20_portscan_nmap.sh'
+if printf '%s\n' "$all_modules" | grep -Eq '50_snmp_enum|80_zeek|81_suricata|90_report_pack'; then
+  echo 'non-selectable module included in all selection' >&2
+  exit 1
+fi
 
 [[ "$(selected_modules_to_runner_args '10_network_discovery.sh,20_portscan_nmap.sh')" == '10_network_discovery.sh 20_portscan_nmap.sh' ]]
 
@@ -32,6 +48,13 @@ if validate_selected_modules 'does_not_exist.sh' >/dev/null 2>&1; then
   echo 'invalid module accepted' >&2
   exit 1
 fi
+
+if validate_selected_modules '50_snmp_enum.sh' >/tmp/module-selection.out 2>/tmp/module-selection.err; then
+  echo 'placeholder module accepted explicitly' >&2
+  exit 1
+fi
+grep -q 'Module non sélectionnable: 50_snmp_enum.sh (maturité: placeholder)' /tmp/module-selection.err
+rm -f /tmp/module-selection.out /tmp/module-selection.err
 
 if validate_selected_modules '' >/dev/null 2>&1; then
   echo 'empty module selection accepted' >&2

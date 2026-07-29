@@ -38,7 +38,7 @@ ui_enter_targets() {
 
 ui_pick_categories() {
   local list
-  list="$(printf "%s\n" modules/*.sh 2>/dev/null | grep -v _TEMPLATE | sed 's#modules/##' | sort)"
+  list="$(discover_modules_sorted | sed 's#^modules/##')"
   if use_whiptail; then
     local items=()
     while IFS= read -r m; do

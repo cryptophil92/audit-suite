@@ -1,6 +1,14 @@
 # Pack rapport local
 
-Depuis `v0.2.5-report-pack`, AUDIT-SUITE peut générer une archive `.tar.gz` contrôlée depuis un `manifest.json`.
+AUDIT-SUITE peut générer une archive `.tar.gz` contrôlée depuis un
+`manifest.json`.
+
+Pour un run complet, utilisez en priorité le pipeline canonique qui crée
+d’abord le rapport puis le pack :
+
+```bash
+bash bin/finalize_reports.sh output/RUN_1/manifest.json
+```
 
 ## Commande
 
@@ -66,3 +74,7 @@ Cette étape prépare :
 - une conservation plus fiable des audits terminés.
 
 La commande ne lance aucune action réseau. Elle lit uniquement des fichiers locaux déjà générés.
+
+`bin/report_pack.sh` reste une commande bas niveau compatible. Le module
+historique `90_report_pack.sh` ne crée plus d’archive avant le manifest ; voir
+[`MODULE_CATALOG.md`](MODULE_CATALOG.md).

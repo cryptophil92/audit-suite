@@ -9,6 +9,12 @@ MOD_PRIO=30
 MOD_REQUIRES=( "nmap" )
 MOD_TIMEOUT=7200
 MOD_TAGS=("vuln" "nse")
+MOD_MATURITY="experimental"
+MOD_CAPABILITIES=("nmap_nse_vulnerability_checks")
+MOD_INTRUSIVENESS="high"
+MOD_PRIVILEGES=("standard_user")
+MOD_SELECTABLE=1
+MOD_LIMITATIONS="Les scripts NSE peuvent produire des faux positifs ; leurs résultats exigent une validation humaine."
 
 mod_pre(){ return 0; }
 mod_run(){

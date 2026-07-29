@@ -9,6 +9,12 @@ MOD_PRIO=40
 MOD_REQUIRES=( "nmap" )
 MOD_TIMEOUT=7200
 MOD_TAGS=("service" "enum")
+MOD_MATURITY="experimental"
+MOD_CAPABILITIES=("service_version_detection")
+MOD_INTRUSIVENESS="moderate"
+MOD_PRIVILEGES=("standard_user")
+MOD_SELECTABLE=1
+MOD_LIMITATIONS="Identification par sondes Nmap ; les bannières absentes ou trompeuses réduisent la confiance."
 
 mod_pre(){ return 0; }
 mod_run(){
