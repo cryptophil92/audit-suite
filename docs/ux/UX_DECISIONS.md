@@ -149,15 +149,29 @@ plan d’action, puis conserve les preuves et annexes techniques en second nivea
 **Conséquence :** le maximum d’information reste disponible sans imposer un
 dump technique comme vue principale.
 
+## UX-014 — Trois sorties de rapport explicites
+
+**Date :** 29 juillet 2026
+
+**Statut :** validé et implémenté
+
+**Décision :** le rapport privé premium est la sortie par défaut. Une version
+partageable masque les identifiants structurés directs et exige une revue des
+textes libres. Le relevé technique historique reste disponible sur demande.
+
+**Conséquence :** aucune version partageable ou technique n’est ajoutée
+silencieusement au pack privé. L’impression/PDF s’appuie sur le navigateur
+jusqu’à validation d’un pipeline dédié.
+
 ## Décisions ouvertes
 
 - framework ou maintien du Web natif ;
 - modèle d’appareil et d’alerte ;
 - besoin de comparaison visuelle ;
 - politique de conservation/suppression ;
-- format d’export anonymisé ;
+- niveau de garantie et sélection de contenu de la version partageable ;
 - position du diagnostic API ;
 - support WSL officiel ;
 - canal de recherche utilisateur.
 - formule éventuelle d’une note globale de posture ;
-- formats PDF et partage anonymisé.
+- validation PDF et accessibilité de l’impression.

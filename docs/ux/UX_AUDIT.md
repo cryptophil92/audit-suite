@@ -1,5 +1,9 @@
 # Audit UX actuel
 
+Audit initial du 28 juillet 2026, actualisé le 29 juillet pour distinguer les
+éléments fusionnés depuis. Les constats sur le dashboard restent actuels ; le
+rapport premium dispose désormais d’un premier rendu implémenté.
+
 ## Périmètre
 
 Audit documentaire et statique du 28 juillet 2026 portant sur :
@@ -18,7 +22,12 @@ Aucun test utilisateur ni audit sur appareil Kali réel n’a été réalisé. L
 
 Le produit possède deux qualités UX fortes : il est local par défaut et sépare la consultation Web de l’exécution réelle. Le tableau de bord est léger, sans dépendance externe, et utilise des contrôles HTML natifs.
 
-L’expérience reste néanmoins celle d’un prototype technique. L’utilisateur doit comprendre Bash, les noms de modules, les run IDs et les structures JSON. La page ne guide pas clairement le premier audit, n’explique pas les limites des modules et ne transforme pas les résultats en informations hiérarchisées. Les erreurs, chargements et états dégradés sont trop peu visibles pour inspirer confiance.
+L’expérience du dashboard reste néanmoins celle d’un prototype technique.
+L’utilisateur doit comprendre Bash, les noms de modules, les run IDs et les
+structures JSON. La page ne guide pas clairement le premier audit, n’explique
+pas les limites des modules et ne restitue pas encore la hiérarchie disponible
+dans le rapport premium. Les erreurs, chargements et états dégradés sont trop
+peu visibles pour inspirer confiance.
 
 ## Installation
 
@@ -230,20 +239,23 @@ Points faibles :
 
 - données sensibles suivies historiquement dans Git ;
 - limites des modules peu visibles ;
-- rapport encore centré sur l’exécution des modules ;
+- rapport premium non relié au dashboard et non validé sur audit réel autorisé ;
 - absence de statut de fraîcheur ;
 - aucune explication de conservation/suppression des données dans l’UI.
 
 ## Responsive
 
-### Risques observés
+### Risques observés sur le dashboard
 
 - tables sans conteneur de défilement ;
 - padding fixe de 24 px ;
 - formulaire long ;
 - colonnes techniques ;
 - JSON brut large ;
-- absence de tests à 320/390 px et zoom 200 %.
+- absence de tests dashboard à 320/390 px et zoom 200 %.
+
+Le rapport premium a été contrôlé à 390 px sans débordement horizontal de page.
+Cela ne vaut pas validation du dashboard ni audit WCAG complet.
 
 ### Cibles
 
@@ -264,7 +276,7 @@ Points faibles :
 - texte réel plutôt que canvas ;
 - thème système clair/sombre.
 
-### Écarts à vérifier/corriger
+### Écarts à vérifier/corriger dans le dashboard
 
 - focus visible ;
 - contraste de `muted`, bordures et badges ;
@@ -278,6 +290,11 @@ Points faibles :
 - mouvement futur avec `prefers-reduced-motion`.
 
 Voir `ACCESSIBILITY.md`.
+
+Le rapport premium fournit déjà un lien d’évitement, des landmarks, des tables
+avec captions/scopes, un focus visible et un reflow mobile. Il reste inclus
+dans l’audit transversal #54 pour le contraste, le lecteur d’écran, le zoom et
+l’impression/PDF.
 
 ## Priorités UX
 
