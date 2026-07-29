@@ -91,7 +91,7 @@ Ces wireframes décrivent une direction. Ils ne représentent pas une interface 
 │ Vérifications                                                    │
 │ ✓ Découverte réseau          Terminée                            │
 │ ! Ports principaux           Résultat partiel [Pourquoi ?]       │
-│ – SNMP                       Ignorée : dépendance absente          │
+│ – SNMP                       Indisponible : placeholder            │
 ├──────────────────────────────────────────────────────────────────┤
 │ [Voir le rapport] [Préparer un audit similaire] [Détail JSON]    │
 └──────────────────────────────────────────────────────────────────┘

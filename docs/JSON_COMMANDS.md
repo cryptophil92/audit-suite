@@ -25,7 +25,9 @@ Retourne le catalogue des chemins locaux exposés par l'API.
 bash bin/modules_json.sh
 ```
 
-Retourne la liste structurée des modules disponibles.
+Retourne le catalogue complet, avec maturité, sélection, capacités,
+intrusivité, privilèges, dépendances et limites. Voir
+[`MODULE_CATALOG.md`](MODULE_CATALOG.md).
 
 ## Statut
 
@@ -48,7 +50,7 @@ Retourne l'historique local des runs au format JSON.
 ## Plan
 
 ```bash
-bash bin/plan_json.sh --profile fast --targets 192.168.1.0/24 --categories all --run-id TEST_LOCAL --no-zeek --no-suricata
+bash bin/plan_json.sh --profile fast --targets 192.168.1.0/24 --categories all --run-id TEST_LOCAL
 ```
 
 Retourne un plan d'exécution JSON sans lancer de module réel.

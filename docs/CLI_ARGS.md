@@ -8,9 +8,7 @@ Depuis `v0.2.12-run-id-collision`, `audit.sh` peut être lancé avec des argumen
 ./audit.sh \
   --profile fast \
   --targets 192.168.1.0/24 \
-  --categories 10_network_discovery.sh,20_portscan_nmap.sh \
-  --no-zeek \
-  --no-suricata
+  --categories 10_network_discovery.sh,20_portscan_nmap.sh
 ```
 
 ## Run ID stable
@@ -20,9 +18,7 @@ Depuis `v0.2.12-run-id-collision`, `audit.sh` peut être lancé avec des argumen
   --profile fast \
   --targets 192.168.1.0/24 \
   --categories all \
-  --run-id AUDIT_TEST_LOCAL \
-  --no-zeek \
-  --no-suricata
+  --run-id AUDIT_TEST_LOCAL
 ```
 
 Avec `--run-id`, les sorties seront créées dans :
@@ -42,12 +38,12 @@ Si `output/<RUN_ID>` ou `logs/<RUN_ID>` existe déjà, le lancement est refusé.
 ./audit.sh \
   --profile fast \
   --targets 192.168.1.0/24 \
-  --categories all \
-  --no-zeek \
-  --no-suricata
+  --categories all
 ```
 
-La valeur `all` est convertie automatiquement en liste complète des modules disponibles.
+La valeur `all` est convertie automatiquement en liste des modules
+sélectionnables. Les placeholders et chemins obsolètes restent visibles dans
+`bin/modules_json.sh`, mais ne sont jamais ajoutés au plan.
 
 ## Vérifier sans exécuter
 
@@ -57,9 +53,7 @@ La valeur `all` est convertie automatiquement en liste complète des modules dis
   --profile fast \
   --targets 192.168.1.0/24 \
   --categories all \
-  --run-id AUDIT_TEST_LOCAL \
-  --no-zeek \
-  --no-suricata
+  --run-id AUDIT_TEST_LOCAL
 ```
 
 Le mode `--dry-run` valide les paramètres et affiche le plan prévu. Il ne lance pas les modules et ne crée pas de dossier de run.
@@ -71,6 +65,9 @@ Le mode `--dry-run` valide les paramètres et affiche le plan prévu. Il ne lanc
 ```
 
 Cette commande affiche les modules disponibles puis quitte.
+
+Le catalogue complet, y compris les placeholders non sélectionnables, est
+décrit dans [`MODULE_CATALOG.md`](MODULE_CATALOG.md).
 
 ## Options disponibles
 
@@ -123,6 +120,10 @@ Si une valeur n'est pas fournie, `audit.sh` utilise le menu existant pour demand
 - cibles ;
 - catégories ;
 - options.
+
+`--no-zeek` et `--no-suricata` restent acceptés pour compatibilité avec les
+scripts existants. Ils sont sans effet tant que Zeek et Suricata sont des
+placeholders non sélectionnables.
 
 ## Objectif
 

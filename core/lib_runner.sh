@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # core/lib_runner.sh
-# @version 0.2.2
+# @version 0.3.0
 set -Eeuo pipefail
 
 MANIFEST_SCHEMA_VERSION="1.2.0"
@@ -9,10 +9,11 @@ MANIFEST_SCHEMA_VERSION="1.2.0"
 source "$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)/lib_version.sh"
 # shellcheck source=lib_findings.sh
 source "$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)/lib_findings.sh"
+# shellcheck source=lib_modules.sh
+source "$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)/lib_modules.sh"
 
 discover_modules_sorted() {
-  [[ -d modules ]] || return 0
-  find modules -maxdepth 1 -type f -name '*.sh' ! -name '*_TEMPLATE*' -print | sort -V
+  modules_selectable_paths
 }
 
 _normalize_module_path() {
@@ -91,12 +92,17 @@ _read_module_metadata() {
     : "${MOD_NAME:=Unknown}"
     : "${MOD_TIMEOUT:=1800}"
     : "${MOD_SKIP_OPTION:=-}"
+    : "${MOD_SELECTABLE:=1}"
+    : "${MOD_MATURITY:=experimental}"
+    : "${MOD_LIMITATIONS:=}"
 
     if ! [[ "$MOD_TIMEOUT" =~ ^[0-9]+$ ]] || (( MOD_TIMEOUT < 1 || MOD_TIMEOUT > 86400 )); then
       MOD_TIMEOUT=1800
     fi
 
-    printf "%s\t%s\t%s\t%s\t" "$MOD_ID" "$MOD_NAME" "$MOD_TIMEOUT" "$MOD_SKIP_OPTION"
+    printf "%s\t%s\t%s\t%s\t%s\t%s\t%s\t" \
+      "$MOD_ID" "$MOD_NAME" "$MOD_TIMEOUT" "$MOD_SKIP_OPTION" \
+      "$MOD_SELECTABLE" "$MOD_MATURITY" "$MOD_LIMITATIONS"
 
     if declare -p MOD_REQUIRES >/dev/null 2>&1; then
       if declare -p MOD_REQUIRES 2>/dev/null | grep -q "declare -[aA]"; then
@@ -160,7 +166,8 @@ run_modules() {
   for module in "${list[@]}"; do
     [[ -f "$module" ]] || { emit WARN "runner" "skip missing $module"; continue; }
 
-    local meta id name timeout skip_option requires_raw rc status reason
+    local meta id name timeout skip_option selectable maturity limitations
+    local requires_raw rc status reason
     local started_at finished_at start_ts end_ts duration output_path
     local outcome_file outcome_status outcome_reason
     local -a requires=()
@@ -172,11 +179,13 @@ run_modules() {
       continue
     fi
 
-    IFS=$'\t' read -r id name timeout skip_option requires_raw <<< "$meta"
+    IFS=$'\t' read -r id name timeout skip_option selectable maturity limitations requires_raw <<< "$meta"
     : "${id:=unknown_module}"
     : "${name:=Unknown}"
     : "${timeout:=1800}"
     : "${skip_option:=-}"
+    : "${selectable:=1}"
+    : "${maturity:=experimental}"
 
     output_path="$RUN_DIR/$id"
     outcome_file="${TMP_DIR:-tmp}/module_outcome.${RUN_ID:-unknown}.${module_index}"
@@ -187,6 +196,16 @@ run_modules() {
     fi
 
     emit INFO "$id" "start: $name"
+
+    if [[ "$selectable" != "1" ]]; then
+      started_at="$(date -Is)"
+      finished_at="$started_at"
+      reason="module not selectable (maturity: $maturity)"
+      [[ -n "$limitations" ]] && reason="$reason: $limitations"
+      emit WARN "$id" "skipped: $reason"
+      _append_module_result "$id" "$name" "$module" "skipped" "0" "$started_at" "$finished_at" "0" "$output_path" "$reason"
+      continue
+    fi
 
     if [[ "$skip_option" != "-" ]]; then
       if ! [[ "$skip_option" =~ ^[A-Z][A-Z0-9_]*$ ]]; then

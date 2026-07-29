@@ -45,8 +45,8 @@ offensive. La direction complète est documentée dans
 
 ## État vérifié au 29 juillet 2026
 
-Dernier point de référence avant ce lot : `main` après la fusion de la PR #77,
-commit `88f367186b420b0e8e02727fe61c3ec9ee0e009e`.
+Dernier point de référence avant ce lot : `main` après la fusion de la PR #78,
+commit `98c49417a247f382e594bc5c2acbb09fce1be1d4`.
 
 | Domaine | État | Suite |
 |---|---|---|
@@ -56,7 +56,8 @@ commit `88f367186b420b0e8e02727fe61c3ec9ee0e009e`.
 | Artefacts historiques publics | Décision privée encore requise | Issue #37 |
 | CI exhaustive et maintenance des actions | Runner automatique livré par #43 ; Actions épinglées et protections Dependabot activées par #44 | Surveiller les mises à jour hebdomadaires |
 | Préflight agréable et actionnable | Outils, plateforme, Python, privilèges, skips et replis couverts par #47 | Valider sur Kali/lab autorisé |
-| Modèle de constats et notation | #70 fermé, contrat `1.0.0` implémenté | Brancher les adaptateurs de modules avec #48 |
+| Catalogue et pipeline rapport | Maturité réelle, sélection sûre, SMB partiel et pack post-manifest livrés par #48 | Maintenir le schéma modules `1.2.0` |
+| Modèle de constats et notation | #70 fermé, contrat `1.0.0` implémenté | Brancher les adaptateurs de sorties avec #79 |
 | Rapport premium | #71 fermé, HTML privé/partageable/technique implémenté | Valider sur cas réels et relier à #53/#54 |
 | Onboarding, vues résultats et accessibilité | Documentés, non implémentés | Issues #52 à #54 |
 
@@ -75,19 +76,19 @@ Deux volets avancent sans mélanger leurs changements dans une même PR.
 
 ### Valeur utilisateur
 
-1. connecter les modules au contrat de constats et clarifier leur maturité avec
-   #48 ;
+1. maintenir le catalogue honnête et le pack canonique livrés par #48 ;
 2. sécuriser le rendu des données du dashboard avec #51 avant de l’étendre ;
-3. relier historique, constats et rapports avec #53 ;
-4. déployer onboarding, navigation et accessibilité avec #52 et #54 ;
-5. valider les parcours avec #55.
+3. connecter les sorties réelles au contrat `findings[]` avec #79 ;
+4. relier historique, constats et rapports avec #53 ;
+5. déployer onboarding, navigation et accessibilité avec #52 et #54 ;
+6. valider les parcours avec #55.
 
 ### Prochain lot non bloqué
 
-#48 est le prochain lot de valeur entièrement testable sur fixtures et doubles
-sans scan réel. Il doit relier les modules au contrat de constats et annoncer
-leur maturité réelle. Le dashboard ne doit pas être étendu avant le rendu sûr
-de #51 ; les vues résultats de #53 viennent ensuite.
+#51 est le prochain lot de valeur entièrement testable sans scan réel. Il doit
+supprimer l’interprétation HTML des données locales avant toute extension du
+dashboard. Les adaptateurs déterministes de #79 viennent ensuite, avant
+l’intégration complète des vues résultats de #53.
 
 ## Phase 0 — Contenir les risques
 
@@ -121,7 +122,10 @@ d’interruption sans trafic réseau. Le préflight annonce le socle bloquant,
 `iproute2`, Python, les dépendances de modules et les sockets brutes avant le
 plan. Sans privilèges adaptés, Nmap se replie sur TCP connect, omet la
 détection OS/UDP et produit un état partiel explicite. La validation Kali/lab
-reste requise.
+reste requise. Le catalogue `1.2.0` exclut désormais SNMP, Zeek, Suricata et
+le module de pack obsolète des plans ; SMB annonce et enregistre sa couverture
+de détection comme partielle. Le seul pack canonique est généré après le
+manifest.
 
 ## Phase 2 — Stabiliser données et API
 
@@ -150,7 +154,7 @@ fusionnés. La cohérence générée des routes et d’OpenAPI reste suivie par 
 Critère de sortie : un nouveau contributeur peut installer, tester et identifier précisément la version.
 
 État : licence, version et procédure de release fusionnées. Un runner unique
-découvre 28 tests Bash, deux suites Python totalisant 17 cas et le smoke local.
+découvre 29 tests Bash, deux suites Python totalisant 17 cas et le smoke local.
 Un test prouve qu’un nouveau fichier conforme est inclus automatiquement, et
 `.gitattributes` impose LF. Les Actions officielles sont épinglées sur des SHA
 complets, leurs permissions sont minimales et Dependabot surveille les mises à
@@ -175,8 +179,9 @@ sans relire les logs bruts, sans score inventé.
 Spécification : [`PREMIUM_REPORT_SPEC.md`](PREMIUM_REPORT_SPEC.md).
 
 État : contrat `findings[]` `1.0.0`, manifest `1.2.0`, validation stricte,
-compatibilité `1.0.0/1.1.0` et fixtures synthétiques implémentés. Les
-adaptateurs des modules restent à réaliser. Le rapport HTML premium privé et
+compatibilité `1.0.0/1.1.0` et fixtures synthétiques implémentés. Le catalogue
+décrit maintenant la couverture réelle sans fabriquer de constat ; les
+adaptateurs de sorties restent suivis par #79. Le rapport HTML premium privé et
 partageable, le tri, le plan d’action, l’annexe et les styles d’impression sont
 implémentés sur données synthétiques ; la validation utilisateur et sur
 rapports réels autorisés reste requise.

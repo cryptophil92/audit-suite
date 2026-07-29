@@ -3,7 +3,7 @@
 Ce registre relie les constats de l’audit aux issues GitHub créées. Les détails potentiellement sensibles restent volontairement absents des tickets publics.
 
 État des issues vérifié sur GitHub le 29 juillet 2026 et préparé pour la
-livraison du lot #47. Les descriptions de l’audit restent historiques ; la
+livraison du lot #48. Les descriptions de l’audit restent historiques ; la
 colonne `Statut` indique l’état opérationnel après fusion du lot.
 
 ## Pilotage
@@ -25,7 +25,7 @@ colonne `Statut` indique l’état opérationnel après fusion du lot.
 | [#45](https://github.com/cryptophil92/audit-suite/issues/45) | P1 | Refactoring | Fermée | Unifier la version et formaliser les releases |
 | [#46](https://github.com/cryptophil92/audit-suite/issues/46) | P1 | Documentation | Fermée | Choisir et publier une licence explicite |
 | [#47](https://github.com/cryptophil92/audit-suite/issues/47) | P1 | Bug | Fermée | Ajouter un préflight des capacités, outils et privilèges |
-| [#48](https://github.com/cryptophil92/audit-suite/issues/48) | P2 | Dette technique | Ouverte | Clarifier la maturité des modules et supprimer la redondance de rapport |
+| [#48](https://github.com/cryptophil92/audit-suite/issues/48) | P2 | Dette technique | Fermée | Clarifier la maturité des modules et supprimer la redondance de rapport |
 | [#49](https://github.com/cryptophil92/audit-suite/issues/49) | P2 | Dette technique | Ouverte | Quarantiner les scripts historiques de patch et de mise à jour |
 | [#50](https://github.com/cryptophil92/audit-suite/issues/50) | P2 | Refactoring | Ouverte | Générer routes, OpenAPI et documentation depuis une source cohérente |
 | [#51](https://github.com/cryptophil92/audit-suite/issues/51) | P2 | Sécurité | Ouverte | Éviter l’interprétation HTML des données dans le tableau de bord |
@@ -37,15 +37,17 @@ colonne `Statut` indique l’état opérationnel après fusion du lot.
 | [#57](https://github.com/cryptophil92/audit-suite/issues/57) | P2 | Dette GitHub | Ouverte | Fermer proprement les anciennes PR et archiver les branches consolidées |
 | [#70](https://github.com/cryptophil92/audit-suite/issues/70) | P1 | Produit | Fermée | Structurer les constats, preuves, gravité et notation des risques |
 | [#71](https://github.com/cryptophil92/audit-suite/issues/71) | P1 | UX/Rapport | Fermée | Produire un rapport premium, priorisé et orienté remédiation |
+| [#79](https://github.com/cryptophil92/audit-suite/issues/79) | P2 | Produit | Ouverte | Relier les sorties réelles des modules au contrat `findings[]` |
 
 ## Ordre recommandé
 
 1. Décision privée sur le dernier P0 : #37.
 2. Confiance de livraison : maintenir #43, #44 et #47.
-3. Adaptateurs et rendu sûr : #48 et #51.
-4. Vues résultats et rapport : #53, sur les lots #70/#71 livrés.
-5. Architecture, dette, UX et accessibilité : #49, #50, #52 et #54.
-6. Validation utilisateur et plateforme : #55 et #56.
-7. Dette GitHub, sans suppression implicite : #57.
+3. Rendu sûr du dashboard : #51.
+4. Adaptateurs de constats : #79, sur le catalogue #48 et le contrat #70.
+5. Vues résultats et rapport : #53, sur les lots #70/#71/#79.
+6. Architecture, dette, UX et accessibilité : #49, #50, #52 et #54.
+7. Validation utilisateur et plateforme : #55 et #56.
+8. Dette GitHub, sans suppression implicite : #57.
 
 Toute opération irréversible sur l’historique, les branches ou les anciennes pull requests exige un accord explicite du propriétaire.

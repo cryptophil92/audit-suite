@@ -107,8 +107,8 @@ capture_file="$tmp_root/results.tsv"
 
 grep -Fq $'10_network_discovery\tfailed\t7\tmodule returned rc=7' "$capture_file"
 grep -Fq $'20_portscan_nmap\tpartial\t0\toptional UDP scan returned rc=8' "$capture_file"
-grep -Fq $'80_zeek\tskipped\t0\tdisabled by option OPTS_NO_ZEEK' "$capture_file"
-grep -Fq $'81_suricata\tskipped\t0\tdisabled by option OPTS_NO_SURICATA' "$capture_file"
+grep -Fq $'80_zeek\tskipped\t0\tmodule not selectable (maturity: placeholder)' "$capture_file"
+grep -Fq $'81_suricata\tskipped\t0\tmodule not selectable (maturity: placeholder)' "$capture_file"
 
 if [[ ! -f "$tmp_root/output/TEST_OUTCOMES/20_portscan_nmap/fast.nmap" ]]; then
   printf '[FAIL] useful TCP output was not preserved for the partial module\n' >&2

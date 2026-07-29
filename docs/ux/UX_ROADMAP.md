@@ -5,13 +5,14 @@
 | Lot | État | Reste principal |
 |---|---|---|
 | UX-0 — Fiabilité | Runner CI, maintenance des Actions et préflight guidé fusionnés | Validation Kali/lab (#56) |
-| UX-1 — Constats | Contrat `1.0.0` fusionné | Adaptateurs des modules réels (#48) |
+| UX-1 — Constats | Contrat `1.0.0` et catalogue de maturité fusionnés | Adaptateurs des sorties réelles (#79) |
 | UX-2 — Rapport premium | Première version fusionnée | Audit transversal et validation utilisateur (#54, #55) |
 | UX-3 à UX-9 | Documentés, non implémentés dans le dashboard | #51 à #54 |
 | UX-10 à UX-11 | Non réalisés | Recherche et captures synthétiques (#55) |
 
-Séquence d’interface recommandée : clarifier les modules avec #48, sécuriser
-le rendu avec #51, puis construire les vues résultats de #53. L’onboarding et
+Séquence d’interface recommandée : maintenir le catalogue #48, sécuriser le
+rendu avec #51, brancher les adaptateurs #79, puis construire les vues
+résultats de #53. L’onboarding et
 l’accessibilité de #52/#54 s’intègrent à chaque écran sans réintroduire
 l’exécution Web.
 
@@ -43,8 +44,9 @@ Livrable : contrat de l’issue
 [#70](https://github.com/cryptophil92/audit-suite/issues/70).
 
 État : contrat `1.0.0`, manifest `1.2.0`, validation, compatibilité héritée et
-fixtures synthétiques implémentés. Les adaptateurs des modules réels restent à
-compléter avec #48.
+fixtures synthétiques implémentés. Le catalogue décrit désormais la maturité
+et les limites ; les adaptateurs des sorties réelles restent à compléter avec
+#79.
 
 ## Lot UX-2 — Rapport premium
 

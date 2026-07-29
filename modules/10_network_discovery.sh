@@ -9,6 +9,12 @@ MOD_PRIO=10
 MOD_REQUIRES=( "nmap" )
 MOD_TIMEOUT=1200
 MOD_TAGS=("network" "discovery")
+MOD_MATURITY="experimental"
+MOD_CAPABILITIES=("host_discovery")
+MOD_INTRUSIVENESS="low"
+MOD_PRIVILEGES=("standard_user")
+MOD_SELECTABLE=1
+MOD_LIMITATIONS="Découverte Nmap uniquement ; un hôte silencieux ou filtré peut ne pas être observé."
 
 mod_pre(){ return 0; }
 mod_run(){

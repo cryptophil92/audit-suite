@@ -3,11 +3,17 @@
 # @version 0.1.0
 set -Eeuo pipefail
 MOD_ID="50_snmp_enum"
-MOD_NAME="SNMP enum (si présent)"
+MOD_NAME="SNMP — placeholder non disponible"
 MOD_PRIO=50
 MOD_REQUIRES=( "snmpwalk" )
 MOD_TIMEOUT=1800
 MOD_TAGS=("snmp")
+MOD_MATURITY="placeholder"
+MOD_CAPABILITIES=()
+MOD_INTRUSIVENESS="none"
+MOD_PRIVILEGES=("standard_user")
+MOD_SELECTABLE=0
+MOD_LIMITATIONS="Aucune énumération SNMP n’est implémentée ; le fichier est conservé comme emplacement de développement."
 
 mod_pre(){ return 0; }
 mod_run(){

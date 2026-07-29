@@ -39,6 +39,8 @@ preuves traçables et des recommandations actionnables. Voir
 - découverte réseau et scans Nmap ;
 - détection/énumération initiale de services SMB et HTTP ;
 - orchestration modulaire avec délai maximal par module ;
+- catalogue JSON de maturité, capacités, intrusivité, dépendances et
+  privilèges ;
 - dry-run et aperçu JSON sans exécution ;
 - manifest JSON `1.2.0`, contrat versionné des constats, historique local et
   comparaison de runs ;
@@ -49,8 +51,10 @@ preuves traçables et des recommandations actionnables. Voir
 
 ### Limites fonctionnelles importantes
 
-- les modules SNMP, Zeek et Suricata sont encore des squelettes ou placeholders ;
-- le module SMB ne réalise qu’une détection initiale ;
+- les modules SNMP, Zeek et Suricata sont des placeholders visibles dans le
+  catalogue mais exclus des plans ;
+- le module SMB ne réalise qu’une détection des ports 139/445 et reste
+  explicitement `partial` ;
 - l’interface Web prépare et consulte, mais ne lance pas d’audit ;
 - les modules réels ne produisent pas encore tous des constats structurés ;
 - le rapport partageable masque les identifiants directs et chemins, mais ses
@@ -110,7 +114,11 @@ Le socle moteur et la production du pack de rapport requièrent `jq`, GNU
 modules sélectionnés :
 
 - `nmap` pour la découverte, les ports et plusieurs énumérations ;
-- `whatweb`, `snmpwalk`, `zeek` ou `suricata` pour leurs modules respectifs.
+- `whatweb` pour l’empreinte Web.
+
+SNMP, Zeek et Suricata restent documentés dans le catalogue, mais leurs outils
+ne sont pas requis tant que les modules correspondants ne sont pas
+implémentés et sélectionnables.
 
 Vérification locale :
 
@@ -150,9 +158,7 @@ bash audit.sh \
   --profile fast \
   --targets 192.168.1.0/24 \
   --categories all \
-  --run-id DRY_RUN_LOCAL \
-  --no-zeek \
-  --no-suricata
+  --run-id DRY_RUN_LOCAL
 ```
 
 ### Audit autorisé
@@ -162,9 +168,7 @@ bash audit.sh \
   --profile fast \
   --targets 192.168.1.0/24 \
   --categories 10_network_discovery.sh,20_portscan_nmap.sh \
-  --run-id AUDIT_LAB_001 \
-  --no-zeek \
-  --no-suricata
+  --run-id AUDIT_LAB_001
 ```
 
 Commencez par `--dry-run`. Ne reprenez pas cet exemple avec une cible que vous n’êtes pas autorisé à auditer.
@@ -212,6 +216,9 @@ history/latest.json            Dernier run détaillé
 Générer les rapports :
 
 ```bash
+# Pipeline canonique : rapport privé et archive après le manifest
+bash bin/finalize_reports.sh output/<RUN_ID>/manifest.json
+
 # Rapport premium privé
 bash bin/report_html.sh output/<RUN_ID>/manifest.json
 
@@ -226,7 +233,7 @@ Ces données peuvent révéler la topologie, les services et les vulnérabilité
 
 ## Tests
 
-La suite contient actuellement 27 scripts `tests/test_*.sh`, deux suites Python
+La suite contient actuellement 29 scripts `tests/test_*.sh`, deux suites Python
 et un smoke test. Le runner unique les découvre automatiquement :
 
 ```bash
@@ -267,7 +274,8 @@ Ordre recommandé :
 
 1. sécuriser les données déjà publiées et corriger les blocages du moteur ;
 2. terminer la CI reproductible et le préflight guidé ;
-3. connecter progressivement les modules au contrat de constats versionné ;
+3. maintenir un catalogue de maturité honnête et connecter progressivement
+   les sorties réelles au contrat de constats versionné ;
 4. relier rapports, historique, onboarding et accessibilité ;
 5. valider les parcours avec des utilisateurs autorisés ;
 6. étudier la portabilité sans réécriture prématurée.
@@ -280,6 +288,8 @@ données dans
 [`docs/FINDINGS_CONTRACT.md`](docs/FINDINGS_CONTRACT.md). Le registre
 complet des constats est conservé dans
 [`docs/audit/ISSUE_REGISTER.md`](docs/audit/ISSUE_REGISTER.md).
+La couverture réelle et la migration du pack sont décrites dans
+[`docs/MODULE_CATALOG.md`](docs/MODULE_CATALOG.md).
 
 ## Contribution
 

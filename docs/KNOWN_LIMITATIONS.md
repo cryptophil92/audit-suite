@@ -1,6 +1,7 @@
 # Limites connues
 
-> État courant révisé le 29 juillet 2026 après la fusion de la PR #74. Voir
+> État courant révisé le 29 juillet 2026 pour le lot #48, sur la base de
+> `main` après la PR #78. Voir
 > [`audit/TECHNICAL_AUDIT_2026-07-28.md`](audit/TECHNICAL_AUDIT_2026-07-28.md)
 > pour les preuves historiques, puis [`ROADMAP.md`](ROADMAP.md) pour les
 > priorités actives.
@@ -77,8 +78,10 @@ correction précède l’extension des vues historique, constats et rapports.
 
 ### Rapport premium et adaptateurs
 
-Le manifest `1.2.0` accepte des constats structurés, mais les modules réels ne
-disposent pas encore tous d’un adaptateur. Le rapport premium présente les
+Le catalogue des modules `1.2.0` décrit maintenant la maturité, les capacités
+et les limites sans inventer de résultat. Le manifest `1.2.0` accepte des
+constats structurés, mais les modules réels ne disposent pas encore tous d’un
+adaptateur. Le rapport premium présente les
 constats disponibles sans compléter les champs manquants. Limites restantes :
 
 - le mode partageable masque les identifiants directs et chemins, mais les
@@ -90,7 +93,7 @@ constats disponibles sans compléter les champs manquants. Limites restantes :
   réels autorisés.
 
 Voir [`FINDINGS_CONTRACT.md`](FINDINGS_CONTRACT.md),
-[`PREMIUM_REPORT_SPEC.md`](PREMIUM_REPORT_SPEC.md) et les issues #48/#53.
+[`PREMIUM_REPORT_SPEC.md`](PREMIUM_REPORT_SPEC.md) et les issues #79/#53.
 
 ### OpenAPI basique
 
@@ -139,3 +142,8 @@ release.
   sockets brutes avant lancement. Les modules sans outil sont ignorés
   explicitement ; Nmap se replie sans privilèges sur TCP connect et marque la
   couverture réduite comme partielle.
+- Le catalogue expose maturité, capacités, intrusivité, privilèges et limites.
+  SNMP, Zeek, Suricata et le module de pack obsolète ne sont plus
+  sélectionnables ; SMB produit un état partiel explicite.
+- Le pack canonique est généré une seule fois, après le manifest, par
+  `bin/finalize_reports.sh`.

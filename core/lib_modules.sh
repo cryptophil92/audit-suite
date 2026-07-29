@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # core/lib_modules.sh
-# @version 0.2.10
+# @version 0.3.0
 set -Eeuo pipefail
 
 modules_discover_sorted() {
@@ -28,6 +28,55 @@ module_exists() {
   [[ -f "$path" && "$path" == modules/*.sh && "$path" != *'_TEMPLATE'* ]]
 }
 
+module_selection_metadata() {
+  local name="$1"
+  local path
+
+  path="$(module_path_from_name "$name")"
+  module_exists "$name" || return 1
+
+  bash -c '
+    set -Eeuo pipefail
+    module="$1"
+
+    # shellcheck source=/dev/null
+    source "core/lib_logging.sh"
+    # shellcheck source=/dev/null
+    source "$module" >/dev/null
+
+    : "${MOD_SELECTABLE:=1}"
+    : "${MOD_MATURITY:=experimental}"
+    : "${MOD_LIMITATIONS:=}"
+
+    case "$MOD_SELECTABLE" in
+      0|1) ;;
+      *) MOD_SELECTABLE=0 ;;
+    esac
+
+    printf "%s|%s|%s\n" "$MOD_SELECTABLE" "$MOD_MATURITY" "$MOD_LIMITATIONS"
+  ' _ "$path"
+}
+
+module_is_selectable() {
+  local name="$1"
+  local metadata selectable maturity limitations
+
+  metadata="$(module_selection_metadata "$name")" || return 1
+  IFS='|' read -r selectable maturity limitations <<< "$metadata"
+  [[ "$selectable" == "1" ]]
+}
+
+modules_selectable_paths() {
+  local module
+
+  while IFS= read -r module; do
+    [[ -n "$module" ]] || continue
+    if module_is_selectable "$module"; then
+      printf '%s\n' "$module"
+    fi
+  done < <(modules_discover_sorted)
+}
+
 modules_all_names() {
   local module
   local names=()
@@ -35,7 +84,7 @@ modules_all_names() {
   while IFS= read -r module; do
     [[ -z "$module" ]] && continue
     names+=("$(module_name_from_token "$module")")
-  done < <(modules_discover_sorted)
+  done < <(modules_selectable_paths)
 
   printf '%s\n' "${names[*]}"
 }
@@ -48,7 +97,7 @@ selection_is_all_modules() {
 
 validate_selected_modules() {
   local selected_csv="$1"
-  local token name missing=0
+  local token name metadata selectable maturity limitations missing=0
 
   selected_csv="$(normalize_csv_to_commas "$selected_csv")"
 
@@ -71,6 +120,12 @@ validate_selected_modules() {
     name="$(module_name_from_token "$token")"
     if ! module_exists "$name"; then
       echo "Module inconnu ou indisponible: $name" >&2
+      missing=1
+    elif ! module_is_selectable "$name"; then
+      metadata="$(module_selection_metadata "$name" || true)"
+      IFS='|' read -r selectable maturity limitations <<< "$metadata"
+      printf 'Module non sélectionnable: %s (maturité: %s). %s\n' \
+        "$name" "${maturity:-inconnue}" "${limitations:-Consultez le catalogue des modules.}" >&2
       missing=1
     fi
   done

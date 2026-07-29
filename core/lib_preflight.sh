@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # core/lib_preflight.sh
-# @version 0.3.0
+# @version 0.4.0
 set -Eeuo pipefail
 
 preflight_command_available() {
@@ -97,6 +97,9 @@ _preflight_module_metadata() {
     : "${MOD_SKIP_OPTION:=-}"
     : "${MOD_RAW_SOCKET_FOR_UDP:=0}"
     : "${MOD_RAW_SOCKET_FALLBACK:=mode dégradé documenté}"
+    : "${MOD_SELECTABLE:=1}"
+    : "${MOD_MATURITY:=experimental}"
+    : "${MOD_LIMITATIONS:=}"
 
     requires=""
     if declare -p MOD_REQUIRES >/dev/null 2>&1; then
@@ -116,9 +119,10 @@ _preflight_module_metadata() {
       fi
     fi
 
-    printf "%s|%s|%s|%s|%s|%s|%s\n" \
+    printf "%s|%s|%s|%s|%s|%s|%s|%s|%s|%s\n" \
       "$MOD_ID" "$MOD_NAME" "$MOD_SKIP_OPTION" "$requires" \
-      "$raw_profiles" "$MOD_RAW_SOCKET_FOR_UDP" "$MOD_RAW_SOCKET_FALLBACK"
+      "$raw_profiles" "$MOD_RAW_SOCKET_FOR_UDP" "$MOD_RAW_SOCKET_FALLBACK" \
+      "$MOD_SELECTABLE" "$MOD_MATURITY" "$MOD_LIMITATIONS"
   ' _ "$module"
 }
 
@@ -139,7 +143,7 @@ _preflight_raw_socket_needed() {
 preflight_run() {
   local selected="${1:-}"
   local module metadata id name skip_option requires_raw
-  local raw_profiles raw_for_udp fallback dep
+  local raw_profiles raw_for_udp fallback selectable maturity limitations dep
   local core_command core_missing=0 module_missing raw_needed
   local ready_count=0 degraded_count=0 skipped_count=0 disabled_count=0
   local blocker_count=0
@@ -200,11 +204,21 @@ preflight_run() {
       continue
     fi
 
-    IFS='|' read -r id name skip_option requires_raw raw_profiles raw_for_udp fallback <<< "$metadata"
+    IFS='|' read -r id name skip_option requires_raw raw_profiles raw_for_udp fallback \
+      selectable maturity limitations <<< "$metadata"
     : "${id:=unknown_module}"
     : "${name:=Unknown}"
     : "${skip_option:=-}"
     : "${raw_for_udp:=0}"
+    : "${selectable:=1}"
+    : "${maturity:=experimental}"
+
+    if [[ "$selectable" != "1" ]]; then
+      printf '[INDISPONIBLE] %s : maturité %s. %s\n' \
+        "$name" "$maturity" "${limitations:-Ce module n’est pas sélectionnable.}"
+      ((disabled_count += 1))
+      continue
+    fi
 
     if [[ "$skip_option" != "-" ]]; then
       if ! [[ "$skip_option" =~ ^[A-Z][A-Z0-9_]*$ ]]; then
@@ -239,6 +253,13 @@ preflight_run() {
     _preflight_raw_socket_needed "$raw_profiles" "$raw_for_udp" && raw_needed=1
     if (( raw_needed == 1 && PREFLIGHT_RAW_SOCKET_AVAILABLE == 0 )); then
       printf '[DÉGRADÉ] %s : sockets brutes indisponibles. %s\n' "$name" "$fallback"
+      ((degraded_count += 1))
+      continue
+    fi
+
+    if [[ "$maturity" == "partial" ]]; then
+      printf '[LIMITÉ] Module : %s prêt pour une couverture partielle. %s\n' \
+        "$name" "${limitations:-Consultez le catalogue pour les limites.}"
       ((degraded_count += 1))
       continue
     fi

@@ -20,6 +20,8 @@ l’issue #58 et le registre des issues dans le même cycle de suivi.
 - [`LOCAL_QUICKSTART.md`](LOCAL_QUICKSTART.md) — vérification locale sans scan ;
 - [`PREFLIGHT.md`](PREFLIGHT.md) — diagnostic guidé des outils, capacités,
   privilèges et modes dégradés ;
+- [`MODULE_CATALOG.md`](MODULE_CATALOG.md) — maturité, couverture, sélection
+  sûre et migration du pack rapport ;
 - [`CLI_ARGS.md`](CLI_ARGS.md) — arguments ;
 - [`SECURITY.md`](SECURITY.md) — cadre légal et technique ;
 - [`../SECURITY.md`](../SECURITY.md) — signalement responsable.
@@ -56,6 +58,7 @@ l’issue #58 et le registre des issues dans le même cycle de suivi.
 ## Moteur et résultats
 
 - [`REPORT_SCHEMA.md`](REPORT_SCHEMA.md) ;
+- [`MODULE_CATALOG.md`](MODULE_CATALOG.md) ;
 - [`FINDINGS_CONTRACT.md`](FINDINGS_CONTRACT.md) ;
 - [`PREMIUM_REPORT_SPEC.md`](PREMIUM_REPORT_SPEC.md) ;
 - [`RUN_HISTORY.md`](RUN_HISTORY.md) ;

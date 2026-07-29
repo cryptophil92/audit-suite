@@ -35,7 +35,9 @@ run et n’exécute pas Nmap.
 | `OK` | capacité ou module prêt | aucune |
 | `INFO` | fonction annexe indisponible | installer l’outil seulement si cette fonction est souhaitée |
 | `DÉGRADÉ` | exécution possible avec couverture réduite | lire le repli annoncé avant de continuer |
+| `LIMITÉ` | module disponible mais volontairement partiel | lire la limite avant de continuer |
 | `IGNORÉ` | module non exécutable | installer ses commandes ; le manifest le marquera `skipped` sinon |
+| `INDISPONIBLE` | placeholder ou chemin obsolète | choisir un module sélectionnable |
 | `DÉSACTIVÉ` | module exclu par une option explicite | retirer l’option pour l’activer |
 | `BLOQUANT` | socle moteur incomplet | corriger avant tout lancement |
 
@@ -78,13 +80,13 @@ adresse.
 
 ```bash
 bash bin/status_json.sh | jq '.capabilities'
-bash bin/modules_json.sh | jq '.modules[].requirements'
+bash bin/modules_json.sh | jq '.modules[] | {id, maturity, selectable, capabilities, intrusiveness, privileges, requirements, limitations}'
 ```
 
 `status_json.sh` expose uniquement des booléens et des catégories générales
 pour la plateforme, `iproute2`, Python et les sockets brutes.
-`modules_json.sh` expose les commandes requises, les profils concernés et le
-repli documenté de chaque module.
+`modules_json.sh` expose aussi la maturité, les capacités, l’intrusivité, les
+privilèges et les limites. Voir [`MODULE_CATALOG.md`](MODULE_CATALOG.md).
 
 ## Installation
 

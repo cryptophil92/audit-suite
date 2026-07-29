@@ -11,6 +11,11 @@ before_output_count="$(find output -mindepth 1 -maxdepth 1 -type d 2>/dev/null |
 
 list_output="$(bash audit.sh --list-modules)"
 printf '%s\n' "$list_output" | grep -q '10_network_discovery.sh'
+printf '%s\n' "$list_output" | grep -q '20_portscan_nmap.sh'
+if printf '%s\n' "$list_output" | grep -Eq '50_snmp_enum|80_zeek|81_suricata|90_report_pack'; then
+  echo 'non-selectable module exposed by --list-modules' >&2
+  exit 1
+fi
 
 plan_output="$(bash audit.sh \
   --dry-run \

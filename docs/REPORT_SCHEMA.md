@@ -112,9 +112,14 @@ Valeurs possibles pour `modules[].status` :
 - `success` : les étapes structurantes et facultatives demandées ont réussi.
 - `partial` : les étapes structurantes ont réussi, mais au moins une étape explicitement facultative a échoué. Les fichiers utiles déjà produits sont conservés et `reason` explique la limitation.
 - `failed` : une étape structurante, le contrat du module ou son délai a échoué. Un code non nul non déclaré ne peut jamais devenir `success`.
-- `skipped` : le module n’a pas été exécuté, soit par option explicite déclarée avec `MOD_SKIP_OPTION`, soit parce qu’une dépendance manque.
+- `skipped` : le module n’a pas été exécuté, par option explicite, dépendance
+  manquante ou métadonnée `selectable: false`.
 
-Un module peut appeler `module_mark_partial "raison"` uniquement pour une étape réellement facultative. Les options `OPTS_NO_ZEEK` et `OPTS_NO_SURICATA` sont évaluées avant les dépendances afin de produire un état `skipped` déterministe, que les outils soient installés ou non.
+Un module peut appeler `module_mark_partial "raison"` uniquement pour une
+étape réellement facultative ou une couverture fonctionnelle annoncée comme
+partielle. SMB utilise cet état pour rappeler qu’il détecte seulement les
+ports 139/445. Zeek et Suricata sont des placeholders non sélectionnables ;
+leurs anciennes options restent acceptées sans activer de capacité.
 
 Le schéma `1.1.0` ajoute `partial` et `summary.partial_count`.
 
