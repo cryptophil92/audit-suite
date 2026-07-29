@@ -42,8 +42,16 @@ le format [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et
 
 ### Important
 
-- le lot documentaire fusionné par la PR #59 ne contenait aucune correction fonctionnelle du moteur ;
+- le lot documentaire fusionné par la PR #59 ne contenait aucune correction
+  fonctionnelle du moteur ;
 - les problèmes découverts sont suivis par des issues dédiées.
+
+### Performance
+
+- délais configurables et limites de sortie pour tous les sous-processus de
+  l’API ;
+- réponses HTTP structurées `504`/`502` lors des dépassements ;
+- agrégation parallèle des quatre sources du snapshot JSON.
 
 ### Sécurité
 

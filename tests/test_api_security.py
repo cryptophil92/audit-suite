@@ -6,7 +6,6 @@ import argparse
 import importlib.util
 import json
 import socket
-import subprocess
 import sys
 import unittest
 from pathlib import Path
@@ -60,18 +59,34 @@ class LoopbackHostTests(unittest.TestCase):
 
 
 class PublicErrorTests(unittest.TestCase):
+    def test_missing_openapi_hides_local_path(self) -> None:
+        hidden_path = Path("C:/sensitive/internal/openapi.json")
+        handler = object.__new__(server_module.AuditSuiteHandler)
+        handler._write_json = mock.Mock()
+
+        with mock.patch.object(server_module, "OPENAPI_SPEC", hidden_path):
+            with self.assertLogs(server_module.LOGGER, level="ERROR") as private_logs:
+                handler._write_openapi()
+
+        status, payload = handler._write_json.call_args.args
+        self.assertEqual(status, server_module.HTTPStatus.NOT_FOUND)
+        self.assertEqual(payload["error"], "json_file_missing")
+        self.assertNotIn("path", payload)
+        self.assertNotIn(str(hidden_path), json.dumps(payload))
+        self.assertIn(str(hidden_path), "\n".join(private_logs.output))
+
     def test_command_failure_hides_command_and_stderr(self) -> None:
-        completed = subprocess.CompletedProcess(
-            args=["bash", "secret-command"],
-            returncode=7,
-            stdout="",
-            stderr="sensitive internal detail",
-        )
         with self.assertLogs(server_module.LOGGER, level="ERROR") as private_logs:
-            with mock.patch.object(server_module.subprocess, "run", return_value=completed):
-                returncode, payload = server_module.run_json_command(
-                    ["bash", "secret-command"]
-                )
+            returncode, payload = server_module.run_json_command(
+                [
+                    sys.executable,
+                    "-c",
+                    "import sys; sys.stderr.write('sensitive internal detail'); "
+                    "raise SystemExit(7)",
+                ],
+                timeout_seconds=2,
+                max_output_bytes=4096,
+            )
 
         self.assertEqual(returncode, 7)
         self.assertEqual(payload["error"], "command_failed")
@@ -82,17 +97,16 @@ class PublicErrorTests(unittest.TestCase):
         self.assertIn("sensitive internal detail", "\n".join(private_logs.output))
 
     def test_invalid_json_hides_parser_and_command_details(self) -> None:
-        completed = subprocess.CompletedProcess(
-            args=["bash", "internal-command"],
-            returncode=0,
-            stdout="{invalid",
-            stderr="",
-        )
         with self.assertLogs(server_module.LOGGER, level="ERROR") as private_logs:
-            with mock.patch.object(server_module.subprocess, "run", return_value=completed):
-                returncode, payload = server_module.run_json_command(
-                    ["bash", "internal-command"]
-                )
+            returncode, payload = server_module.run_json_command(
+                [
+                    sys.executable,
+                    "-c",
+                    "print('{invalid')  # internal-command",
+                ],
+                timeout_seconds=2,
+                max_output_bytes=4096,
+            )
 
         self.assertEqual(returncode, 1)
         self.assertEqual(payload["error"], "invalid_command_output")

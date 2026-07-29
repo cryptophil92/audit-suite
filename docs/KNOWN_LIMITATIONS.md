@@ -22,7 +22,6 @@ La pile contient :
 ## Limites bloquantes ou importantes
 
 - des sorties d’audit sont encore suivies dans l’historique Git public ;
-- l’API ne borne pas la durée ni la taille des sous-processus.
 
 Ne pas considérer le moteur prêt pour une mission professionnelle avant traitement.
 
@@ -95,6 +94,10 @@ Tant que le test local réel n'est pas effectué, garder toutes les PR en brouil
 
 ## Limites corrigées dans l'état de code non publié
 
+- Les sous-processus des routes API ont des délais documentés, une limite de
+  sortie combinée et des erreurs structurées en cas de dépassement.
+- Le snapshot calcule ses quatre sources en parallèle et reste soumis au même
+  budget de 15 secondes sur Windows comme sur Linux.
 - Une ligne JSONL invalide ou tronquée ne rend plus l'historique et le
   snapshot indisponibles : les entrées valides sont conservées et la
   dégradation est signalée.
