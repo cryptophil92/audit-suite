@@ -70,8 +70,9 @@ _append_module_result \
 manifest_path="$RUN_DIR/manifest.json"
 write_manifest_json "$manifest_path" "modules/10_network_discovery.sh modules/70_http_enum.sh"
 
-jq -e '.schema_version == "1.1.0"' "$manifest_path" >/dev/null
+jq -e '.schema_version == "1.2.0"' "$manifest_path" >/dev/null
 jq -e '.kind == "audit-suite.manifest"' "$manifest_path" >/dev/null
+jq -e '.findings_schema_version == "1.0.0"' "$manifest_path" >/dev/null
 jq -e --arg version "$(tr -d '\r\n' < VERSION)" '.version == $version' "$manifest_path" >/dev/null
 jq -e --arg commit "$(git rev-parse --verify HEAD 2>/dev/null || printf 'unknown')" '.commit == $commit' "$manifest_path" >/dev/null
 jq -e '.summary.module_count == 3' "$manifest_path" >/dev/null
@@ -81,6 +82,10 @@ jq -e '.summary.failed_count == 0' "$manifest_path" >/dev/null
 jq -e '.summary.skipped_count == 1' "$manifest_path" >/dev/null
 jq -e '.summary.total_duration_seconds == 3' "$manifest_path" >/dev/null
 jq -e '.summary.status == "partial"' "$manifest_path" >/dev/null
+jq -e '.summary.findings.total_count == 0' "$manifest_path" >/dev/null
+jq -e '.summary.findings.scored_count == 0' "$manifest_path" >/dev/null
+jq -e '.summary.findings.unscored_count == 0' "$manifest_path" >/dev/null
+jq -e '.findings == []' "$manifest_path" >/dev/null
 jq -e '.paths.output == env.RUN_DIR' "$manifest_path" >/dev/null
 jq -e '.paths.logs == env.LOG_DIR' "$manifest_path" >/dev/null
 jq -e '.modules[1].status == "skipped"' "$manifest_path" >/dev/null

@@ -117,6 +117,9 @@ jobs:
       - name: Run manifest schema tests
         run: bash tests/test_manifest_schema.sh
 
+      - name: Run findings contract tests
+        run: bash tests/test_findings_contract.sh
+
       - name: Run compare runs tests
         run: bash tests/test_compare_runs.sh
 

@@ -38,7 +38,7 @@ Ce registre relie les constats de l’audit aux issues GitHub créées. Les dét
 
 1. Confinement et correction des P0 : #37 et #38.
 2. Fiabilité, sécurité, tests et gouvernance : #39 à #47.
-3. Contrat de constats et rapport premium : #70 puis #71.
+3. Rapport premium : #71, sur le contrat de constats livré par #70.
 4. Architecture et dette technique : #48 à #51 et #57.
 5. Refonte UX et accessibilité : #52 à #54, en coordination avec #70 et #71.
 6. Validation utilisateur et plateforme : #55 et #56.

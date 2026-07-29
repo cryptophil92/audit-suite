@@ -160,8 +160,9 @@ Les mesures cibles seront validées par recherche utilisateur :
 ## Séquence de réalisation
 
 1. terminer le socle de fiabilité et le préflight ;
-2. versionner le modèle de constats et la notation — issue
-   [#70](https://github.com/cryptophil92/audit-suite/issues/70) ;
+2. maintenir le contrat de constats `1.0.0` et connecter progressivement les
+   modules, en coordination avec
+   [#48](https://github.com/cryptophil92/audit-suite/issues/48) ;
 3. construire le rapport premium — issue
    [#71](https://github.com/cryptophil92/audit-suite/issues/71) ;
 4. relier historique, constats et rapports dans l’interface — issue

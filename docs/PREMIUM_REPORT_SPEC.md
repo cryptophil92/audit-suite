@@ -2,15 +2,19 @@
 
 ## Statut
 
-Spécification produit initiale du 29 juillet 2026. Elle définit la cible des
-issues [#70](https://github.com/cryptophil92/audit-suite/issues/70) et
-[#71](https://github.com/cryptophil92/audit-suite/issues/71). Elle ne décrit pas
-une fonctionnalité déjà disponible.
+Spécification produit initiale du 29 juillet 2026. Le contrat de données de
+l’issue [#70](https://github.com/cryptophil92/audit-suite/issues/70) est
+implémenté dans le manifest `1.2.0`. La restitution premium de
+[#71](https://github.com/cryptophil92/audit-suite/issues/71) reste une cible et
+ne doit pas être présentée comme déjà disponible.
 
 ## État actuel confirmé
 
-Le manifest `1.1.0` décrit l’exécution des modules et leurs états. Le rapport
-HTML actuel affiche :
+Le manifest `1.2.0` prend en charge le contrat `findings[]` version `1.0.0`,
+sa validation stricte et la normalisation des manifests `1.0.0/1.1.0`. Les
+modules réels ne disposent pas encore tous d’un adaptateur de constats.
+
+Le rapport HTML actuel affiche encore uniquement :
 
 - le statut global ;
 - les comptes de modules ;
@@ -18,9 +22,8 @@ HTML actuel affiche :
 - les options et chemins ;
 - un tableau des modules.
 
-Il n’existe pas encore de collection `findings[]`. Le rapport actuel ne peut
-donc pas produire de manière fiable une note de faille, une preuve structurée ou
-une remédiation.
+Le rapport actuel ne présente donc pas encore les constats, notes, preuves et
+remédiations structurés disponibles dans un manifest `1.2.0`.
 
 ## Objectifs
 
@@ -134,7 +137,8 @@ Filtres prévus :
 
 ## Contrat conceptuel d’un constat
 
-Le format exact sera versionné dans le cadre de #70. La cible minimale est :
+Le format exact est versionné dans
+[`FINDINGS_CONTRACT.md`](FINDINGS_CONTRACT.md). Exemple synthétique minimal :
 
 ```json
 {
@@ -147,6 +151,10 @@ Le format exact sera versionné dans le cadre de #70. La cible minimale est :
     "address": "192.0.2.10",
     "hostname": "web-01.example.invalid"
   },
+  "scope": {
+    "target": "192.0.2.0/24",
+    "relation": "direct"
+  },
   "service": {
     "transport": "tcp",
     "port": 443,
@@ -158,8 +166,10 @@ Le format exact sera versionné dans le cadre de #70. La cible minimale est :
     "score": 5.3,
     "scale": 10,
     "method": "cvss-v3.1",
-    "vector": "CVSS:3.1/...",
-    "rationale": "Vecteur fourni à titre synthétique dans la fixture."
+    "method_version": "3.1",
+    "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N",
+    "rationale": "Vecteur complet fourni par la fixture synthétique.",
+    "source": "fixture_synthetic"
   },
   "confidence": "medium",
   "validation_status": "potential",
@@ -167,16 +177,28 @@ Le format exact sera versionné dans le cadre de #70. La cible minimale est :
   "impact": "Un protocole ancien peut réduire la robustesse du transport.",
   "evidence": [
     {
+      "id": "evidence.synthetic.tls-legacy.001",
       "kind": "file_reference",
       "source": "30_vuln_nmap_nse",
-      "path": "evidence/synthetic/tls-check.json",
+      "path": "30_vuln_nmap_nse/synthetic-tls-check.json",
       "captured_at": "2026-07-29T10:00:00Z"
     }
   ],
+  "source": {
+    "module": "30_vuln_nmap_nse",
+    "tool": "synthetic-fixture",
+    "tool_version": "1.0.0",
+    "collected_at": "2026-07-29T10:00:00Z",
+    "provenance": "Donnée entièrement synthétique réservée aux tests."
+  },
   "remediation": {
     "priority": "short_term",
     "effort": "medium",
     "action": "Vérifier la configuration TLS puis désactiver les protocoles obsolètes.",
+    "rationale": "Réduire l’exposition aux protocoles de transport anciens.",
+    "prerequisites": [
+      "Vérifier la compatibilité des clients autorisés."
+    ],
     "change_risk": "Valider la compatibilité des clients avant modification.",
     "verification": "Relancer uniquement la vérification TLS après changement."
   },

@@ -3,10 +3,12 @@
 # @version 0.2.2
 set -Eeuo pipefail
 
-MANIFEST_SCHEMA_VERSION="1.1.0"
+MANIFEST_SCHEMA_VERSION="1.2.0"
 
 # shellcheck source=lib_version.sh
 source "$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)/lib_version.sh"
+# shellcheck source=lib_findings.sh
+source "$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)/lib_findings.sh"
 
 discover_modules_sorted() {
   [[ -d modules ]] || return 0
@@ -286,12 +288,15 @@ write_manifest_json() {
   local path="$1"; shift || true
   local selected="$1"; shift || true
   local now tmp_path results_file application_version application_commit
+  local findings_path findings_tmp_path
 
   now="$(date -Is)"
   application_version="$(audit_suite_version)"
   application_commit="$(audit_suite_commit)"
   tmp_path="${path}.tmp"
+  findings_tmp_path="${tmp_path}.findings"
   results_file="$(_module_results_file)"
+  findings_path="${AUDIT_FINDINGS_FILE:-${RUN_DIR}/findings.json}"
   mkdir -p "$(dirname -- "$results_file")"
   touch "$results_file"
 
@@ -300,8 +305,14 @@ write_manifest_json() {
     return 1
   fi
 
-  jq -n \
+  if ! findings_prepare_array_file "$findings_path" "$findings_tmp_path"; then
+    emit ERROR "runner" "invalid findings input: $findings_path"
+    return 1
+  fi
+
+  if ! jq -n \
     --arg schema_version "$MANIFEST_SCHEMA_VERSION" \
+    --arg findings_schema_version "$FINDINGS_SCHEMA_VERSION" \
     --arg version "$application_version" \
     --arg commit "$application_commit" \
     --arg run_id "$RUN_ID" \
@@ -316,10 +327,13 @@ write_manifest_json() {
     --arg output_path "$RUN_DIR" \
     --arg log_path "$LOG_DIR" \
     --arg manifest_path "$path" \
+    --slurpfile findings_document "$findings_tmp_path" \
     --slurpfile modules "$results_file" \
-    '{
+    '($findings_document[0] // []) as $findings
+    | {
       schema_version: $schema_version,
       kind: "audit-suite.manifest",
+      findings_schema_version: $findings_schema_version,
       version: $version,
       commit: $commit,
       run_id: $run_id,
@@ -351,10 +365,41 @@ write_manifest_json() {
           elif ([$modules[]? | select(.status == "success")] | length) > 0 then "success"
           else "empty"
           end
-        )
+        ),
+        findings: {
+          total_count: ($findings | length),
+          scored_count: ([$findings[]? | select(.scoring.status == "scored")] | length),
+          unscored_count: ([$findings[]? | select(.scoring.status == "unscored")] | length),
+          by_severity: {
+            informational: ([$findings[]? | select(.severity == "informational")] | length),
+            low: ([$findings[]? | select(.severity == "low")] | length),
+            medium: ([$findings[]? | select(.severity == "medium")] | length),
+            high: ([$findings[]? | select(.severity == "high")] | length),
+            critical: ([$findings[]? | select(.severity == "critical")] | length),
+            unknown: ([$findings[]? | select(.severity == "unknown")] | length)
+          },
+          by_confidence: {
+            low: ([$findings[]? | select(.confidence == "low")] | length),
+            medium: ([$findings[]? | select(.confidence == "medium")] | length),
+            high: ([$findings[]? | select(.confidence == "high")] | length)
+          }
+        }
       },
-      modules: $modules
-    }' > "$tmp_path"
+      modules: $modules,
+      findings: $findings
+    }' > "$tmp_path"; then
+    rm -f -- "$findings_tmp_path" "$tmp_path"
+    emit ERROR "runner" "cannot generate manifest JSON"
+    return 1
+  fi
+
+  rm -f -- "$findings_tmp_path"
+
+  if ! findings_validate_manifest_file "$tmp_path"; then
+    rm -f -- "$tmp_path"
+    emit ERROR "runner" "generated manifest failed validation"
+    return 1
+  fi
 
   mv "$tmp_path" "$path"
 }

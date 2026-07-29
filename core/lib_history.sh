@@ -108,6 +108,7 @@ history_record_run() {
 
   if ! jq -ce --arg manifest_path "$manifest_path" '{
     schema_version: (.schema_version // "0.1.0"),
+    findings_schema_version: (.findings_schema_version // null),
     version: (.version // "unknown"),
     commit: (.commit // "unknown"),
     run_id,
@@ -121,6 +122,26 @@ history_record_run() {
     partial_count: (.summary.partial_count // ([.modules[]? | select(.status == "partial")] | length)),
     failed_count: (.summary.failed_count // ([.modules[]? | select(.status == "failed")] | length)),
     skipped_count: (.summary.skipped_count // ([.modules[]? | select(.status == "skipped")] | length)),
+    finding_count: (.summary.findings.total_count // ((.findings // []) | length)),
+    scored_finding_count: (
+      .summary.findings.scored_count
+      // ([.findings[]? | select(.scoring.status == "scored")] | length)
+    ),
+    unscored_finding_count: (
+      .summary.findings.unscored_count
+      // ([.findings[]? | select(.scoring.status == "unscored")] | length)
+    ),
+    findings_by_severity: (
+      .summary.findings.by_severity
+      // {
+        informational: ([.findings[]? | select(.severity == "informational")] | length),
+        low: ([.findings[]? | select(.severity == "low")] | length),
+        medium: ([.findings[]? | select(.severity == "medium")] | length),
+        high: ([.findings[]? | select(.severity == "high")] | length),
+        critical: ([.findings[]? | select(.severity == "critical")] | length),
+        unknown: ([.findings[]? | select(.severity == "unknown")] | length)
+      }
+    ),
     total_duration_seconds: (.summary.total_duration_seconds // ([.modules[]?.duration_seconds] | add // 0)),
     status: (.summary.status // "unknown"),
     output_path: (.paths.output // ("output/" + .run_id)),
@@ -132,6 +153,7 @@ history_record_run() {
 
   if ! jq -e --arg manifest_path "$manifest_path" '{
     schema_version: (.schema_version // "0.1.0"),
+    findings_schema_version: (.findings_schema_version // null),
     version: (.version // "unknown"),
     commit: (.commit // "unknown"),
     run_id,
@@ -142,6 +164,7 @@ history_record_run() {
     selected_modules,
     summary,
     modules,
+    findings: (.findings // []),
     output_path: (.paths.output // ("output/" + .run_id)),
     manifest_path: $manifest_path
   }' "$manifest_path" > "$latest_tmp"; then

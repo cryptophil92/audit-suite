@@ -27,6 +27,10 @@ Priorité P1.
 Livrable : contrat de l’issue
 [#70](https://github.com/cryptophil92/audit-suite/issues/70).
 
+État : contrat `1.0.0`, manifest `1.2.0`, validation, compatibilité héritée et
+fixtures synthétiques implémentés. Les adaptateurs des modules réels restent à
+compléter avec #48.
+
 ## Lot UX-2 — Rapport premium
 
 Priorité P1.

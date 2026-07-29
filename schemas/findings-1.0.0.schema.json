@@ -1,0 +1,442 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/cryptophil92/audit-suite/schemas/findings-1.0.0.schema.json",
+  "title": "Audit Suite findings contract 1.0.0",
+  "description": "Versioned collection of structured, evidence-backed audit findings.",
+  "type": "array",
+  "uniqueItems": true,
+  "items": {
+    "$ref": "#/$defs/finding"
+  },
+  "$defs": {
+    "nonEmptyString": {
+      "type": "string",
+      "minLength": 1
+    },
+    "finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "type",
+        "title",
+        "category",
+        "asset",
+        "scope",
+        "service",
+        "severity",
+        "scoring",
+        "confidence",
+        "validation_status",
+        "observation",
+        "impact",
+        "evidence",
+        "source",
+        "remediation",
+        "references",
+        "limitations"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^finding\\.[A-Za-z0-9][A-Za-z0-9._:-]{2,127}$"
+        },
+        "type": {
+          "enum": [
+            "observation",
+            "potential_vulnerability",
+            "confirmed_vulnerability",
+            "informational"
+          ]
+        },
+        "title": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "category": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]{1,63}$"
+        },
+        "asset": {
+          "$ref": "#/$defs/asset"
+        },
+        "scope": {
+          "$ref": "#/$defs/scope"
+        },
+        "service": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/service"
+            }
+          ]
+        },
+        "severity": {
+          "enum": [
+            "informational",
+            "low",
+            "medium",
+            "high",
+            "critical",
+            "unknown"
+          ]
+        },
+        "scoring": {
+          "$ref": "#/$defs/scoring"
+        },
+        "confidence": {
+          "enum": [
+            "low",
+            "medium",
+            "high"
+          ]
+        },
+        "validation_status": {
+          "enum": [
+            "observed",
+            "potential",
+            "confirmed",
+            "false_positive",
+            "accepted_risk",
+            "resolved",
+            "unknown"
+          ]
+        },
+        "observation": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "impact": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "evidence": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/evidence"
+          }
+        },
+        "source": {
+          "$ref": "#/$defs/source"
+        },
+        "remediation": {
+          "$ref": "#/$defs/remediation"
+        },
+        "references": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/nonEmptyString"
+          }
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/nonEmptyString"
+          }
+        }
+      }
+    },
+    "asset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id"
+      ],
+      "anyOf": [
+        {
+          "required": [
+            "address"
+          ]
+        },
+        {
+          "required": [
+            "hostname"
+          ]
+        }
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "address": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "hostname": {
+          "$ref": "#/$defs/nonEmptyString"
+        }
+      }
+    },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "target",
+        "relation"
+      ],
+      "properties": {
+        "target": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "relation": {
+          "enum": [
+            "direct",
+            "derived"
+          ]
+        }
+      }
+    },
+    "service": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "transport",
+        "port",
+        "name"
+      ],
+      "properties": {
+        "transport": {
+          "enum": [
+            "tcp",
+            "udp",
+            "sctp",
+            "other"
+          ]
+        },
+        "port": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65535
+        },
+        "name": {
+          "$ref": "#/$defs/nonEmptyString"
+        }
+      }
+    },
+    "scoring": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "rationale"
+          ],
+          "properties": {
+            "status": {
+              "const": "unscored"
+            },
+            "rationale": {
+              "$ref": "#/$defs/nonEmptyString"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "score",
+            "scale",
+            "method",
+            "method_version",
+            "rationale",
+            "source"
+          ],
+          "properties": {
+            "status": {
+              "const": "scored"
+            },
+            "score": {
+              "type": "number",
+              "minimum": 0
+            },
+            "scale": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "method": {
+              "enum": [
+                "cvss-v3.1",
+                "cvss-v4.0",
+                "source",
+                "manual"
+              ]
+            },
+            "method_version": {
+              "$ref": "#/$defs/nonEmptyString"
+            },
+            "vector": {
+              "$ref": "#/$defs/nonEmptyString"
+            },
+            "rationale": {
+              "$ref": "#/$defs/nonEmptyString"
+            },
+            "source": {
+              "$ref": "#/$defs/nonEmptyString"
+            }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "method": {
+                    "const": "cvss-v3.1"
+                  }
+                }
+              },
+              "then": {
+                "required": [
+                  "vector"
+                ],
+                "properties": {
+                  "vector": {
+                    "type": "string",
+                    "pattern": "^CVSS:3\\.1/AV:(N|A|L|P)/AC:(L|H)/PR:(N|L|H)/UI:(N|R)/S:(U|C)/C:(N|L|H)/I:(N|L|H)/A:(N|L|H)$"
+                  }
+                }
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "method": {
+                    "const": "cvss-v4.0"
+                  }
+                }
+              },
+              "then": {
+                "required": [
+                  "vector"
+                ],
+                "properties": {
+                  "vector": {
+                    "type": "string",
+                    "pattern": "^CVSS:4\\.0/AV:(N|A|L|P)/AC:(L|H)/AT:(N|P)/PR:(N|L|H)/UI:(N|P|A)/VC:(H|L|N)/VI:(H|L|N)/VA:(H|L|N)/SC:(H|L|N)/SI:(H|L|N)/SA:(H|L|N)$"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "source",
+        "path",
+        "captured_at"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "kind": {
+          "enum": [
+            "file_reference",
+            "data_reference",
+            "manual_reference"
+          ]
+        },
+        "source": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "path": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._/-]*$",
+          "not": {
+            "pattern": "(^|/)\\.\\.(/|$)"
+          }
+        },
+        "captured_at": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[A-Fa-f0-9]{64}$"
+        }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "module",
+        "collected_at",
+        "provenance"
+      ],
+      "properties": {
+        "module": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "tool": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "tool_version": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "collected_at": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "provenance": {
+          "$ref": "#/$defs/nonEmptyString"
+        }
+      }
+    },
+    "remediation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "priority",
+        "effort",
+        "action",
+        "rationale",
+        "change_risk",
+        "verification"
+      ],
+      "properties": {
+        "priority": {
+          "enum": [
+            "immediate",
+            "short_term",
+            "planned",
+            "monitor",
+            "none"
+          ]
+        },
+        "effort": {
+          "enum": [
+            "low",
+            "medium",
+            "high",
+            "unknown"
+          ]
+        },
+        "action": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "rationale": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "prerequisites": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/nonEmptyString"
+          }
+        },
+        "change_risk": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "compensating_control": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "verification": {
+          "$ref": "#/$defs/nonEmptyString"
+        }
+      }
+    }
+  }
+}

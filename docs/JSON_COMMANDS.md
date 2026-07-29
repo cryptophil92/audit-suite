@@ -53,6 +53,16 @@ bash bin/plan_json.sh --profile fast --targets 192.168.1.0/24 --categories all -
 
 Retourne un plan d'exécution JSON sans lancer de module réel.
 
+## Manifest et constats
+
+```bash
+bash bin/manifest_json.sh validate output/AUDIT_1/manifest.json
+bash bin/manifest_json.sh normalize output/AUDIT_1/manifest.json
+```
+
+Valide le schéma manifest et le contrat `findings[]`, ou normalise en lecture
+les schémas `1.0.0`, `1.1.0` et `1.2.0` sans modifier le fichier source.
+
 ## Snapshot API
 
 ```bash

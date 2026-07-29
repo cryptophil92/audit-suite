@@ -17,6 +17,8 @@ Le script contrôle :
 - `bin/modules_json.sh` ;
 - `bin/status_json.sh` ;
 - `bin/history_json.sh list` ;
+- `bin/history_json.sh run` ;
+- `bin/manifest_json.sh validate` sur une fixture synthétique ;
 - `bin/plan_json.sh` ;
 - `bin/api_snapshot_json.sh` ;
 - `audit.sh --dry-run`.

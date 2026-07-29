@@ -39,7 +39,7 @@ offensive. La direction complète est documentée dans
 | Artefacts historiques publics | Décision privée encore requise | Issue #37 |
 | CI exhaustive et maintenance des actions | Incomplètes | Issues #43 et #44 |
 | Préflight agréable et actionnable | Incomplet | Issue #47 |
-| Modèle de constats et notation | Absent | Issue #70 |
+| Modèle de constats et notation | Contrat `1.0.0` implémenté | Brancher les adaptateurs de modules avec #48 |
 | Rapport premium | Absent | Issue #71 |
 | Onboarding, vues résultats et accessibilité | Documentés, non implémentés | Issues #52 à #54 |
 
@@ -56,8 +56,7 @@ Deux volets avancent sans mélanger leurs changements dans une même PR.
 
 ### Valeur utilisateur
 
-1. versionner le contrat de constats et la notation avec
-   [#70](https://github.com/cryptophil92/audit-suite/issues/70) ;
+1. maintenir le contrat de constats `1.0.0` et connecter les modules avec #48 ;
 2. construire le rapport premium avec
    [#71](https://github.com/cryptophil92/audit-suite/issues/71) ;
 3. relier historique, constats et rapports avec #53 ;
@@ -139,6 +138,10 @@ Critère de sortie : un constat peut être expliqué, justifié, corrigé et vé
 sans relire les logs bruts, sans score inventé.
 
 Spécification : [`PREMIUM_REPORT_SPEC.md`](PREMIUM_REPORT_SPEC.md).
+
+État : contrat `findings[]` `1.0.0`, manifest `1.2.0`, validation stricte,
+compatibilité `1.0.0/1.1.0` et fixtures synthétiques implémentés. Les
+adaptateurs des modules et la restitution premium restent à réaliser.
 
 ## Phase 5 — Expérience guidée en lecture seule
 
