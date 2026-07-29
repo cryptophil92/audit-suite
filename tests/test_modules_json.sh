@@ -9,7 +9,7 @@ cd "$REPO_DIR"
 catalog_json="$(bash bin/modules_json.sh)"
 
 printf '%s\n' "$catalog_json" | jq -e '.kind == "audit-suite.modules"' >/dev/null
-printf '%s\n' "$catalog_json" | jq -e '.schema_version == "1.0.0"' >/dev/null
+printf '%s\n' "$catalog_json" | jq -e '.schema_version == "1.1.0"' >/dev/null
 printf '%s\n' "$catalog_json" | jq -e '.count > 0' >/dev/null
 printf '%s\n' "$catalog_json" | jq -e '.modules | type == "array"' >/dev/null
 printf '%s\n' "$catalog_json" | jq -e '.count == (.modules | length)' >/dev/null
@@ -18,6 +18,13 @@ printf '%s\n' "$catalog_json" | jq -e 'all(.modules[]; (.name | type == "string"
 printf '%s\n' "$catalog_json" | jq -e 'all(.modules[]; (.path | type == "string" and startswith("modules/")))' >/dev/null
 printf '%s\n' "$catalog_json" | jq -e 'all(.modules[]; (.order | type == "number"))' >/dev/null
 printf '%s\n' "$catalog_json" | jq -e 'all(.modules[]; (.executable | type == "boolean"))' >/dev/null
+printf '%s\n' "$catalog_json" | jq -e 'all(.modules[]; (.requirements.commands | type == "array"))' >/dev/null
+printf '%s\n' "$catalog_json" | jq -e 'all(.modules[]; (.requirements.raw_socket_profiles | type == "array"))' >/dev/null
+printf '%s\n' "$catalog_json" | jq -e 'all(.modules[]; (.requirements.raw_socket_for_udp | type == "boolean"))' >/dev/null
+printf '%s\n' "$catalog_json" | jq -e \
+  '.modules[] | select(.id == "20_portscan_nmap") | .requirements.raw_socket_profiles == ["full", "stealth"]' >/dev/null
+printf '%s\n' "$catalog_json" | jq -e \
+  '.modules[] | select(.id == "20_portscan_nmap") | .requirements.raw_socket_for_udp == true' >/dev/null
 printf '%s\n' "$catalog_json" | jq -e 'all(.modules[]; (.name | test("_TEMPLATE") | not))' >/dev/null
 
 if bash bin/modules_json.sh --unknown >/tmp/modules-json.out 2>/tmp/modules-json.err; then

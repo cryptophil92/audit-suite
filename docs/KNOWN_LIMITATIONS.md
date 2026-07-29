@@ -24,8 +24,8 @@ La pile contient :
 ## Limites bloquantes ou importantes
 
 - des sorties d’audit sont encore suivies dans l’historique Git public ;
-- le préflight ne décrit pas encore toutes les capacités, dépendances et
-  exigences de privilèges avant lancement.
+- le préflight décrit les capacités connues, mais son comportement réel reste
+  à valider sur Kali/Linux et un lab autorisé.
 
 Ne pas considérer le moteur prêt pour une mission professionnelle avant traitement.
 
@@ -135,3 +135,7 @@ release.
   preuves, scores et remédiations structurés sans inventer de notation.
 - Le rapport premium privé/partageable/technique est fusionné avec échappement
   strict, tri des constats, plan d’action, styles responsive et impression A4.
+- Le préflight annonce `iproute2`, Python, les dépendances des modules et les
+  sockets brutes avant lancement. Les modules sans outil sont ignorés
+  explicitement ; Nmap se replie sans privilèges sur TCP connect et marque la
+  couverture réduite comme partielle.

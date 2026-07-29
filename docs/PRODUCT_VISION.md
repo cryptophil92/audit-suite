@@ -162,8 +162,8 @@ Les mesures cibles seront validées par recherche utilisateur :
 1. maintenir la découverte automatique des tests livrée par
    [#43](https://github.com/cryptophil92/audit-suite/issues/43) et
    l’épinglage des Actions avec la surveillance Dependabot livrés par
-   [#44](https://github.com/cryptophil92/audit-suite/issues/44), puis construire
-   le préflight guidé
+   [#44](https://github.com/cryptophil92/audit-suite/issues/44), ainsi que le
+   préflight guidé livré par
    [#47](https://github.com/cryptophil92/audit-suite/issues/47) ;
 2. maintenir le contrat de constats `1.0.0` et connecter progressivement les
    modules, en coordination avec

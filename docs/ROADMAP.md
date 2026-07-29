@@ -45,8 +45,8 @@ offensive. La direction complète est documentée dans
 
 ## État vérifié au 29 juillet 2026
 
-Dernier point de référence avant ce lot : `main` après la fusion de la PR #76,
-commit `110e545283360616f2142e23cbad86be851cb6c7`.
+Dernier point de référence avant ce lot : `main` après la fusion de la PR #77,
+commit `88f367186b420b0e8e02727fe61c3ec9ee0e009e`.
 
 | Domaine | État | Suite |
 |---|---|---|
@@ -55,7 +55,7 @@ commit `110e545283360616f2142e23cbad86be851cb6c7`.
 | Licence, version et procédure de release | Documentées et fusionnées | Pas de tag avant les gates P0/P1 |
 | Artefacts historiques publics | Décision privée encore requise | Issue #37 |
 | CI exhaustive et maintenance des actions | Runner automatique livré par #43 ; Actions épinglées et protections Dependabot activées par #44 | Surveiller les mises à jour hebdomadaires |
-| Préflight agréable et actionnable | Incomplet | Issue #47 |
+| Préflight agréable et actionnable | Outils, plateforme, Python, privilèges, skips et replis couverts par #47 | Valider sur Kali/lab autorisé |
 | Modèle de constats et notation | #70 fermé, contrat `1.0.0` implémenté | Brancher les adaptateurs de modules avec #48 |
 | Rapport premium | #71 fermé, HTML privé/partageable/technique implémenté | Valider sur cas réels et relier à #53/#54 |
 | Onboarding, vues résultats et accessibilité | Documentés, non implémentés | Issues #52 à #54 |
@@ -71,7 +71,7 @@ Deux volets avancent sans mélanger leurs changements dans une même PR.
    #43 ;
 3. maintenir l’épinglage des Actions et la surveillance Dependabot livrés par
    #44 ;
-4. construire le préflight guidé de #47.
+4. maintenir le préflight guidé, les skips et replis sûrs livrés par #47.
 
 ### Valeur utilisateur
 
@@ -84,10 +84,10 @@ Deux volets avancent sans mélanger leurs changements dans une même PR.
 
 ### Prochain lot non bloqué
 
-#47 est le prochain lot de confiance entièrement testable sans scan réel ni
-décision destructive. Il améliore directement le démarrage d’un audit. Le
-volet valeur peut ensuite préparer #48/#53, mais ne doit pas étendre le
-dashboard avant le rendu sûr de #51.
+#48 est le prochain lot de valeur entièrement testable sur fixtures et doubles
+sans scan réel. Il doit relier les modules au contrat de constats et annoncer
+leur maturité réelle. Le dashboard ne doit pas être étendu avant le rendu sûr
+de #51 ; les vues résultats de #53 viennent ensuite.
 
 ## Phase 0 — Contenir les risques
 
@@ -117,8 +117,11 @@ Critère de sortie : un manifest ne peut pas déclarer un succès lorsque la com
 
 État : contrat `success/partial/failed/skipped`, chemins concurrents et tests
 du runner fusionnés. La suite couvre aussi les retours de permission et
-d’interruption sans trafic réseau. Le préflight des outils, capacités et
-privilèges reste à traiter dans #47.
+d’interruption sans trafic réseau. Le préflight annonce le socle bloquant,
+`iproute2`, Python, les dépendances de modules et les sockets brutes avant le
+plan. Sans privilèges adaptés, Nmap se replie sur TCP connect, omet la
+détection OS/UDP et produit un état partiel explicite. La validation Kali/lab
+reste requise.
 
 ## Phase 2 — Stabiliser données et API
 
@@ -147,12 +150,13 @@ fusionnés. La cohérence générée des routes et d’OpenAPI reste suivie par 
 Critère de sortie : un nouveau contributeur peut installer, tester et identifier précisément la version.
 
 État : licence, version et procédure de release fusionnées. Un runner unique
-découvre 27 tests Bash, deux suites Python totalisant 17 cas et le smoke local.
+découvre 28 tests Bash, deux suites Python totalisant 17 cas et le smoke local.
 Un test prouve qu’un nouveau fichier conforme est inclus automatiquement, et
 `.gitattributes` impose LF. Les Actions officielles sont épinglées sur des SHA
 complets, leurs permissions sont minimales et Dependabot surveille les mises à
-jour et vulnérabilités. Aucune release ne doit contourner #37 ni les P1
-retenues pour la release.
+jour et vulnérabilités. Le catalogue et le status JSON exposent les exigences
+et capacités non sensibles du préflight. Aucune release ne doit contourner #37
+ni les P1 retenues pour la release.
 
 ## Phase 4 — Cœur produit et rapport premium
 

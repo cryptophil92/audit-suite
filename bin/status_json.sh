@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # bin/status_json.sh
-# @version 0.2.16
+# @version 0.3.0
 set -Eeuo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
@@ -11,9 +11,11 @@ cd "$REPO_DIR"
 source "core/lib_history.sh"
 # shellcheck source=../core/lib_modules.sh
 source "core/lib_modules.sh"
+# shellcheck source=../core/lib_preflight.sh
+source "core/lib_preflight.sh"
 
-REQUIRED_DEPS=(nmap jq tar gzip timeout)
-OPTIONAL_DEPS=(tmux whiptail zenity fzf whatweb arp-scan fping sslscan nuclei zeek suricata)
+REQUIRED_DEPS=(jq timeout tar gzip)
+OPTIONAL_DEPS=(ip python3 nmap snmpwalk tmux whiptail zenity fzf whatweb arp-scan fping sslscan nuclei zeek suricata)
 
 usage_status_json() {
   cat <<'EOF'
@@ -81,6 +83,7 @@ emit_status_json() {
   local required_json optional_json modules_count history_count
   local modules_dir_exists=false history_index_exists=false latest_exists=false
 
+  preflight_detect_capabilities
   required_json="$(dependency_array_json "${REQUIRED_DEPS[@]}")"
   optional_json="$(dependency_array_json "${OPTIONAL_DEPS[@]}")"
   modules_count="$(count_modules)"
@@ -92,7 +95,7 @@ emit_status_json() {
 
   jq -n \
     --arg kind "audit-suite.status" \
-    --arg schema_version "1.0.0" \
+    --arg schema_version "1.1.0" \
     --arg cwd "$REPO_DIR" \
     --arg history_dir "$(history_dir)" \
     --arg history_index "$(history_index_path)" \
@@ -104,6 +107,12 @@ emit_status_json() {
     --argjson modules_dir_exists "$modules_dir_exists" \
     --argjson history_index_exists "$history_index_exists" \
     --argjson latest_exists "$latest_exists" \
+    --arg platform "$PREFLIGHT_PLATFORM" \
+    --argjson platform_supported "$([[ "$PREFLIGHT_PLATFORM_SUPPORTED" == "1" ]] && printf true || printf false)" \
+    --argjson ip_available "$([[ "$PREFLIGHT_IP_AVAILABLE" == "1" ]] && printf true || printf false)" \
+    --argjson python_available "$([[ "$PREFLIGHT_PYTHON_AVAILABLE" == "1" ]] && printf true || printf false)" \
+    --argjson python_supported "$([[ "$PREFLIGHT_PYTHON_VERSION_SUPPORTED" == "1" ]] && printf true || printf false)" \
+    --argjson raw_socket_available "$([[ "$PREFLIGHT_RAW_SOCKET_AVAILABLE" == "1" ]] && printf true || printf false)" \
     '{
       kind: $kind,
       schema_version: $schema_version,
@@ -125,6 +134,27 @@ emit_status_json() {
       dependencies: {
         required: $required,
         optional: $optional
+      },
+      capabilities: {
+        platform: {
+          family: $platform,
+          supported: $platform_supported,
+          reference: "Kali/Linux"
+        },
+        environment_detection: {
+          iproute2_available: $ip_available,
+          degraded_without_iproute2: true
+        },
+        api: {
+          python3_available: $python_available,
+          minimum_version: "3.10",
+          minimum_version_met: $python_supported,
+          engine_usable_without_python: true
+        },
+        privileges: {
+          raw_socket_available: $raw_socket_available,
+          fallback: "tcp_connect_without_os_detection_and_udp"
+        }
       }
     }'
 }

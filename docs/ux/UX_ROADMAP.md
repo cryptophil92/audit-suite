@@ -4,7 +4,7 @@
 
 | Lot | État | Reste principal |
 |---|---|---|
-| UX-0 — Fiabilité | Runner CI et maintenance des Actions fusionnés | Préflight guidé (#47) |
+| UX-0 — Fiabilité | Runner CI, maintenance des Actions et préflight guidé fusionnés | Validation Kali/lab (#56) |
 | UX-1 — Constats | Contrat `1.0.0` fusionné | Adaptateurs des modules réels (#48) |
 | UX-2 — Rapport premium | Première version fusionnée | Audit transversal et validation utilisateur (#54, #55) |
 | UX-3 à UX-9 | Documentés, non implémentés dans le dashboard | #51 à #54 |

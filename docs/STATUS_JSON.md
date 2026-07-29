@@ -15,7 +15,7 @@ La commande renvoie un objet JSON :
 ```json
 {
   "kind": "audit-suite.status",
-  "schema_version": "1.0.0",
+  "schema_version": "1.1.0",
   "cwd": "/path/to/audit-suite",
   "checks": {
     "modules_dir_exists": true,
@@ -34,6 +34,27 @@ La commande renvoie un objet JSON :
   "dependencies": {
     "required": [],
     "optional": []
+  },
+  "capabilities": {
+    "platform": {
+      "family": "linux",
+      "supported": true,
+      "reference": "Kali/Linux"
+    },
+    "environment_detection": {
+      "iproute2_available": true,
+      "degraded_without_iproute2": true
+    },
+    "api": {
+      "python3_available": true,
+      "minimum_version": "3.10",
+      "minimum_version_met": true,
+      "engine_usable_without_python": true
+    },
+    "privileges": {
+      "raw_socket_available": false,
+      "fallback": "tcp_connect_without_os_detection_and_udp"
+    }
   }
 }
 ```
@@ -50,6 +71,10 @@ Ce format prépare :
 ## Notes
 
 - La commande nécessite `jq` pour produire le JSON.
+- Les capacités n’exposent ni utilisateur, ni chemin d’outil, ni interface, ni
+  adresse réseau.
+- `raw_socket_available` décrit la capacité courante ; les exigences précises
+  par module sont dans `bin/modules_json.sh`.
 - Elle respecte `AUDIT_HISTORY_DIR`.
 - Elle ne modifie aucun fichier.
 - Elle ne lance aucun module.

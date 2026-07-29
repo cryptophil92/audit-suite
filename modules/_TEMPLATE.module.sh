@@ -10,6 +10,12 @@ MOD_PRIO=50
 MOD_REQUIRES=( )
 MOD_TIMEOUT=1800
 MOD_TAGS=("category")
+# Profils nécessitant des sockets brutes, le cas échéant.
+MOD_RAW_SOCKET_PROFILES=()
+# Mettre à 1 si l'étape UDP facultative utilise des sockets brutes.
+MOD_RAW_SOCKET_FOR_UDP=0
+# Action ou couverture dégradée affichée avant lancement.
+MOD_RAW_SOCKET_FALLBACK=""
 
 mod_pre() { emit INFO "$MOD_ID" "pre"; return 0; }
 mod_run() {
