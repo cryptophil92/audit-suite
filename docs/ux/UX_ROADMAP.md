@@ -47,6 +47,11 @@ Livrable : cible de l’issue
 [#71](https://github.com/cryptophil92/audit-suite/issues/71) et
 [`../PREMIUM_REPORT_SPEC.md`](../PREMIUM_REPORT_SPEC.md).
 
+État : rendu privé et partageable, synthèse, tri, remédiation, annexe,
+responsive et styles A4 implémentés sur fixtures synthétiques. Audit clavier,
+lecteur d’écran, contraste et validation utilisateur restent à consolider dans
+#54/#55.
+
 ## Lot UX-3 — Architecture et contenu
 
 Priorité P2.

@@ -16,6 +16,11 @@ le format [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et
   confiance, validation stricte et normalisation des schémas hérités ;
 - conservation des constats structurés dans le dernier run et de leurs comptes
   dans l’index d’historique.
+- rapport HTML premium par défaut avec synthèse, couverture, constats triés,
+  remédiations, plan d’action et annexe technique ;
+- mode partageable avec masquage des identifiants directs et chemins, plus
+  maintien d’un relevé technique explicite ;
+- styles responsive, thème système, navigation clavier et impression A4.
 
 ### Corrigé
 

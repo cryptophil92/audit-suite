@@ -107,7 +107,7 @@ report_pack_build() {
     mkdir -p "$pack_dir/results"
     while IFS= read -r item; do
       case "$(basename -- "$item")" in
-        manifest.json|report.html|*_report_pack.tar.gz)
+        manifest.json|report.html|report-shareable.html|report-technical.html|*_report_pack.tar.gz)
           continue
           ;;
         tmp|temp)

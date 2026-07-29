@@ -21,12 +21,12 @@ _report_html_validate_manifest() {
   jq -e 'type == "object" and (.run_id | type == "string") and ((.modules // []) | type == "array")' "$manifest_path" >/dev/null
 }
 
-report_html_default_output_path() {
+report_html_technical_default_output_path() {
   local manifest_path="$1"
-  printf '%s\n' "$(dirname -- "$manifest_path")/report.html"
+  printf '%s\n' "$(dirname -- "$manifest_path")/report-technical.html"
 }
 
-report_html_generate() {
+report_html_generate_technical() {
   local manifest_path="$1"
   local output_path="${2:-}"
   local tmp_path
@@ -35,7 +35,7 @@ report_html_generate() {
   _report_html_validate_manifest "$manifest_path"
 
   if [[ -z "$output_path" ]]; then
-    output_path="$(report_html_default_output_path "$manifest_path")"
+    output_path="$(report_html_technical_default_output_path "$manifest_path")"
   fi
 
   mkdir -p "$(dirname -- "$output_path")"
@@ -158,3 +158,8 @@ report_html_generate() {
   mv "$tmp_path" "$output_path"
   printf '%s\n' "$output_path"
 }
+
+# Le rendu premium est le mode par défaut. Le générateur technique historique
+# reste disponible explicitement pour le diagnostic local.
+# shellcheck source=lib_report_premium_html.sh
+source "$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)/lib_report_premium_html.sh"

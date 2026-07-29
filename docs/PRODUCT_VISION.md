@@ -163,13 +163,11 @@ Les mesures cibles seront validées par recherche utilisateur :
 2. maintenir le contrat de constats `1.0.0` et connecter progressivement les
    modules, en coordination avec
    [#48](https://github.com/cryptophil92/audit-suite/issues/48) ;
-3. construire le rapport premium — issue
-   [#71](https://github.com/cryptophil92/audit-suite/issues/71) ;
-4. relier historique, constats et rapports dans l’interface — issue
+3. relier historique, constats et rapports dans l’interface — issue
    [#53](https://github.com/cryptophil92/audit-suite/issues/53) ;
-5. déployer l’onboarding, le design system et l’accessibilité — issues
+4. déployer l’onboarding, le design system et l’accessibilité — issues
    [#52](https://github.com/cryptophil92/audit-suite/issues/52) et
    [#54](https://github.com/cryptophil92/audit-suite/issues/54) ;
-6. valider les parcours avec des utilisateurs et sur Kali/Linux.
+5. valider les rapports et parcours avec des utilisateurs et sur Kali/Linux.
 
 Voir [`ROADMAP.md`](ROADMAP.md) pour le pilotage complet.

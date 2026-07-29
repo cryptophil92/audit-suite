@@ -42,7 +42,8 @@ preuves traçables et des recommandations actionnables. Voir
 - dry-run et aperçu JSON sans exécution ;
 - manifest JSON `1.2.0`, contrat versionné des constats, historique local et
   comparaison de runs ;
-- rapport HTML technique et archive de rapport ;
+- rapport HTML premium privé ou partageable, relevé technique et archive de
+  rapport ;
 - API HTTP locale en lecture seule ;
 - tableau de bord Web local sans dépendance front-end externe.
 
@@ -52,8 +53,8 @@ preuves traçables et des recommandations actionnables. Voir
 - le module SMB ne réalise qu’une détection initiale ;
 - l’interface Web prépare et consulte, mais ne lance pas d’audit ;
 - les modules réels ne produisent pas encore tous des constats structurés ;
-- le rapport HTML actuel décrit l’exécution des modules, pas encore un rapport
-  premium orienté décision ;
+- le rapport partageable masque les identifiants directs et chemins, mais ses
+  textes libres doivent être relus avant diffusion ;
 - la portabilité hors Kali/Linux n’est pas garantie ;
 - certains problèmes de fiabilité et de sécurité identifiés par l’audit restent ouverts.
 
@@ -203,6 +204,19 @@ history/runs.jsonl             Index local
 history/latest.json            Dernier run détaillé
 ```
 
+Générer les rapports :
+
+```bash
+# Rapport premium privé
+bash bin/report_html.sh output/<RUN_ID>/manifest.json
+
+# Copie avec identifiants directs et chemins masqués
+bash bin/report_html.sh --shareable output/<RUN_ID>/manifest.json
+
+# Relevé technique centré sur les modules
+bash bin/report_html.sh --technical output/<RUN_ID>/manifest.json
+```
+
 Ces données peuvent révéler la topologie, les services et les vulnérabilités d’un réseau. Ne les publiez pas et vérifiez le contenu de toute archive avant partage.
 
 ## Tests
@@ -248,10 +262,9 @@ Ordre recommandé :
 1. sécuriser les données déjà publiées et corriger les blocages du moteur ;
 2. terminer la CI reproductible et le préflight guidé ;
 3. connecter progressivement les modules au contrat de constats versionné ;
-4. construire le rapport premium et son plan de remédiation ;
-5. relier rapports, historique, onboarding et accessibilité ;
-6. valider les parcours avec des utilisateurs autorisés ;
-7. étudier la portabilité sans réécriture prématurée.
+4. relier rapports, historique, onboarding et accessibilité ;
+5. valider les parcours avec des utilisateurs autorisés ;
+6. étudier la portabilité sans réécriture prématurée.
 
 La roadmap détaillée est disponible dans [`docs/ROADMAP.md`](docs/ROADMAP.md)
 et dans l’[issue GitHub #58](https://github.com/cryptophil92/audit-suite/issues/58).
