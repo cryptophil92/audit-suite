@@ -18,6 +18,8 @@ l’issue #58 et le registre des issues dans le même cycle de suivi.
 
 - [`../README.md`](../README.md) — présentation et démarrage ;
 - [`LOCAL_QUICKSTART.md`](LOCAL_QUICKSTART.md) — vérification locale sans scan ;
+- [`PREFLIGHT.md`](PREFLIGHT.md) — diagnostic guidé des outils, capacités,
+  privilèges et modes dégradés ;
 - [`CLI_ARGS.md`](CLI_ARGS.md) — arguments ;
 - [`SECURITY.md`](SECURITY.md) — cadre légal et technique ;
 - [`../SECURITY.md`](../SECURITY.md) — signalement responsable.

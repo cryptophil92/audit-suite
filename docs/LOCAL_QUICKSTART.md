@@ -2,7 +2,17 @@
 
 Cette procédure permet de vérifier AUDIT-SUITE localement sans lancer d'audit réel.
 
-## 1. Vérifier les commandes JSON
+## 1. Vérifier l’environnement
+
+```bash
+bash bin/check_deps.sh
+```
+
+Cette commande ne modifie rien. Elle distingue le socle bloquant, les
+fonctions annexes indisponibles et les modules qui seraient ignorés. Voir
+[`PREFLIGHT.md`](PREFLIGHT.md).
+
+## 2. Vérifier les commandes JSON
 
 ```bash
 bash bin/smoke_local.sh
@@ -10,7 +20,7 @@ bash bin/smoke_local.sh
 
 Le smoke test contrôle les sorties JSON principales et le dry-run.
 
-## 2. Lancer l'API locale
+## 3. Lancer l'API locale
 
 ```bash
 python3 api/server.py --host 127.0.0.1 --port 8765
@@ -18,7 +28,7 @@ python3 api/server.py --host 127.0.0.1 --port 8765
 
 L'écoute est locale par défaut.
 
-## 3. Ouvrir le dashboard
+## 4. Ouvrir le dashboard
 
 ```text
 http://127.0.0.1:8765/
@@ -33,7 +43,7 @@ Le dashboard affiche :
 - routes locales ;
 - dernier run.
 
-## 4. Tester un aperçu de plan
+## 5. Tester un aperçu de plan
 
 Exemple direct :
 
@@ -42,8 +52,9 @@ bash bin/plan_json.sh --profile fast --targets 192.168.1.0/24 --categories all -
 ```
 
 Cette commande produit un plan JSON sans lancer de module réel.
+Le lanceur `audit.sh --dry-run` ajoute un préflight humain avant ce plan.
 
-## 5. Consulter les routes
+## 6. Consulter les routes
 
 ```bash
 bash bin/routes_json.sh
@@ -55,7 +66,7 @@ Ou via l'API locale :
 http://127.0.0.1:8765/api/routes
 ```
 
-## 6. Consulter la version
+## 7. Consulter la version
 
 ```bash
 bash bin/version_json.sh

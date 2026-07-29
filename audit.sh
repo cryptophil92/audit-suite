@@ -29,7 +29,7 @@ fi
 ALLOW_PUBLIC="$AUDIT_ARG_ALLOW_PUBLIC"
 
 # Charger libs
-for lib in core/lib_logging.sh core/lib_detect.sh core/lib_menu.sh core/lib_validate.sh core/lib_modules.sh core/lib_run_paths.sh core/lib_runner.sh core/lib_history.sh core/lib_update.sh; do
+for lib in core/lib_logging.sh core/lib_detect.sh core/lib_menu.sh core/lib_validate.sh core/lib_modules.sh core/lib_run_paths.sh core/lib_runner.sh core/lib_history.sh core/lib_update.sh core/lib_preflight.sh; do
   # shellcheck source=/dev/null
   source "$lib"
 done
@@ -153,6 +153,10 @@ OPTS_NO_UDP=0; OPTS_NO_ZEEK=0; OPTS_NO_SURICATA=0
 SELECTED="$(selected_modules_to_runner_args "$CATEGORIES")"
 PLANNED_RUN_ID="$(resolve_run_id)"
 
+if ! preflight_run "$SELECTED"; then
+  exit 1
+fi
+
 if [[ "$AUDIT_ARG_DRY_RUN" == "1" ]]; then
   print_dry_run_plan "$SELECTED" "$PLANNED_RUN_ID"
   exit 0
@@ -161,9 +165,6 @@ fi
 if ! validate_run_paths_available "$PLANNED_RUN_ID"; then
   exit 1
 fi
-
-# Préflight dépendances requises
-bin/check_deps.sh
 
 # Détecter environnement
 detect_env
@@ -188,7 +189,7 @@ if command -v tmux >/dev/null 2>&1; then
 fi
 
 # Export env standard pour les modules
-export RUN_ID TARGETS PROFILE RUN_DIR LOG_DIR LOG_FILE LOG_BUS OPTS_NO_UDP OPTS_NO_ZEEK OPTS_NO_SURICATA DEF_IFACE DEF_CIDR HAVE_X11 HAVE_TMUX ALLOW_PUBLIC
+export RUN_ID TARGETS PROFILE RUN_DIR LOG_DIR LOG_FILE LOG_BUS OPTS_NO_UDP OPTS_NO_ZEEK OPTS_NO_SURICATA DEF_IFACE DEF_CIDR HAVE_X11 HAVE_TMUX ALLOW_PUBLIC AUDIT_RAW_SOCKET_AVAILABLE
 
 # Orchestration
 discover_modules_sorted >"$TMP_DIR/modules.list"

@@ -15,7 +15,7 @@ La commande renvoie un objet JSON :
 ```json
 {
   "kind": "audit-suite.modules",
-  "schema_version": "1.0.0",
+  "schema_version": "1.1.0",
   "count": 2,
   "modules": [
     {
@@ -23,7 +23,13 @@ La commande renvoie un objet JSON :
       "name": "10_network_discovery.sh",
       "path": "modules/10_network_discovery.sh",
       "order": 10,
-      "executable": false
+      "executable": false,
+      "requirements": {
+        "commands": ["nmap"],
+        "raw_socket_profiles": [],
+        "raw_socket_for_udp": false,
+        "degraded_fallback": null
+      }
     }
   ]
 }
@@ -36,6 +42,13 @@ La commande renvoie un objet JSON :
 - `path` : chemin local du module.
 - `order` : ordre numérique extrait du préfixe.
 - `executable` : indique si le fichier possède le bit exécutable.
+- `requirements.commands` : commandes nécessaires au module.
+- `requirements.raw_socket_profiles` : profils qui utilisent des sockets
+  brutes.
+- `requirements.raw_socket_for_udp` : besoin de sockets brutes pour l’étape
+  UDP facultative.
+- `requirements.degraded_fallback` : couverture conservée lorsque la capacité
+  manque, ou `null`.
 
 ## Objectif
 

@@ -100,17 +100,17 @@ L’inventaire détaillé se trouve dans [`docs/audit/REPOSITORY_INVENTORY.md`](
 - Kali Linux ou distribution Linux compatible ;
 - Bash 5 ou version compatible ;
 - Python 3.10 ou plus récent pour l’API locale ;
-- droits suffisants pour les fonctions réseau choisies.
+- `iproute2` recommandé pour la détection automatique du réseau ;
+- droits suffisants uniquement pour les fonctions réseau choisies.
 
-### Dépendances requises par le moteur
+### Dépendances
 
-- `nmap`
-- `jq`
-- `tar`
-- `gzip`
-- GNU `timeout`
+Le socle moteur et la production du pack de rapport requièrent `jq`, GNU
+`timeout`, `tar` et `gzip`. Les autres commandes sont évaluées selon les
+modules sélectionnés :
 
-Des outils supplémentaires sont requis uniquement par certains modules, notamment `whatweb`, `snmpwalk`, `zeek` ou `suricata`.
+- `nmap` pour la découverte, les ports et plusieurs énumérations ;
+- `whatweb`, `snmpwalk`, `zeek` ou `suricata` pour leurs modules respectifs.
 
 Vérification locale :
 
@@ -118,7 +118,10 @@ Vérification locale :
 bash bin/check_deps.sh
 ```
 
-Le script n’installe rien par défaut. L’option interactive `--install` utilise `apt-get` et doit être relue avant usage.
+Le script n’installe rien par défaut. Il distingue le socle bloquant, les
+fonctions dégradées et les modules qui seront ignorés. L’option interactive
+`--install` utilise `apt-get` pour le socle et doit être relue avant usage.
+Voir le [préflight guidé](docs/PREFLIGHT.md).
 
 ## Installation
 
@@ -165,6 +168,8 @@ bash audit.sh \
 ```
 
 Commencez par `--dry-run`. Ne reprenez pas cet exemple avec une cible que vous n’êtes pas autorisé à auditer.
+Le dry-run affiche les outils, privilèges, skips et replis avant le plan, sans
+lancer de scan.
 
 ### API et tableau de bord locaux
 

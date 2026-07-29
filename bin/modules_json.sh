@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # bin/modules_json.sh
-# @version 0.2.14
+# @version 0.3.0
 set -Eeuo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
@@ -45,9 +45,47 @@ module_order_from_name() {
   fi
 }
 
+module_requirements_metadata() {
+  local module="$1"
+
+  bash -c '
+    set -Eeuo pipefail
+    module="$1"
+    # shellcheck source=/dev/null
+    source "core/lib_logging.sh"
+    # shellcheck source=/dev/null
+    source "$module" >/dev/null
+
+    : "${MOD_RAW_SOCKET_FOR_UDP:=0}"
+    : "${MOD_RAW_SOCKET_FALLBACK:=}"
+
+    requires=""
+    if declare -p MOD_REQUIRES >/dev/null 2>&1; then
+      if declare -p MOD_REQUIRES 2>/dev/null | grep -q "declare -[aA]"; then
+        requires="${MOD_REQUIRES[*]}"
+      else
+        requires="$MOD_REQUIRES"
+      fi
+    fi
+
+    raw_profiles=""
+    if declare -p MOD_RAW_SOCKET_PROFILES >/dev/null 2>&1; then
+      if declare -p MOD_RAW_SOCKET_PROFILES 2>/dev/null | grep -q "declare -[aA]"; then
+        raw_profiles="${MOD_RAW_SOCKET_PROFILES[*]}"
+      else
+        raw_profiles="$MOD_RAW_SOCKET_PROFILES"
+      fi
+    fi
+
+    printf "%s|%s|%s|%s\n" \
+      "$requires" "$raw_profiles" "$MOD_RAW_SOCKET_FOR_UDP" "$MOD_RAW_SOCKET_FALLBACK"
+  ' _ "$module"
+}
+
 emit_modules_json() {
   local tmp_json
-  local module name id order executable
+  local module name id order executable metadata
+  local requires raw_profiles raw_for_udp fallback
 
   tmp_json="$(mktemp)"
   printf '[]\n' > "$tmp_json"
@@ -59,6 +97,8 @@ emit_modules_json() {
     order="$(module_order_from_name "$name")"
     executable=false
     [[ -x "$module" ]] && executable=true
+    metadata="$(module_requirements_metadata "$module")"
+    IFS='|' read -r requires raw_profiles raw_for_udp fallback <<< "$metadata"
 
     tmp_next="$(mktemp)"
     jq \
@@ -67,14 +107,30 @@ emit_modules_json() {
       --arg path "$module" \
       --argjson order "$order" \
       --argjson executable "$executable" \
-      '. + [{id: $id, name: $name, path: $path, order: $order, executable: $executable}]' \
+      --arg requires "$requires" \
+      --arg raw_profiles "$raw_profiles" \
+      --arg raw_for_udp "$raw_for_udp" \
+      --arg fallback "$fallback" \
+      '. + [{
+        id: $id,
+        name: $name,
+        path: $path,
+        order: $order,
+        executable: $executable,
+        requirements: {
+          commands: ($requires | split(" ") | map(select(length > 0))),
+          raw_socket_profiles: ($raw_profiles | split(" ") | map(select(length > 0))),
+          raw_socket_for_udp: ($raw_for_udp == "1"),
+          degraded_fallback: (if $fallback == "" then null else $fallback end)
+        }
+      }]' \
       "$tmp_json" > "$tmp_next"
     mv "$tmp_next" "$tmp_json"
   done < <(modules_discover_sorted)
 
   jq -n \
     --arg kind "audit-suite.modules" \
-    --arg schema_version "1.0.0" \
+    --arg schema_version "1.1.0" \
     --slurpfile modules "$tmp_json" \
     '{
       kind: $kind,

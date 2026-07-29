@@ -13,6 +13,12 @@ le format [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et
 - politique LF automatisée pour les scripts, tests et workflows ;
 - GitHub Actions officielles mises à niveau et épinglées par SHA complet avec
   permissions minimales ;
+- préflight guidé des outils, plateformes et privilèges avant le dry-run ou
+  l’exécution, avec messages bloquant/dégradé/ignoré ;
+- repli Nmap sans sockets brutes vers TCP connect, sans détection OS ni UDP,
+  consigné comme résultat partiel ;
+- capacités locales non sensibles et exigences des modules exposées dans les
+  sorties JSON ;
 - ajout du statut `partial` et d’un contrat explicite pour les états module ;
 - propagation des erreurs des commandes structurantes ;
 - skip déterministe de Zeek et Suricata lorsqu’ils sont désactivés ;
