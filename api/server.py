@@ -22,9 +22,26 @@ from urllib.parse import parse_qs, urlparse
 from version import APP_COMMIT, APP_VERSION
 
 REPO_DIR = Path(__file__).resolve().parent.parent
-WEB_INDEX = REPO_DIR / "web" / "index.html"
+WEB_DIR = REPO_DIR / "web"
+WEB_ASSETS = {
+    "/": (WEB_DIR / "index.html", "text/html; charset=utf-8"),
+    "/index.html": (WEB_DIR / "index.html", "text/html; charset=utf-8"),
+    "/app.js": (WEB_DIR / "app.js", "text/javascript; charset=utf-8"),
+    "/styles.css": (WEB_DIR / "styles.css", "text/css; charset=utf-8"),
+}
 OPENAPI_SPEC = REPO_DIR / "api" / "openapi.json"
 DEFAULT_MAX_OUTPUT_BYTES = 1024 * 1024
+CONTENT_SECURITY_POLICY = (
+    "default-src 'self'; "
+    "base-uri 'none'; "
+    "connect-src 'self'; "
+    "form-action 'self'; "
+    "frame-ancestors 'none'; "
+    "img-src 'self' data:; "
+    "object-src 'none'; "
+    "script-src 'self'; "
+    "style-src 'self'"
+)
 ROUTE_TIMEOUT_SECONDS = {
     "/api/status": 10.0,
     "/api/modules": 10.0,
@@ -60,6 +77,8 @@ def api_routes_payload(
         "routes": [
             {"method": "GET", "path": "/", "type": "html"},
             {"method": "GET", "path": "/index.html", "type": "html"},
+            {"method": "GET", "path": "/app.js", "type": "javascript"},
+            {"method": "GET", "path": "/styles.css", "type": "css"},
             {"method": "GET", "path": "/api/health", "type": "json"},
             {"method": "GET", "path": "/api/status", "type": "json"},
             {"method": "GET", "path": "/api/modules", "type": "json"},
@@ -361,12 +380,20 @@ class AuditSuiteHandler(BaseHTTPRequestHandler):
             return
         super().log_message(format, *args)
 
+    def _write_security_headers(self) -> None:
+        self.send_header("Content-Security-Policy", CONTENT_SECURITY_POLICY)
+        self.send_header("Cross-Origin-Resource-Policy", "same-origin")
+        self.send_header("Referrer-Policy", "no-referrer")
+        self.send_header("X-Content-Type-Options", "nosniff")
+        self.send_header("X-Frame-Options", "DENY")
+
     def _write_json(self, status: HTTPStatus, payload: dict[str, Any]) -> None:
         body = json.dumps(payload, ensure_ascii=False, indent=2).encode("utf-8")
         self.send_response(status)
         self.send_header("Content-Type", "application/json; charset=utf-8")
         self.send_header("Content-Length", str(len(body)))
         self.send_header("Cache-Control", "no-store")
+        self._write_security_headers()
         self.end_headers()
         self.wfile.write(body)
 
@@ -393,6 +420,7 @@ class AuditSuiteHandler(BaseHTTPRequestHandler):
         self.send_header("Content-Type", "application/json; charset=utf-8")
         self.send_header("Content-Length", str(len(body)))
         self.send_header("Cache-Control", "no-store")
+        self._write_security_headers()
         self.end_headers()
         self.wfile.write(body)
 
@@ -429,21 +457,24 @@ class AuditSuiteHandler(BaseHTTPRequestHandler):
         payload["info"]["x-audit-suite-commit"] = APP_COMMIT
         self._write_json(HTTPStatus.OK, payload)
 
-    def _write_html(self, status: HTTPStatus, html_path: Path) -> None:
-        if not html_path.is_file():
+    def _write_static(
+        self, status: HTTPStatus, asset_path: Path, content_type: str
+    ) -> None:
+        if not asset_path.is_file():
             self._write_json(
                 HTTPStatus.NOT_FOUND,
                 {
                     "kind": "audit-suite.api_error",
-                    "error": "web_index_missing",
+                    "error": "web_asset_missing",
                 },
             )
             return
-        body = html_path.read_bytes()
+        body = asset_path.read_bytes()
         self.send_response(status)
-        self.send_header("Content-Type", "text/html; charset=utf-8")
+        self.send_header("Content-Type", content_type)
         self.send_header("Content-Length", str(len(body)))
         self.send_header("Cache-Control", "no-store")
+        self._write_security_headers()
         self.end_headers()
         self.wfile.write(body)
 
@@ -451,8 +482,10 @@ class AuditSuiteHandler(BaseHTTPRequestHandler):
         parsed_url = urlparse(self.path)
         path = parsed_url.path
 
-        if path in {"/", "/index.html"}:
-            self._write_html(HTTPStatus.OK, WEB_INDEX)
+        asset = WEB_ASSETS.get(path)
+        if asset is not None:
+            asset_path, content_type = asset
+            self._write_static(HTTPStatus.OK, asset_path, content_type)
             return
 
         if path == "/api/routes":

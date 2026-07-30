@@ -1,7 +1,7 @@
 # Limites connues
 
-> État courant révisé le 29 juillet 2026 pour le lot #48, sur la base de
-> `main` après la PR #78. Voir
+> État courant révisé le 29 juillet 2026 pour le lot #51, sur la base de
+> `main` après la PR #80. Voir
 > [`audit/TECHNICAL_AUDIT_2026-07-28.md`](audit/TECHNICAL_AUDIT_2026-07-28.md)
 > pour les preuves historiques, puis [`ROADMAP.md`](ROADMAP.md) pour les
 > priorités actives.
@@ -73,8 +73,10 @@ Il ne doit pas encore :
 - gérer une authentification ;
 - exposer des fonctions hors usage local.
 
-Le rendu de données locales par `innerHTML` reste suivi par #51. Cette
-correction précède l’extension des vues historique, constats et rapports.
+Les données locales ne passent plus par des points d'injection HTML : le
+dashboard utilise des nœuds DOM et `textContent`, avec une CSP stricte servie
+par l'API locale. Les vues historique, constats et rapports peuvent désormais
+être étendues sur cette base, tout en conservant la même règle de rendu.
 
 ### Rapport premium et adaptateurs
 

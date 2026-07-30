@@ -167,7 +167,7 @@ Les mesures cibles seront validées par recherche utilisateur :
    [#47](https://github.com/cryptophil92/audit-suite/issues/47) ;
 2. maintenir le catalogue de maturité et le pack canonique livrés par
    [#48](https://github.com/cryptophil92/audit-suite/issues/48) ;
-3. rendre le dashboard sûr pour les données locales — issue
+3. maintenir le rendu sûr du dashboard livré par l'issue
    [#51](https://github.com/cryptophil92/audit-suite/issues/51) ;
 4. connecter progressivement les sorties au contrat de constats — issue
    [#79](https://github.com/cryptophil92/audit-suite/issues/79) ;
