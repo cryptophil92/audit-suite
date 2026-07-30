@@ -1,7 +1,7 @@
 # Limites connues
 
-> État courant révisé le 29 juillet 2026 pour le lot #51, sur la base de
-> `main` après la PR #80. Voir
+> État courant révisé le 30 juillet 2026 pour le lot #79, sur la base de
+> `main` après la PR #81, commit `dd13b8b`. Voir
 > [`audit/TECHNICAL_AUDIT_2026-07-28.md`](audit/TECHNICAL_AUDIT_2026-07-28.md)
 > pour les preuves historiques, puis [`ROADMAP.md`](ROADMAP.md) pour les
 > priorités actives.
@@ -82,10 +82,14 @@ par l'API locale. Les vues historique, constats et rapports peuvent désormais
 
 Le catalogue des modules `1.2.0` décrit maintenant la maturité, les capacités
 et les limites sans inventer de résultat. Le manifest `1.2.0` accepte des
-constats structurés, mais les modules réels ne disposent pas encore tous d’un
-adaptateur. Le rapport premium présente les
+constats structurés. Seul `20_portscan_nmap` dispose d’un adaptateur
+automatique : il convertit les états `open` en observations d’inventaire
+informatives et non notées. Le rapport premium présente les
 constats disponibles sans compléter les champs manquants. Limites restantes :
 
+- les sorties NSE, WhatWeb et les autres modules ne sont pas encore adaptées ;
+- un port ouvert ne produit jamais automatiquement une vulnérabilité
+  potentielle ou confirmée ;
 - le mode partageable masque les identifiants directs et chemins, mais les
   textes libres exigent une revue humaine ;
 - le statut de traitement et la comparaison détaillée avant/après restent à
@@ -95,7 +99,8 @@ constats disponibles sans compléter les champs manquants. Limites restantes :
   réels autorisés.
 
 Voir [`FINDINGS_CONTRACT.md`](FINDINGS_CONTRACT.md),
-[`PREMIUM_REPORT_SPEC.md`](PREMIUM_REPORT_SPEC.md) et les issues #79/#53.
+[`FINDINGS_ADAPTERS.md`](FINDINGS_ADAPTERS.md),
+[`PREMIUM_REPORT_SPEC.md`](PREMIUM_REPORT_SPEC.md) et l’issue #53.
 
 ### OpenAPI basique
 
@@ -138,6 +143,9 @@ release.
   atomiquement et un `run_id` ne peut plus être réservé par deux processus.
 - Le contrat `findings[]` `1.0.0` et le manifest `1.2.0` valident les constats,
   preuves, scores et remédiations structurés sans inventer de notation.
+- Le premier adaptateur relie les ports explicitement ouverts de
+  `20_portscan_nmap` au contrat comme observations non notées, fusionne les
+  sources de façon déterministe et rejette toute sortie non conforme.
 - Le rapport premium privé/partageable/technique est fusionné avec échappement
   strict, tri des constats, plan d’action, styles responsive et impression A4.
 - Le préflight annonce `iproute2`, Python, les dépendances des modules et les

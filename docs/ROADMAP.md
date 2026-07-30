@@ -1,7 +1,7 @@
 # Roadmap de professionnalisation
 
 Cette roadmap traduit l’audit du 28 juillet 2026 et la direction produit validée
-le 29 juillet 2026. L’[issue GitHub #58](https://github.com/cryptophil92/audit-suite/issues/58)
+jusqu’au 30 juillet 2026. L’[issue GitHub #58](https://github.com/cryptophil92/audit-suite/issues/58)
 constitue la source opérationnelle de pilotage ; le
 [registre des issues](audit/ISSUE_REGISTER.md) conserve la correspondance entre
 constats et actions.
@@ -43,10 +43,10 @@ offensive. La direction complète est documentée dans
 - résumé utilisateur avant détail technique ;
 - aucune alerte ou recommandation inventée par l’interface.
 
-## État vérifié au 29 juillet 2026
+## État vérifié au 30 juillet 2026
 
-Base vérifiée de ce lot : `main` après la fusion de la PR #80, commit
-`16701eeaed7115e36dc2d6599c0aae5e1c4f53d6`.
+Base vérifiée de ce lot : `main` après la fusion de la PR #81, commit
+`dd13b8bcc8268b10f693df07a3e3952d772ac8ef`.
 
 | Domaine | État | Suite |
 |---|---|---|
@@ -57,7 +57,7 @@ Base vérifiée de ce lot : `main` après la fusion de la PR #80, commit
 | CI exhaustive et maintenance des actions | Runner automatique livré par #43 ; Actions épinglées et protections Dependabot activées par #44 | Surveiller les mises à jour hebdomadaires |
 | Préflight agréable et actionnable | Outils, plateforme, Python, privilèges, skips et replis couverts par #47 | Valider sur Kali/lab autorisé |
 | Catalogue et pipeline rapport | Maturité réelle, sélection sûre, SMB partiel et pack post-manifest livrés par #48 | Maintenir le schéma modules `1.2.0` |
-| Modèle de constats et notation | #70 fermé, contrat `1.0.0` implémenté | Brancher les adaptateurs de sorties avec #79 |
+| Modèle de constats et notation | #70 fermé ; premier adaptateur Nmap et fusion stricte livrés par #79 | Étendre module par module sans inventer de faille |
 | Rapport premium | #71 fermé, HTML privé/partageable/technique implémenté | Valider sur cas réels et relier à #53/#54 |
 | Sécurité du dashboard | Rendu DOM textuel, actifs locaux et CSP stricte livrés par #51 | Maintenir l'interdiction des sinks HTML |
 | Onboarding, vues résultats et accessibilité | Documentés, non implémentés | Issues #52 à #54 |
@@ -79,17 +79,19 @@ Deux volets avancent sans mélanger leurs changements dans une même PR.
 
 1. maintenir le catalogue honnête et le pack canonique livrés par #48 ;
 2. maintenir le rendu sûr du dashboard livré par #51 ;
-3. connecter les sorties réelles au contrat `findings[]` avec #79 ;
+3. maintenir le premier adaptateur et les règles de fusion livrés par #79 ;
 4. relier historique, constats et rapports avec #53 ;
 5. déployer onboarding, navigation et accessibilité avec #52 et #54 ;
 6. valider les parcours avec #55.
 
 ### Prochain lot non bloqué
 
-#79 est le prochain lot de valeur entièrement testable sans scan réel. Il doit
-convertir les sorties synthétiques et déterministes des modules matures vers le
-contrat `findings[]`, sans inventer de vulnérabilité ni lancer de scan. Cette
-liaison précède l’intégration complète des vues résultats de #53.
+#53 devient le prochain lot de valeur après #79. Il doit relier historique,
+constats structurés et rapports dans des vues agréables et explicites, sans
+ajouter d’exécution Web. Le premier adaptateur #79 fournit des observations
+Nmap déterministes sur fixtures ; les autres outils seront ajoutés
+progressivement sans bloquer la construction des états vide, partiel, erreur et
+résultat.
 
 ## Phase 0 — Contenir les risques
 
@@ -155,7 +157,8 @@ fusionnés. La cohérence générée des routes et d’OpenAPI reste suivie par 
 Critère de sortie : un nouveau contributeur peut installer, tester et identifier précisément la version.
 
 État : licence, version et procédure de release fusionnées. Un runner unique
-découvre 30 tests Bash, deux suites Python totalisant 17 cas et le smoke local.
+découvre 31 tests Bash, deux suites Python totalisant 17 cas et le smoke local,
+soit 34/34 contrôles sur ce lot.
 Un test prouve qu’un nouveau fichier conforme est inclus automatiquement, et
 `.gitattributes` impose LF. Les Actions officielles sont épinglées sur des SHA
 complets, leurs permissions sont minimales et Dependabot surveille les mises à
@@ -180,12 +183,13 @@ sans relire les logs bruts, sans score inventé.
 Spécification : [`PREMIUM_REPORT_SPEC.md`](PREMIUM_REPORT_SPEC.md).
 
 État : contrat `findings[]` `1.0.0`, manifest `1.2.0`, validation stricte,
-compatibilité `1.0.0/1.1.0` et fixtures synthétiques implémentés. Le catalogue
-décrit maintenant la couverture réelle sans fabriquer de constat ; les
-adaptateurs de sorties restent suivis par #79. Le rapport HTML premium privé et
-partageable, le tri, le plan d’action, l’annexe et les styles d’impression sont
-implémentés sur données synthétiques ; la validation utilisateur et sur
-rapports réels autorisés reste requise.
+compatibilité `1.0.0/1.1.0` et fixtures synthétiques implémentés. Le premier
+adaptateur #79 convertit uniquement les états Nmap `open` en observations
+d’inventaire non notées, conserve la preuve et fusionne les tableaux de façon
+atomique. Les sorties NSE, WhatWeb et les autres modules restent à couvrir. Le
+rapport HTML premium privé et partageable, le tri, le plan d’action, l’annexe
+et les styles d’impression sont implémentés sur données synthétiques ; la
+validation utilisateur et sur rapports réels autorisés reste requise.
 
 ## Phase 5 — Expérience guidée en lecture seule
 
@@ -202,8 +206,8 @@ Critère de sortie : les tâches de consultation principales passent un test uti
 État : la documentation UX et le rapport premium fournissent les premiers
 composants et contenus. Le socle du dashboard rend désormais les valeurs
 locales comme du texte sous CSP stricte, mais reste un prototype technique sans
-vues historique/constats/rapports intégrées ; #52 à #55 portent la suite de
-cette phase, après les adaptateurs #79.
+vues historique/constats/rapports intégrées ; #53 est le prochain lot, puis
+#52, #54 et #55 complètent cette phase.
 
 ## Phase 6 — Validation réelle
 

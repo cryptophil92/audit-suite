@@ -1,0 +1,5 @@
+# Nmap 7.95 scan initiated Wed Jul 30 12:00:00 2026 as: nmap -Pn -sV -oA synthetic 192.0.2.0/24
+Host: 192.0.2.10 (web-01.example.invalid)	Status: Up
+Host: 192.0.2.10 (web-01.example.invalid)	Ports: 22/open/tcp//ssh//OpenSSH 9.9 synthetic/, 80/closed/tcp//http///, 443/open/tcp//https//VULNERABLE synthetic label/	Ignored State: closed (197)
+Host: 192.0.2.11 ()	Ports: 53/open/udp//domain///	Ignored State: closed (49)
+# Nmap done at Wed Jul 30 12:00:01 2026 -- 256 IP addresses (2 hosts up) scanned in 1.00 seconds

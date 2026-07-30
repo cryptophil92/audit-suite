@@ -44,6 +44,8 @@ preuves traçables et des recommandations actionnables. Voir
 - dry-run et aperçu JSON sans exécution ;
 - manifest JSON `1.2.0`, contrat versionné des constats, historique local et
   comparaison de runs ;
+- adaptation déterministe des ports explicitement ouverts par
+  `20_portscan_nmap` en observations structurées, sans déduction de faille ;
 - rapport HTML premium privé ou partageable, relevé technique et archive de
   rapport ;
 - API HTTP locale en lecture seule ;
@@ -56,7 +58,8 @@ preuves traçables et des recommandations actionnables. Voir
 - le module SMB ne réalise qu’une détection des ports 139/445 et reste
   explicitement `partial` ;
 - l’interface Web prépare et consulte, mais ne lance pas d’audit ;
-- les modules réels ne produisent pas encore tous des constats structurés ;
+- seul `20_portscan_nmap` dispose actuellement d’un adaptateur automatique de
+  constats ; les sorties NSE, WhatWeb et les autres modules restent à relier ;
 - le rapport partageable masque les identifiants directs et chemins, mais ses
   textes libres doivent être relus avant diffusion ;
 - la portabilité hors Kali/Linux n’est pas garantie ;
@@ -92,7 +95,7 @@ Préflight des dépendances et détection de l’environnement
       ↓
 Exécution séquentielle des modules
       ↓
-Constats structurés → manifest → rapport HTML → archive → historique local
+Adaptateurs locaux → constats validés → manifest → rapport HTML → archive → historique local
 ```
 
 L’inventaire détaillé se trouve dans [`docs/audit/REPOSITORY_INVENTORY.md`](docs/audit/REPOSITORY_INVENTORY.md).

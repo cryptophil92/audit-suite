@@ -160,8 +160,11 @@ Ce schéma prépare :
 
 Le contrat permet désormais de transporter des constats structurés, mais les
 modules réels ne disposent pas encore tous d’un adaptateur vers `findings[]`.
-Une liste vide signifie uniquement qu’aucun constat structuré n’a été fourni ;
-elle ne démontre pas l’absence de faille.
+`20_portscan_nmap` adapte les ports explicitement ouverts en observations
+d’inventaire ; les sorties NSE, WhatWeb et les autres modules ne sont pas
+encore couvertes. Une liste vide signifie uniquement qu’aucun constat
+structuré pris en charge n’a été produit ; elle ne démontre pas l’absence de
+faille.
 
 Le rapport HTML premium affiche `findings[]` avec une synthèse, les preuves
 référencées et le plan de remédiation. Sa conception et ses limites sont

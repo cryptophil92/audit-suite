@@ -1,18 +1,19 @@
 # Roadmap UX
 
-## État des lots au 29 juillet 2026
+## État des lots au 30 juillet 2026
 
 | Lot | État | Reste principal |
 |---|---|---|
 | UX-0 — Fiabilité | Runner CI, maintenance des Actions et préflight guidé fusionnés | Validation Kali/lab (#56) |
-| UX-1 — Constats | Contrat `1.0.0` et catalogue de maturité fusionnés | Adaptateurs des sorties réelles (#79) |
+| UX-1 — Constats | Contrat `1.0.0`, catalogue et premier adaptateur Nmap livrés | Étendre prudemment les adaptateurs |
 | UX-2 — Rapport premium | Première version fusionnée | Audit transversal et validation utilisateur (#54, #55) |
 | Socle dashboard sûr | Rendu DOM textuel et CSP stricte livrés par #51 | Maintenir ces invariants dans chaque vue |
-| UX-3 à UX-9 | Documentés, non implémentés dans le dashboard | #52 à #54 après #79 |
+| UX-3 à UX-9 | Documentés, non implémentés dans le dashboard | #53 puis #52/#54 |
 | UX-10 à UX-11 | Non réalisés | Recherche et captures synthétiques (#55) |
 
-Séquence d’interface recommandée : maintenir le catalogue #48 et le rendu sûr
-#51, brancher les adaptateurs #79, puis construire les vues résultats de #53.
+Séquence d’interface recommandée : maintenir le catalogue #48, le rendu sûr
+#51 et les invariants d’adaptation #79, puis construire les vues résultats de
+#53.
 L’onboarding et
 l’accessibilité de #52/#54 s’intègrent à chaque écran sans réintroduire
 l’exécution Web.
@@ -45,9 +46,10 @@ Livrable : contrat de l’issue
 [#70](https://github.com/cryptophil92/audit-suite/issues/70).
 
 État : contrat `1.0.0`, manifest `1.2.0`, validation, compatibilité héritée et
-fixtures synthétiques implémentés. Le catalogue décrit désormais la maturité
-et les limites ; les adaptateurs des sorties réelles restent à compléter avec
-#79.
+fixtures synthétiques implémentés. Le catalogue décrit la maturité et les
+limites. Le premier adaptateur #79 transforme les ports Nmap explicitement
+ouverts en observations d’inventaire sans déduire de vulnérabilité ; les autres
+sorties restent à couvrir progressivement.
 
 ## Lot UX-2 — Rapport premium
 

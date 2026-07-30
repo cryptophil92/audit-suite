@@ -58,6 +58,36 @@ finalize_run_outputs() {
   fi
 }
 
+generate_module_findings() {
+  local results_file collected_at adapter_output
+  local -a adapter_args=()
+
+  results_file="$(_module_results_file)"
+  collected_at="$(
+    jq -s -r '
+      map(select(.id == "20_portscan_nmap"))
+      | last
+      | .finished_at // empty
+    ' "$results_file"
+  )"
+  [[ -n "$collected_at" ]] || collected_at="$(date -Is)"
+
+  adapter_args+=(--collected-at "$collected_at")
+  if [[ -n "${AUDIT_FINDINGS_FILE:-}" ]]; then
+    adapter_args+=(--base "$AUDIT_FINDINGS_FILE")
+  fi
+  adapter_args+=("$RUN_DIR" "$TARGETS")
+
+  if adapter_output="$(bash bin/findings_from_modules.sh "${adapter_args[@]}" 2>&1)"; then
+    while IFS= read -r line; do
+      [[ -n "$line" ]] && emit INFO "findings" "$line"
+    done <<< "$adapter_output"
+  else
+    emit ERROR "findings" "Module findings adaptation failed: $adapter_output"
+    return 1
+  fi
+}
+
 resolve_run_id() {
   if [[ -n "${AUDIT_ARG_RUN_ID:-}" ]]; then
     printf '%s\n' "$AUDIT_ARG_RUN_ID"
@@ -197,6 +227,9 @@ run_modules "$SELECTED"
 
 # Manifest de run + historique local + exports finaux
 MANIFEST_PATH="$RUN_DIR/manifest.json"
+generate_module_findings
+AUDIT_FINDINGS_FILE="$RUN_DIR/findings.json"
+export AUDIT_FINDINGS_FILE
 write_manifest_json "$MANIFEST_PATH" "$SELECTED"
 finalize_run_outputs "$MANIFEST_PATH"
 history_record_run "$MANIFEST_PATH"

@@ -102,9 +102,14 @@ output/<RUN_ID>/<RUN_ID>_report_pack.tar.gz
 - `bin/report_pack.sh` reste une commande bas niveau compatible, tandis que
   `bin/finalize_reports.sh` est le pipeline recommandé.
 
-Les adaptateurs qui transformeront les sorties réelles en `findings[]` devront
-respecter [`FINDINGS_CONTRACT.md`](FINDINGS_CONTRACT.md). Le catalogue décrit
-la couverture ; il ne fabrique aucun constat ni score.
+Le premier adaptateur transforme uniquement les états `open` des fichiers
+`.gnmap` de `20_portscan_nmap` en observations d’inventaire non notées. Il
+conserve la provenance et ne déduit aucune vulnérabilité d’un port, d’un nom de
+service ou d’une bannière. Les autres modules restent sans adaptateur.
+
+Les règles et limites figurent dans
+[`FINDINGS_ADAPTERS.md`](FINDINGS_ADAPTERS.md). Le catalogue décrit la
+couverture ; il ne fabrique lui-même aucun constat ni score.
 
 ## Validation
 

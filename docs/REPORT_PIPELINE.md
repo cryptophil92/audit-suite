@@ -33,7 +33,8 @@ bash bin/report_html.sh --shareable output/RUN_1/manifest.json
 Après l'exécution des modules, `audit.sh` effectue maintenant :
 
 ```text
-validation de findings.json s’il existe
+adaptation locale des sorties prises en charge
+fusion et validation de findings.json
 write_manifest_json
 finalize_run_outputs
 history_record_run
@@ -42,6 +43,8 @@ history_record_run
 Cela garantit que :
 
 - le manifest existe avant génération HTML ;
+- les ports explicitement `open` de `20_portscan_nmap` deviennent des
+  observations traçables, jamais des vulnérabilités automatiques ;
 - un fichier de constats invalide ne peut pas être intégré au manifest ;
 - le pack peut inclure le rapport HTML ;
 - les copies partageables ou techniques ne sont pas ajoutées par erreur dans
@@ -66,4 +69,6 @@ bash bin/report_pack.sh output/RUN_1/manifest.json
 La commande de finalisation ne lance aucune action réseau. Elle lit uniquement les fichiers locaux déjà produits.
 
 La compatibilité détaillée et le nouveau schéma du catalogue figurent dans
-[`MODULE_CATALOG.md`](MODULE_CATALOG.md).
+[`MODULE_CATALOG.md`](MODULE_CATALOG.md). La qualification et la fusion des
+constats sont décrites dans
+[`FINDINGS_ADAPTERS.md`](FINDINGS_ADAPTERS.md).

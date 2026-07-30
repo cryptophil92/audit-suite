@@ -7,7 +7,9 @@ Le manifest `audit-suite.manifest` au schéma `1.2.0` prend en charge le contrat
 
 Ce contrat structure les informations disponibles sans convertir
 automatiquement une sortie d’outil en vulnérabilité confirmée. Les modules
-réels ne disposent pas encore tous d’un adaptateur de constats.
+réels ne disposent pas encore tous d’un adaptateur de constats. Le premier
+adaptateur couvre les ports explicitement ouverts de `20_portscan_nmap` et
+produit uniquement des observations d’inventaire.
 
 ## Sources canoniques
 
@@ -17,6 +19,9 @@ réels ne disposent pas encore tous d’un adaptateur de constats.
   [`../schemas/findings-1.0.0.validator.jq`](../schemas/findings-1.0.0.validator.jq) ;
 - validation et normalisation :
   [`../core/lib_findings.sh`](../core/lib_findings.sh) ;
+- adaptation et fusion :
+  [`../core/lib_findings_adapters.sh`](../core/lib_findings_adapters.sh) et
+  [`../bin/findings_from_modules.sh`](../bin/findings_from_modules.sh) ;
 - fixture publique synthétique :
   [`../tests/fixtures/findings/manifest-1.2.0.json`](../tests/fixtures/findings/manifest-1.2.0.json).
 
@@ -88,9 +93,14 @@ Ce fichier est optionnel et doit contenir un tableau conforme au contrat
 - fichier présent mais invalide : la génération du manifest échoue sans publier
   un manifest partiel.
 
-`AUDIT_FINDINGS_FILE` permet à un adaptateur ou un test de fournir un autre
-chemin explicite. Les futurs adaptateurs de modules devront produire des
-constats uniquement à partir de données disponibles et traçables.
+Après les modules, `audit.sh` exécute les adaptateurs locaux puis valide leur
+fusion avant de créer le manifest. `AUDIT_FINDINGS_FILE` permet de fournir un
+tableau de base : il est lu sans être modifié, fusionné dans le
+`<RUN_DIR>/findings.json` canonique puis revalidé.
+
+La commande autonome et les règles détaillées sont documentées dans
+[`FINDINGS_ADAPTERS.md`](FINDINGS_ADAPTERS.md). Tout futur adaptateur doit
+produire des constats uniquement à partir de données disponibles et traçables.
 
 ## Champs d’un constat
 
