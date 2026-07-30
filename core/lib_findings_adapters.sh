@@ -227,6 +227,8 @@ findings_adapt_nmap_portscan_file() {
       finding_id="finding.${FINDINGS_NMAP_PORTSCAN_MODULE}.open.${asset_slug}.${transport}.${port_number}"
       evidence_id="evidence.${FINDINGS_NMAP_PORTSCAN_MODULE}.${file_slug}.${asset_slug}.${transport}.${port_number}"
 
+      # Apostrophes typographiques intentionnelles dans le texte JSON français.
+      # shellcheck disable=SC1112
       if ! jq -nc \
         --arg id "$finding_id" \
         --arg title "Port ${transport}/${port_number} ouvert observé" \
