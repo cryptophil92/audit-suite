@@ -29,6 +29,32 @@
       </article>
     </section>
 
+    <section class="card section-spaced" aria-labelledby="results-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Consultation locale</p>
+          <h2 id="results-title">Historique et résultats</h2>
+          <p class="muted">Les décisions d’abord, les preuves et le JSON technique ensuite.</p>
+        </div>
+        <button id="results-retry" class="button-secondary button-compact" type="button">
+          Réessayer
+        </button>
+      </div>
+      <div id="results-alert" class="notice is-hidden" role="status" aria-live="polite"></div>
+      <div class="results-layout">
+        <nav class="history-panel" aria-label="Audits enregistrés">
+          <h3>Audits enregistrés</h3>
+          <div id="history-list" class="history-list">
+            <p class="muted">Chargement de l’historique...</p>
+          </div>
+        </nav>
+        <article id="run-detail" class="run-detail" aria-live="polite">
+          <h3>Sélectionnez un audit</h3>
+          <p class="muted">Le résumé, les états des modules et les rapports disponibles apparaîtront ici.</p>
+        </article>
+      </div>
+    </section>
+
     <section class="card section-spaced">
       <h2>Aperçu de plan</h2>
       <form id="plan-form">
@@ -103,10 +129,6 @@
       </table>
     </section>
 
-    <section class="card section-spaced">
-      <h2>Dernier run</h2>
-      <pre id="latest-json">Chargement...</pre>
-    </section>
   </main>
 
 </body>

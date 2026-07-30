@@ -34,6 +34,8 @@ emit_routes_json() {
         {method: "GET", path: "/api/modules", type: "json"},
         {method: "GET", path: "/api/history", type: "json"},
         {method: "GET", path: "/api/latest", type: "json"},
+        {method: "GET", path: "/api/run", type: "json", requires_query: ["run_id"]},
+        {method: "GET", path: "/api/report", type: "html", requires_query: ["run_id", "kind"]},
         {method: "GET", path: "/api/snapshot", type: "json"},
         {method: "GET", path: "/api/plan", type: "json", requires_query: ["targets"]},
         {method: "GET", path: "/api/openapi.json", type: "json"},

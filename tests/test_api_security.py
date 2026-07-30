@@ -7,6 +7,7 @@ import importlib.util
 import json
 import socket
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 from unittest import mock
@@ -114,6 +115,86 @@ class PublicErrorTests(unittest.TestCase):
         self.assertNotIn("stderr", payload)
         self.assertNotIn("internal-command", json.dumps(payload))
         self.assertIn("internal-command", "\n".join(private_logs.output))
+
+
+class RunArtifactSecurityTests(unittest.TestCase):
+    def test_run_identifier_requires_safe_leading_character(self) -> None:
+        for value in ("AUDIT_1", "run-1.2", "A:B"):
+            with self.subTest(value=value):
+                self.assertTrue(server_module.valid_run_id(value))
+        for value in ("", "..", ".hidden", "../private", "run/name", " run"):
+            with self.subTest(value=value):
+                self.assertFalse(server_module.valid_run_id(value))
+
+    def test_manifest_must_match_the_verified_output_location(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo_dir = Path(temp_dir)
+            run_id = "AUDIT_SAFE_1"
+            run_dir = repo_dir / "output" / run_id
+            run_dir.mkdir(parents=True)
+            manifest = {
+                "kind": "audit-suite.manifest",
+                "run_id": run_id,
+                "targets": [],
+                "modules": [],
+                "findings": [],
+            }
+            (run_dir / "manifest.json").write_text(
+                json.dumps(manifest), encoding="utf-8"
+            )
+
+            with mock.patch.object(server_module, "REPO_DIR", repo_dir):
+                loaded, resolved_run_dir, error = server_module.load_verified_manifest(
+                    run_id,
+                    {"manifest_path": f"output/{run_id}/manifest.json"},
+                )
+                self.assertEqual(loaded, manifest)
+                self.assertEqual(resolved_run_dir, run_dir.resolve())
+                self.assertIsNone(error)
+
+                loaded, _, error = server_module.load_verified_manifest(
+                    run_id,
+                    {"manifest_path": "api/openapi.json"},
+                )
+                self.assertIsNone(loaded)
+                self.assertEqual(error, "unsafe_manifest_path")
+
+    def test_report_urls_are_created_only_for_known_files(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            run_dir = Path(temp_dir).resolve()
+            (run_dir / "report.html").write_text("private", encoding="utf-8")
+            inventory = server_module.report_inventory("AUDIT_SAFE_1", run_dir)
+
+        reports = {item["kind"]: item for item in inventory}
+        self.assertTrue(reports["private"]["available"])
+        self.assertTrue(reports["private"]["url"].startswith("/api/report?"))
+        self.assertFalse(reports["shareable"]["available"])
+        self.assertFalse(reports["technical"]["available"])
+        self.assertNotIn(str(run_dir), json.dumps(inventory))
+
+    def test_sensitive_preview_reports_values_without_inventing_them(self) -> None:
+        preview = server_module.sensitive_value_preview(
+            {
+                "targets": ["192.0.2.0/24"],
+                "findings": [
+                    {
+                        "asset": {
+                            "address": "192.0.2.10",
+                            "hostname": "fixture.example.invalid",
+                        },
+                        "evidence": [{"path": "module/evidence.json"}],
+                    }
+                ],
+            }
+        )
+        self.assertEqual(preview["targets"]["values"], ["192.0.2.0/24"])
+        self.assertEqual(preview["asset_addresses"]["values"], ["192.0.2.10"])
+        self.assertEqual(
+            preview["hostnames"]["values"], ["fixture.example.invalid"]
+        )
+        self.assertEqual(
+            preview["evidence_paths"]["values"], ["module/evidence.json"]
+        )
 
 
 if __name__ == "__main__":

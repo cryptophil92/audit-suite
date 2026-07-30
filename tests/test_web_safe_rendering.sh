@@ -41,6 +41,8 @@ class FakeElement {
     this.className = "";
     this.colSpan = 1;
     this._textContent = "";
+    this.attributes = {};
+    this.listeners = {};
   }
 
   appendChild(child) {
@@ -61,11 +63,25 @@ class FakeElement {
   get textContent() {
     return this._textContent;
   }
+
+  setAttribute(name, value) {
+    this.attributes[name] = String(value);
+  }
+
+  removeAttribute(name) {
+    delete this.attributes[name];
+  }
+
+  addEventListener(name, listener) {
+    this.listeners[name] = listener;
+  }
 }
 
+const elementsById = {};
 global.document = {
   createElement: (tagName) => new FakeElement(tagName),
   createTextNode: (value) => new FakeTextNode(value),
+  getElementById: (id) => elementsById[id],
 };
 
 const hostile =
@@ -103,6 +119,95 @@ assert.deepStrictEqual(
     ],
   }).map((item) => item.name),
   ["safe"],
+);
+
+assert.strictEqual(
+  ui.safeLocalReportUrl(
+    "/api/report?run_id=AUDIT_SAFE_1&kind=shareable",
+  ),
+  "/api/report?run_id=AUDIT_SAFE_1&kind=shareable",
+);
+assert.strictEqual(
+  ui.safeLocalReportUrl("javascript:globalThis.compromised=true"),
+  "",
+);
+assert.strictEqual(
+  ui.safeLocalReportUrl("/api/report?run_id=../private&kind=private"),
+  "",
+);
+assert.strictEqual(
+  ui.safeLocalReportUrl("/api/report?run_id=AUDIT_1&kind=unknown"),
+  "",
+);
+assert.deepStrictEqual(ui.statusPresentation("partial"), {
+  label: "Partiel",
+  tone: "warning",
+});
+assert.deepStrictEqual(
+  ui.sensitivePreviewItems({
+    targets: { count: 1, values: [hostile], truncated: false },
+    asset_addresses: { count: 0, values: [] },
+    hostnames: { count: 0, values: [] },
+    evidence_paths: { count: 0, values: [] },
+  })[0],
+  {
+    label: "Cibles",
+    count: 1,
+    values: [hostile],
+    truncated: false,
+  },
+);
+
+elementsById["history-list"] = new FakeElement("div");
+elementsById["run-detail"] = new FakeElement("article");
+elementsById["results-alert"] = new FakeElement("div");
+assert.strictEqual(ui.renderHistoryList({ runs: [] }, null), "");
+assert.strictEqual(
+  elementsById["history-list"].children[0].textContent,
+  "Aucun audit enregistré pour le moment.",
+);
+assert.strictEqual(
+  elementsById["run-detail"].children[0].textContent,
+  "Historique vide",
+);
+
+const selectedRun = ui.renderHistoryList(
+  {
+    runs: [
+      {
+        run_id: "AUDIT_SAFE_1",
+        created_at: "2026-07-30T10:00:00Z",
+        profile: "fast",
+        status: "partial",
+        finding_count: 2,
+        failed_count: 0,
+        partial_count: 1,
+      },
+    ],
+  },
+  { run_id: "AUDIT_SAFE_1" },
+);
+assert.strictEqual(selectedRun, "AUDIT_SAFE_1");
+assert.strictEqual(elementsById["history-list"].children.length, 1);
+assert.strictEqual(
+  elementsById["history-list"].children[0].attributes["aria-current"],
+  "true",
+);
+
+ui.renderResults({
+  degraded: true,
+  error_count: 2,
+  history: { degraded: true, runs: [] },
+  latest: { latest: null },
+});
+assert.strictEqual(
+  elementsById["results-alert"].className,
+  "notice notice-warning",
+);
+assert.ok(
+  elementsById["results-alert"].children[0].textContent.includes(
+    "2 entrée(s) illisible(s)",
+  ),
 );
 NODE
 

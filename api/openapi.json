@@ -101,6 +101,78 @@
         }
       }
     },
+    "/api/run": {
+      "get": {
+        "summary": "Verified run detail",
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Run detail with report inventory and export review"
+          },
+          "400": {
+            "description": "Invalid or missing run identifier"
+          },
+          "502": {
+            "description": "Subprocess output limit exceeded"
+          },
+          "504": {
+            "description": "Subprocess timeout"
+          }
+        }
+      }
+    },
+    "/api/report": {
+      "get": {
+        "summary": "Verified local HTML report",
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+            }
+          },
+          {
+            "name": "kind",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": ["private", "shareable", "technical"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Verified report rendered with an isolated CSP"
+          },
+          "400": {
+            "description": "Invalid or missing query parameter"
+          },
+          "404": {
+            "description": "Run or report not available"
+          },
+          "502": {
+            "description": "Subprocess output limit exceeded"
+          },
+          "504": {
+            "description": "Subprocess timeout"
+          }
+        }
+      }
+    },
     "/api/snapshot": {
       "get": {
         "summary": "Aggregated API snapshot",

@@ -13,6 +13,8 @@ printf '%s\n' "$routes_json" | jq -e '.schema_version == "1.0.0"' >/dev/null
 printf '%s\n' "$routes_json" | jq -e '.routes | length >= 10' >/dev/null
 printf '%s\n' "$routes_json" | jq -e '.routes[] | select(.path == "/api/routes")' >/dev/null
 printf '%s\n' "$routes_json" | jq -e '.routes[] | select(.path == "/api/plan" and (.requires_query[] == "targets"))' >/dev/null
+printf '%s\n' "$routes_json" | jq -e '.routes[] | select(.path == "/api/run" and (.requires_query == ["run_id"]))' >/dev/null
+printf '%s\n' "$routes_json" | jq -e '.routes[] | select(.path == "/api/report" and (.requires_query == ["run_id", "kind"]))' >/dev/null
 
 if bash bin/routes_json.sh --unknown >/tmp/routes-json.out 2>/tmp/routes-json.err; then
   echo 'unknown option accepted' >&2
