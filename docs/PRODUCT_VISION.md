@@ -169,7 +169,7 @@ Les mesures cibles seront validées par recherche utilisateur :
    [#48](https://github.com/cryptophil92/audit-suite/issues/48) ;
 3. maintenir le rendu sûr du dashboard livré par l'issue
    [#51](https://github.com/cryptophil92/audit-suite/issues/51) ;
-4. connecter progressivement les sorties au contrat de constats — issue
+4. maintenir et étendre prudemment la connexion des sorties au contrat — issue
    [#79](https://github.com/cryptophil92/audit-suite/issues/79) ;
 5. relier historique, constats et rapports dans l’interface — issue
    [#53](https://github.com/cryptophil92/audit-suite/issues/53) ;
@@ -178,8 +178,8 @@ Les mesures cibles seront validées par recherche utilisateur :
    [#54](https://github.com/cryptophil92/audit-suite/issues/54) ;
 7. valider les rapports et parcours avec des utilisateurs et sur Kali/Linux.
 
-Le contrat de constats et le premier rapport premium sont fusionnés. Ils
-constituent désormais le socle à connecter aux modules réels et aux vues de
-résultats, pas une cible encore à construire.
+Le contrat de constats, le premier adaptateur Nmap et le premier rapport
+premium constituent désormais le socle à étendre aux autres modules et à
+relier aux vues de résultats, pas une cible encore à construire.
 
 Voir [`ROADMAP.md`](ROADMAP.md) pour le pilotage complet.

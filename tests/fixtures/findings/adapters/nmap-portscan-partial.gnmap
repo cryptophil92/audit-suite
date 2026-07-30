@@ -1,0 +1,4 @@
+# Nmap 7.95 scan initiated Wed Jul 30 12:02:00 2026 as: nmap -Pn -sV -oA synthetic-partial 192.0.2.0/24
+Host: 192.0.2.30 (partial.example.invalid)	Status: Up
+Host: 192.0.2.30 (partial.example.invalid)	Ports: 8080/open/tcp//http-alt//Synthetic service/, not-a-port/open/tcp//unknown//Malformed synthetic entry/, 8443/open|filtered/tcp//https-alt///	Ignored State: closed (197)
+# Nmap done at Wed Jul 30 12:02:01 2026 -- 256 IP addresses (1 host up) scanned in 1.00 seconds

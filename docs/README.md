@@ -34,6 +34,8 @@ l’issue #58 et le registre des issues dans le même cycle de suivi.
   rapport premium et règles de notation ;
 - [`FINDINGS_CONTRACT.md`](FINDINGS_CONTRACT.md) — schéma `findings[]`,
   compatibilité et validation ;
+- [`FINDINGS_ADAPTERS.md`](FINDINGS_ADAPTERS.md) — adaptation locale des
+  sorties, qualification prudente et fusion atomique ;
 - [`audit/REPOSITORY_INVENTORY.md`](audit/REPOSITORY_INVENTORY.md) ;
 - [`audit/TECHNICAL_AUDIT_2026-07-28.md`](audit/TECHNICAL_AUDIT_2026-07-28.md) ;
 - [`audit/TEST_RESULTS_2026-07-28.md`](audit/TEST_RESULTS_2026-07-28.md) ;
@@ -60,6 +62,7 @@ l’issue #58 et le registre des issues dans le même cycle de suivi.
 - [`REPORT_SCHEMA.md`](REPORT_SCHEMA.md) ;
 - [`MODULE_CATALOG.md`](MODULE_CATALOG.md) ;
 - [`FINDINGS_CONTRACT.md`](FINDINGS_CONTRACT.md) ;
+- [`FINDINGS_ADAPTERS.md`](FINDINGS_ADAPTERS.md) ;
 - [`PREMIUM_REPORT_SPEC.md`](PREMIUM_REPORT_SPEC.md) ;
 - [`RUN_HISTORY.md`](RUN_HISTORY.md) ;
 - [`COMPARE_RUNS.md`](COMPARE_RUNS.md) ;
