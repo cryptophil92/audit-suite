@@ -7,10 +7,20 @@ REPO_DIR="$(cd -- "$SCRIPT_DIR/.." && pwd)"
 cd "$REPO_DIR"
 
 PORT="${API_TEST_PORT:-9876}"
+PYTHON_COMMAND="${AUDIT_SUITE_PYTHON:-python3}"
+if ! command -v "$PYTHON_COMMAND" >/dev/null 2>&1; then
+  printf '[FAIL] Python 3 is required for the API server test\n' >&2
+  exit 127
+fi
 tmp_history="$(mktemp -d)"
 server_log="$(mktemp)"
 export AUDIT_HISTORY_DIR="$tmp_history/history"
-mkdir -p "$AUDIT_HISTORY_DIR"
+export API_TEST_RUN_ID="API_RESULTS_$$"
+run_output="$REPO_DIR/output/$API_TEST_RUN_ID"
+if [[ -e "$run_output" ]]; then
+  printf '[FAIL] API result fixture path already exists: %s\n' "$run_output" >&2
+  exit 1
+fi
 
 cleanup() {
   if [[ -n "${server_pid:-}" ]]; then
@@ -18,10 +28,101 @@ cleanup() {
     wait "$server_pid" >/dev/null 2>&1 || true
   fi
   rm -rf "$tmp_history" "$server_log"
+  rm -rf -- "$run_output"
 }
 trap cleanup EXIT
 
-if python3 api/server.py --host 0.0.0.0 --port "$PORT" --quiet >"$server_log" 2>&1; then
+mkdir -p "$AUDIT_HISTORY_DIR"
+mkdir -p "$run_output"
+
+cat >"$run_output/manifest.json" <<JSON
+{
+  "schema_version": "1.2.0",
+  "kind": "audit-suite.manifest",
+  "findings_schema_version": "1.0.0",
+  "version": "0.2.34",
+  "commit": "synthetic",
+  "run_id": "$API_TEST_RUN_ID",
+  "created_at": "2026-07-30T10:00:00Z",
+  "profile": "fast",
+  "targets": ["192.0.2.0/24"],
+  "options": {
+    "no_udp": false,
+    "no_zeek": true,
+    "no_suricata": true,
+    "allow_public": false
+  },
+  "paths": {
+    "output": "output/$API_TEST_RUN_ID",
+    "logs": "logs/$API_TEST_RUN_ID",
+    "manifest": "output/$API_TEST_RUN_ID/manifest.json"
+  },
+  "selected_modules": ["20_portscan_nmap.sh", "70_http_enum.sh"],
+  "summary": {
+    "module_count": 2,
+    "success_count": 0,
+    "partial_count": 1,
+    "failed_count": 1,
+    "skipped_count": 0,
+    "total_duration_seconds": 4,
+    "status": "failed",
+    "findings": {
+      "total_count": 1,
+      "scored_count": 0,
+      "unscored_count": 1
+    }
+  },
+  "modules": [
+    {
+      "id": "20_portscan_nmap",
+      "name": "Portscan Nmap",
+      "status": "partial",
+      "duration_seconds": 3,
+      "reason": "fixture synthétique partielle"
+    },
+    {
+      "id": "70_http_enum",
+      "name": "HTTP enum",
+      "status": "failed",
+      "duration_seconds": 1,
+      "reason": "fixture synthétique en échec"
+    }
+  ],
+  "findings": [
+    {
+      "id": "finding.synthetic.http.001",
+      "title": "Service HTTP synthétique observé",
+      "severity": "informational",
+      "validation_status": "observed",
+      "observation": "Fixture locale sans scan réel.",
+      "impact": "Inventaire uniquement.",
+      "asset": {
+        "id": "asset.synthetic.1",
+        "address": "192.0.2.10",
+        "hostname": "fixture.example.invalid"
+      },
+      "evidence": [
+        {
+          "source": "20_portscan_nmap",
+          "path": "20_portscan_nmap/fixture.gnmap"
+        }
+      ],
+      "remediation": {
+        "action": "Confirmer le besoin du service."
+      }
+    }
+  ]
+}
+JSON
+
+cat >"$AUDIT_HISTORY_DIR/runs.jsonl" <<JSONL
+{"run_id":"$API_TEST_RUN_ID","created_at":"2026-07-30T10:00:00Z","profile":"fast","targets":["192.0.2.0/24"],"status":"failed","module_count":2,"success_count":0,"partial_count":1,"failed_count":1,"skipped_count":0,"finding_count":1,"manifest_path":"output/$API_TEST_RUN_ID/manifest.json"}
+JSONL
+cp "$run_output/manifest.json" "$AUDIT_HISTORY_DIR/latest.json"
+printf '<!doctype html><html lang="fr"><body>RAPPORT PRIVE SYNTHETIQUE</body></html>\n' >"$run_output/report.html"
+printf '<!doctype html><html lang="fr"><body>RAPPORT PARTAGEABLE SYNTHETIQUE</body></html>\n' >"$run_output/report-shareable.html"
+
+if "$PYTHON_COMMAND" api/server.py --host 0.0.0.0 --port "$PORT" --quiet >"$server_log" 2>&1; then
   echo 'non-loopback bind accepted' >&2
   exit 1
 fi
@@ -31,10 +132,10 @@ if grep -q 'listening on' "$server_log"; then
   exit 1
 fi
 
-python3 api/server.py --host 127.0.0.1 --port "$PORT" --quiet >"$server_log" 2>&1 &
+"$PYTHON_COMMAND" api/server.py --host 127.0.0.1 --port "$PORT" --quiet >"$server_log" 2>&1 &
 server_pid="$!"
 
-python3 - <<'PY'
+"$PYTHON_COMMAND" - <<'PY'
 import os
 import sys
 import time
@@ -52,7 +153,7 @@ for _ in range(30):
 sys.exit(1)
 PY
 
-python3 - <<'PY'
+"$PYTHON_COMMAND" - <<'PY'
 import json
 import os
 import time
@@ -90,6 +191,11 @@ assert "object-src 'none'" in csp
 assert "frame-ancestors 'none'" in csp
 assert "AUDIT-SUITE" in body
 assert "Aperçu de plan" in body
+assert "Historique et résultats" in body
+assert "results-retry" in body
+assert "history-list" in body
+assert "run-detail" in body
+assert "Prévisualiser les données sensibles" not in body
 assert "Routes API locales" in body
 assert "routes-table" in body
 assert "WEB_PLAN_PREVIEW" in body
@@ -109,16 +215,24 @@ assert "Afficher le plan JSON" in body
 content_type, _, app = get_text("/app.js")
 assert "text/javascript" in content_type
 assert "/api/snapshot" in app
+assert "/api/run" in app
+assert "/api/report" in app
 assert "/api/plan" in app
 assert "/api/routes" in app
 assert 'checkbox.name = "plan-module"' in app
 assert "renderRoutes" in app
+assert "renderRunDetail" in app
+assert "safeLocalReportUrl" in app
 assert "textContent" in app
 
 content_type, _, styles = get_text("/styles.css")
 assert "text/css" in content_type
 assert ".module-selector" in styles
 assert ".section-spaced" in styles
+assert ".results-layout" in styles
+assert ".history-item" in styles
+assert ".sensitive-preview" in styles
+assert ".report-link.is-disabled" in styles
 
 openapi = get_json("/api/openapi.json")
 assert openapi["openapi"] == "3.0.3"
@@ -126,6 +240,8 @@ assert openapi["info"]["version"]
 assert openapi["info"]["x-audit-suite-commit"]
 assert "/api/plan" in openapi["paths"]
 assert "/api/snapshot" in openapi["paths"]
+assert "/api/run" in openapi["paths"]
+assert "/api/report" in openapi["paths"]
 assert "502" in openapi["paths"]["/api/snapshot"]["get"]["responses"]
 assert "504" in openapi["paths"]["/api/snapshot"]["get"]["responses"]
 
@@ -134,6 +250,8 @@ assert routes["kind"] == "audit-suite.api_routes"
 assert routes["schema_version"] == "1.0.0"
 route_paths = {item["path"] for item in routes["routes"]}
 assert "/api/plan" in route_paths
+assert "/api/run" in route_paths
+assert "/api/report" in route_paths
 assert "/api/openapi.json" in route_paths
 assert "/api/routes" in route_paths
 assert "/app.js" in route_paths
@@ -153,6 +271,55 @@ assert get_json("/api/latest")["kind"] == "audit-suite.history.latest"
 snapshot_started_at = time.monotonic()
 assert get_json("/api/snapshot", timeout=16)["kind"] == "audit-suite.api_snapshot"
 assert time.monotonic() - snapshot_started_at < 15
+
+run_id = os.environ["API_TEST_RUN_ID"]
+run_query = urllib.parse.urlencode({"run_id": run_id})
+detail = get_json(f"/api/run?{run_query}")
+assert detail["kind"] == "audit-suite.history.run"
+assert detail["found"] is True
+assert detail["detail_source"] == "manifest"
+assert detail["run"]["run_id"] == run_id
+assert detail["run"]["summary"]["status"] == "failed"
+assert [module["status"] for module in detail["run"]["modules"]] == [
+    "partial",
+    "failed",
+]
+reports = {report["kind"]: report for report in detail["reports"]}
+assert reports["private"]["available"] is True
+assert reports["shareable"]["available"] is True
+assert reports["technical"]["available"] is False
+assert reports["private"]["url"].startswith("/api/report?")
+assert detail["export_review"]["review_required"] is True
+assert detail["export_review"]["targets"]["values"] == ["192.0.2.0/24"]
+assert detail["export_review"]["asset_addresses"]["values"] == ["192.0.2.10"]
+assert detail["export_review"]["hostnames"]["values"] == [
+    "fixture.example.invalid"
+]
+assert detail["export_review"]["evidence_paths"]["values"] == [
+    "20_portscan_nmap/fixture.gnmap"
+]
+
+report_query = urllib.parse.urlencode({"run_id": run_id, "kind": "private"})
+with urllib.request.urlopen(base + f"/api/report?{report_query}", timeout=5) as response:
+    assert response.status == 200
+    assert "text/html" in response.headers.get("Content-Type", "")
+    assert "report.html" in response.headers.get("Content-Disposition", "")
+    report_csp = response.headers.get("Content-Security-Policy", "")
+    assert "default-src 'none'" in report_csp
+    assert "script-src 'none'" in report_csp
+    assert "style-src 'unsafe-inline'" in report_csp
+    assert "RAPPORT PRIVE SYNTHETIQUE" in response.read().decode("utf-8")
+
+for path, expected_status in (
+    ("/api/run?run_id=..", 400),
+    (f"/api/report?{urllib.parse.urlencode({'run_id': run_id, 'kind': 'unknown'})}", 400),
+    (f"/api/report?{urllib.parse.urlencode({'run_id': run_id, 'kind': 'technical'})}", 404),
+):
+    try:
+        urllib.request.urlopen(base + path, timeout=5)
+        raise AssertionError(f"unexpected success for {path}")
+    except urllib.error.HTTPError as exc:
+        assert exc.code == expected_status
 
 query = urllib.parse.urlencode({
     "targets": "192.168.1.0/24",

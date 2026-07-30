@@ -8,6 +8,7 @@ import json
 import logging
 import math
 import os
+import re
 import signal
 import socket
 import subprocess
@@ -17,7 +18,7 @@ from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Any
-from urllib.parse import parse_qs, urlparse
+from urllib.parse import parse_qs, urlencode, urlparse
 
 from version import APP_COMMIT, APP_VERSION
 
@@ -31,6 +32,7 @@ WEB_ASSETS = {
 }
 OPENAPI_SPEC = REPO_DIR / "api" / "openapi.json"
 DEFAULT_MAX_OUTPUT_BYTES = 1024 * 1024
+DEFAULT_MAX_REPORT_BYTES = 32 * 1024 * 1024
 CONTENT_SECURITY_POLICY = (
     "default-src 'self'; "
     "base-uri 'none'; "
@@ -42,12 +44,43 @@ CONTENT_SECURITY_POLICY = (
     "script-src 'self'; "
     "style-src 'self'"
 )
+REPORT_CONTENT_SECURITY_POLICY = (
+    "default-src 'none'; "
+    "base-uri 'none'; "
+    "connect-src 'none'; "
+    "form-action 'none'; "
+    "frame-ancestors 'none'; "
+    "img-src data:; "
+    "object-src 'none'; "
+    "script-src 'none'; "
+    "style-src 'unsafe-inline'"
+)
+RUN_ID_PATTERN = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$")
+REPORT_VARIANTS = {
+    "private": {
+        "filename": "report.html",
+        "label": "Rapport privé",
+        "sensitivity": "sensitive",
+    },
+    "shareable": {
+        "filename": "report-shareable.html",
+        "label": "Rapport partageable",
+        "sensitivity": "review_required",
+    },
+    "technical": {
+        "filename": "report-technical.html",
+        "label": "Rapport technique",
+        "sensitivity": "sensitive",
+    },
+}
 ROUTE_TIMEOUT_SECONDS = {
     "/api/status": 10.0,
     "/api/modules": 10.0,
     "/api/history": 10.0,
     "/api/history/paths": 10.0,
     "/api/latest": 10.0,
+    "/api/run": 10.0,
+    "/api/report": 10.0,
     "/api/snapshot": 15.0,
     "/api/plan": 10.0,
 }
@@ -85,6 +118,18 @@ def api_routes_payload(
             {"method": "GET", "path": "/api/history", "type": "json"},
             {"method": "GET", "path": "/api/history/paths", "type": "json"},
             {"method": "GET", "path": "/api/latest", "type": "json"},
+            {
+                "method": "GET",
+                "path": "/api/run",
+                "type": "json",
+                "requires_query": ["run_id"],
+            },
+            {
+                "method": "GET",
+                "path": "/api/report",
+                "type": "html",
+                "requires_query": ["run_id", "kind"],
+            },
             {"method": "GET", "path": "/api/snapshot", "type": "json"},
             {
                 "method": "GET",
@@ -336,6 +381,190 @@ def query_flag_enabled(value: str) -> bool:
     return value.lower() in {"1", "true", "yes", "on"}
 
 
+def valid_run_id(value: str) -> bool:
+    return RUN_ID_PATTERN.fullmatch(value) is not None
+
+
+def resolved_path_within(path: Path, root: Path) -> bool:
+    try:
+        path.relative_to(root)
+    except ValueError:
+        return False
+    return True
+
+
+def load_verified_manifest(
+    run_id: str,
+    history_entry: dict[str, Any],
+) -> tuple[dict[str, Any] | None, Path | None, str | None]:
+    if not valid_run_id(run_id):
+        return None, None, "invalid_run_id"
+
+    output_root = (REPO_DIR / "output").resolve()
+    run_dir = (output_root / run_id).resolve()
+    if run_dir.parent != output_root or not resolved_path_within(run_dir, output_root):
+        return None, None, "unsafe_run_path"
+
+    manifest_value = history_entry.get("manifest_path")
+    if not isinstance(manifest_value, str) or not manifest_value:
+        return None, run_dir, "manifest_path_missing"
+
+    manifest_path = Path(manifest_value)
+    if not manifest_path.is_absolute():
+        manifest_path = REPO_DIR / manifest_path
+    manifest_path = manifest_path.resolve()
+    expected_manifest = (run_dir / "manifest.json").resolve()
+    if (
+        expected_manifest.parent != run_dir
+        or not resolved_path_within(expected_manifest, run_dir)
+        or manifest_path != expected_manifest
+    ):
+        return None, run_dir, "unsafe_manifest_path"
+    if not manifest_path.is_file():
+        return None, run_dir, "manifest_missing"
+
+    try:
+        if manifest_path.stat().st_size > DEFAULT_MAX_OUTPUT_BYTES:
+            return None, run_dir, "manifest_too_large"
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None, run_dir, "invalid_manifest"
+
+    if not isinstance(manifest, dict) or manifest.get("run_id") != run_id:
+        return None, run_dir, "manifest_run_mismatch"
+    return manifest, run_dir, None
+
+
+def report_inventory(run_id: str, run_dir: Path | None) -> list[dict[str, Any]]:
+    inventory = []
+    for kind, definition in REPORT_VARIANTS.items():
+        report_path = run_dir / definition["filename"] if run_dir else None
+        available = False
+        size_bytes = None
+        unavailable_reason = "manifest_unavailable"
+        if report_path is not None:
+            try:
+                resolved_report = report_path.resolve()
+                if (
+                    resolved_report.parent == run_dir
+                    and resolved_path_within(resolved_report, run_dir)
+                    and resolved_report.is_file()
+                ):
+                    size_bytes = resolved_report.stat().st_size
+                    if size_bytes <= DEFAULT_MAX_REPORT_BYTES:
+                        available = True
+                        unavailable_reason = None
+                    else:
+                        unavailable_reason = "report_too_large"
+                else:
+                    unavailable_reason = "report_missing"
+            except OSError:
+                unavailable_reason = "report_unreadable"
+
+        item: dict[str, Any] = {
+            "kind": kind,
+            "label": definition["label"],
+            "sensitivity": definition["sensitivity"],
+            "review_required": True,
+            "available": available,
+            "size_bytes": size_bytes,
+        }
+        if available:
+            item["url"] = "/api/report?" + urlencode(
+                {"run_id": run_id, "kind": kind}
+            )
+        else:
+            item["unavailable_reason"] = unavailable_reason
+        inventory.append(item)
+    return inventory
+
+
+def sensitive_value_preview(manifest: dict[str, Any]) -> dict[str, Any]:
+    findings = manifest.get("findings")
+    finding_entries = findings if isinstance(findings, list) else []
+    target_entries = manifest.get("targets")
+    targets = {
+        item
+        for item in (target_entries if isinstance(target_entries, list) else [])
+        if isinstance(item, str) and item
+    }
+    addresses = set()
+    hostnames = set()
+    evidence_paths = set()
+    for finding in finding_entries:
+        if not isinstance(finding, dict):
+            continue
+        asset = finding.get("asset")
+        if isinstance(asset, dict):
+            address = asset.get("address")
+            hostname = asset.get("hostname")
+            if isinstance(address, str) and address:
+                addresses.add(address)
+            if isinstance(hostname, str) and hostname:
+                hostnames.add(hostname)
+        evidence = finding.get("evidence")
+        if isinstance(evidence, list):
+            for entry in evidence:
+                if not isinstance(entry, dict):
+                    continue
+                path = entry.get("path")
+                if isinstance(path, str) and path:
+                    evidence_paths.add(path)
+
+    def bounded(values: set[str]) -> dict[str, Any]:
+        ordered = sorted(values)
+        return {
+            "count": len(ordered),
+            "values": ordered[:50],
+            "truncated": len(ordered) > 50,
+        }
+
+    return {
+        "review_required": True,
+        "notice": (
+            "Vérifier les cibles, actifs et chemins de preuve avant tout partage. "
+            "La version partageable réduit les identifiants directs mais doit être relue."
+        ),
+        "targets": bounded(targets),
+        "asset_addresses": bounded(addresses),
+        "hostnames": bounded(hostnames),
+        "evidence_paths": bounded(evidence_paths),
+    }
+
+
+def enrich_run_payload(payload: dict[str, Any]) -> dict[str, Any]:
+    result = dict(payload)
+    if not payload.get("found"):
+        result["detail_source"] = "none"
+        result["reports"] = report_inventory(str(payload.get("run_id", "")), None)
+        result["export_review"] = sensitive_value_preview({})
+        return result
+
+    history_entry = payload.get("run")
+    if not isinstance(history_entry, dict):
+        result["detail_source"] = "history"
+        result["detail_error"] = "invalid_history_entry"
+        result["reports"] = report_inventory(str(payload.get("run_id", "")), None)
+        result["export_review"] = sensitive_value_preview({})
+        return result
+
+    run_id = str(payload.get("run_id", ""))
+    manifest, run_dir, error = load_verified_manifest(run_id, history_entry)
+    result["history_entry"] = history_entry
+    if manifest is None:
+        result["detail_source"] = "history"
+        result["detail_error"] = error
+        result["reports"] = report_inventory(run_id, None)
+        result["export_review"] = sensitive_value_preview(history_entry)
+        return result
+
+    result["detail_source"] = "manifest"
+    result["run"] = manifest
+    result["reports"] = report_inventory(run_id, run_dir)
+    result["export_review"] = sensitive_value_preview(manifest)
+    return result
+
+
 def build_plan_command(query: dict[str, list[str]]) -> tuple[list[str] | None, dict[str, Any] | None]:
     targets = first_query_value(query, "targets")
     if not targets:
@@ -380,8 +609,8 @@ class AuditSuiteHandler(BaseHTTPRequestHandler):
             return
         super().log_message(format, *args)
 
-    def _write_security_headers(self) -> None:
-        self.send_header("Content-Security-Policy", CONTENT_SECURITY_POLICY)
+    def _write_security_headers(self, csp: str = CONTENT_SECURITY_POLICY) -> None:
+        self.send_header("Content-Security-Policy", csp)
         self.send_header("Cross-Origin-Resource-Policy", "same-origin")
         self.send_header("Referrer-Policy", "no-referrer")
         self.send_header("X-Content-Type-Options", "nosniff")
@@ -478,6 +707,38 @@ class AuditSuiteHandler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(body)
 
+    def _write_report(self, report_path: Path, filename: str) -> None:
+        try:
+            size_bytes = report_path.stat().st_size
+            if size_bytes > DEFAULT_MAX_REPORT_BYTES:
+                self._write_json(
+                    HTTPStatus.BAD_GATEWAY,
+                    {
+                        "kind": "audit-suite.api_error",
+                        "error": "report_too_large",
+                    },
+                )
+                return
+            body = report_path.read_bytes()
+        except OSError:
+            self._write_json(
+                HTTPStatus.NOT_FOUND,
+                {
+                    "kind": "audit-suite.api_error",
+                    "error": "report_unavailable",
+                },
+            )
+            return
+
+        self.send_response(HTTPStatus.OK)
+        self.send_header("Content-Type", "text/html; charset=utf-8")
+        self.send_header("Content-Length", str(len(body)))
+        self.send_header("Content-Disposition", f'inline; filename="{filename}"')
+        self.send_header("Cache-Control", "no-store")
+        self._write_security_headers(REPORT_CONTENT_SECURITY_POLICY)
+        self.end_headers()
+        self.wfile.write(body)
+
     def do_GET(self) -> None:  # noqa: N802
         parsed_url = urlparse(self.path)
         path = parsed_url.path
@@ -534,6 +795,101 @@ class AuditSuiteHandler(BaseHTTPRequestHandler):
                 self._write_json(
                     command_error_status(payload, HTTPStatus.BAD_REQUEST), payload
                 )
+            return
+
+        if path in {"/api/run", "/api/report"}:
+            query = parse_qs(parsed_url.query)
+            run_id = first_query_value(query, "run_id")
+            if not run_id:
+                self._write_json(
+                    HTTPStatus.BAD_REQUEST,
+                    {
+                        "kind": "audit-suite.api_error",
+                        "error": "missing_query_param",
+                        "param": "run_id",
+                    },
+                )
+                return
+            if not valid_run_id(run_id):
+                self._write_json(
+                    HTTPStatus.BAD_REQUEST,
+                    {
+                        "kind": "audit-suite.api_error",
+                        "error": "invalid_run_id",
+                    },
+                )
+                return
+
+            timeout_seconds, max_output_bytes = self._command_limits(path)
+            returncode, payload = run_json_command(
+                ["bash", "bin/history_json.sh", "run", run_id],
+                timeout_seconds=timeout_seconds,
+                max_output_bytes=max_output_bytes,
+            )
+            if returncode != 0:
+                self._write_json(
+                    command_error_status(payload, HTTPStatus.INTERNAL_SERVER_ERROR),
+                    payload,
+                )
+                return
+
+            detail = enrich_run_payload(payload)
+            if path == "/api/run":
+                self._write_json(HTTPStatus.OK, detail)
+                return
+
+            report_kind = first_query_value(query, "kind")
+            if report_kind not in REPORT_VARIANTS:
+                self._write_json(
+                    HTTPStatus.BAD_REQUEST,
+                    {
+                        "kind": "audit-suite.api_error",
+                        "error": "invalid_report_kind",
+                    },
+                )
+                return
+            if not detail.get("found"):
+                self._write_json(
+                    HTTPStatus.NOT_FOUND,
+                    {
+                        "kind": "audit-suite.api_error",
+                        "error": "run_not_found",
+                    },
+                )
+                return
+
+            selected_report = next(
+                item
+                for item in detail["reports"]
+                if item["kind"] == report_kind
+            )
+            if not selected_report.get("available"):
+                self._write_json(
+                    HTTPStatus.NOT_FOUND,
+                    {
+                        "kind": "audit-suite.api_error",
+                        "error": selected_report.get(
+                            "unavailable_reason", "report_unavailable"
+                        ),
+                    },
+                )
+                return
+
+            history_entry = detail.get("history_entry", {})
+            _, run_dir, manifest_error = load_verified_manifest(
+                run_id, history_entry
+            )
+            if run_dir is None or manifest_error is not None:
+                self._write_json(
+                    HTTPStatus.NOT_FOUND,
+                    {
+                        "kind": "audit-suite.api_error",
+                        "error": manifest_error or "report_unavailable",
+                    },
+                )
+                return
+            filename = REPORT_VARIANTS[report_kind]["filename"]
+            self._write_report(run_dir / filename, filename)
             return
 
         command = ROUTES.get(path)
