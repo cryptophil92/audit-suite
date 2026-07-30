@@ -3,7 +3,7 @@
 Ce registre relie les constats de l’audit aux issues GitHub créées. Les détails potentiellement sensibles restent volontairement absents des tickets publics.
 
 État des issues vérifié sur GitHub le 29 juillet 2026 et préparé pour la
-livraison du lot #48. Les descriptions de l’audit restent historiques ; la
+livraison du lot #51. Les descriptions de l’audit restent historiques ; la
 colonne `Statut` indique l’état opérationnel après fusion du lot.
 
 ## Pilotage
@@ -28,7 +28,7 @@ colonne `Statut` indique l’état opérationnel après fusion du lot.
 | [#48](https://github.com/cryptophil92/audit-suite/issues/48) | P2 | Dette technique | Fermée | Clarifier la maturité des modules et supprimer la redondance de rapport |
 | [#49](https://github.com/cryptophil92/audit-suite/issues/49) | P2 | Dette technique | Ouverte | Quarantiner les scripts historiques de patch et de mise à jour |
 | [#50](https://github.com/cryptophil92/audit-suite/issues/50) | P2 | Refactoring | Ouverte | Générer routes, OpenAPI et documentation depuis une source cohérente |
-| [#51](https://github.com/cryptophil92/audit-suite/issues/51) | P2 | Sécurité | Ouverte | Éviter l’interprétation HTML des données dans le tableau de bord |
+| [#51](https://github.com/cryptophil92/audit-suite/issues/51) | P2 | Sécurité | Fermée | Éviter l’interprétation HTML des données dans le tableau de bord |
 | [#52](https://github.com/cryptophil92/audit-suite/issues/52) | P2 | UX | Ouverte | Repenser l’onboarding, l’architecture de l’information et le cadre légal |
 | [#53](https://github.com/cryptophil92/audit-suite/issues/53) | P2 | UX | Ouverte | Présenter clairement historique, résultats partiels, erreurs et exports |
 | [#54](https://github.com/cryptophil92/audit-suite/issues/54) | P2 | Accessibilité | Ouverte | Mettre en place le design system, le responsive et WCAG 2.2 AA |
@@ -43,8 +43,8 @@ colonne `Statut` indique l’état opérationnel après fusion du lot.
 
 1. Décision privée sur le dernier P0 : #37.
 2. Confiance de livraison : maintenir #43, #44 et #47.
-3. Rendu sûr du dashboard : #51.
-4. Adaptateurs de constats : #79, sur le catalogue #48 et le contrat #70.
+3. Maintenir le rendu sûr du dashboard livré par #51.
+4. Prochain lot : adaptateurs de constats #79, sur le catalogue #48 et le contrat #70.
 5. Vues résultats et rapport : #53, sur les lots #70/#71/#79.
 6. Architecture, dette, UX et accessibilité : #49, #50, #52 et #54.
 7. Validation utilisateur et plateforme : #55 et #56.

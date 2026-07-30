@@ -45,8 +45,8 @@ offensive. La direction complète est documentée dans
 
 ## État vérifié au 29 juillet 2026
 
-Dernier point de référence avant ce lot : `main` après la fusion de la PR #78,
-commit `98c49417a247f382e594bc5c2acbb09fce1be1d4`.
+Base vérifiée de ce lot : `main` après la fusion de la PR #80, commit
+`16701eeaed7115e36dc2d6599c0aae5e1c4f53d6`.
 
 | Domaine | État | Suite |
 |---|---|---|
@@ -59,6 +59,7 @@ commit `98c49417a247f382e594bc5c2acbb09fce1be1d4`.
 | Catalogue et pipeline rapport | Maturité réelle, sélection sûre, SMB partiel et pack post-manifest livrés par #48 | Maintenir le schéma modules `1.2.0` |
 | Modèle de constats et notation | #70 fermé, contrat `1.0.0` implémenté | Brancher les adaptateurs de sorties avec #79 |
 | Rapport premium | #71 fermé, HTML privé/partageable/technique implémenté | Valider sur cas réels et relier à #53/#54 |
+| Sécurité du dashboard | Rendu DOM textuel, actifs locaux et CSP stricte livrés par #51 | Maintenir l'interdiction des sinks HTML |
 | Onboarding, vues résultats et accessibilité | Documentés, non implémentés | Issues #52 à #54 |
 
 ## Séquence active
@@ -77,7 +78,7 @@ Deux volets avancent sans mélanger leurs changements dans une même PR.
 ### Valeur utilisateur
 
 1. maintenir le catalogue honnête et le pack canonique livrés par #48 ;
-2. sécuriser le rendu des données du dashboard avec #51 avant de l’étendre ;
+2. maintenir le rendu sûr du dashboard livré par #51 ;
 3. connecter les sorties réelles au contrat `findings[]` avec #79 ;
 4. relier historique, constats et rapports avec #53 ;
 5. déployer onboarding, navigation et accessibilité avec #52 et #54 ;
@@ -85,10 +86,10 @@ Deux volets avancent sans mélanger leurs changements dans une même PR.
 
 ### Prochain lot non bloqué
 
-#51 est le prochain lot de valeur entièrement testable sans scan réel. Il doit
-supprimer l’interprétation HTML des données locales avant toute extension du
-dashboard. Les adaptateurs déterministes de #79 viennent ensuite, avant
-l’intégration complète des vues résultats de #53.
+#79 est le prochain lot de valeur entièrement testable sans scan réel. Il doit
+convertir les sorties synthétiques et déterministes des modules matures vers le
+contrat `findings[]`, sans inventer de vulnérabilité ni lancer de scan. Cette
+liaison précède l’intégration complète des vues résultats de #53.
 
 ## Phase 0 — Contenir les risques
 
@@ -154,7 +155,7 @@ fusionnés. La cohérence générée des routes et d’OpenAPI reste suivie par 
 Critère de sortie : un nouveau contributeur peut installer, tester et identifier précisément la version.
 
 État : licence, version et procédure de release fusionnées. Un runner unique
-découvre 29 tests Bash, deux suites Python totalisant 17 cas et le smoke local.
+découvre 30 tests Bash, deux suites Python totalisant 17 cas et le smoke local.
 Un test prouve qu’un nouveau fichier conforme est inclus automatiquement, et
 `.gitattributes` impose LF. Les Actions officielles sont épinglées sur des SHA
 complets, leurs permissions sont minimales et Dependabot surveille les mises à
@@ -199,8 +200,10 @@ rapports réels autorisés reste requise.
 Critère de sortie : les tâches de consultation principales passent un test utilisateur et un audit clavier/contraste.
 
 État : la documentation UX et le rapport premium fournissent les premiers
-composants et contenus. Le dashboard reste un prototype technique sans vues
-historique/constats/rapports intégrées ; #51 à #55 portent cette phase.
+composants et contenus. Le socle du dashboard rend désormais les valeurs
+locales comme du texte sous CSP stricte, mais reste un prototype technique sans
+vues historique/constats/rapports intégrées ; #52 à #55 portent la suite de
+cette phase, après les adaptateurs #79.
 
 ## Phase 6 — Validation réelle
 

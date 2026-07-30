@@ -74,15 +74,21 @@ def get_text(path):
     with urllib.request.urlopen(base + path, timeout=5) as response:
         assert response.status == 200
         content_type = response.headers.get("Content-Type", "")
+        csp = response.headers.get("Content-Security-Policy", "")
         body = response.read().decode("utf-8")
-        return content_type, body
+        assert response.headers.get("X-Content-Type-Options") == "nosniff"
+        assert response.headers.get("X-Frame-Options") == "DENY"
+        assert response.headers.get("Referrer-Policy") == "no-referrer"
+        return content_type, csp, body
 
-content_type, body = get_text("/")
+content_type, csp, body = get_text("/")
 assert "text/html" in content_type
+assert "default-src 'self'" in csp
+assert "script-src 'self'" in csp
+assert "style-src 'self'" in csp
+assert "object-src 'none'" in csp
+assert "frame-ancestors 'none'" in csp
 assert "AUDIT-SUITE" in body
-assert "/api/snapshot" in body
-assert "/api/plan" in body
-assert "/api/routes" in body
 assert "Aperçu de plan" in body
 assert "Routes API locales" in body
 assert "routes-table" in body
@@ -90,13 +96,29 @@ assert "WEB_PLAN_PREVIEW" in body
 assert "plan-categories-mode" in body
 assert "plan-module-selector" in body
 assert "Modules sélectionnés" in body
+assert '<link rel="stylesheet" href="/styles.css">' in body
+assert '<script src="/app.js" defer></script>' in body
+assert "<style" not in body
+assert "style=" not in body
 
-content_type, body = get_text("/index.html")
+content_type, _, body = get_text("/index.html")
 assert "text/html" in content_type
 assert "Interface locale" in body
 assert "Afficher le plan JSON" in body
-assert "checkbox.name = \"plan-module\"" in body
-assert "renderRoutes" in body
+
+content_type, _, app = get_text("/app.js")
+assert "text/javascript" in content_type
+assert "/api/snapshot" in app
+assert "/api/plan" in app
+assert "/api/routes" in app
+assert 'checkbox.name = "plan-module"' in app
+assert "renderRoutes" in app
+assert "textContent" in app
+
+content_type, _, styles = get_text("/styles.css")
+assert "text/css" in content_type
+assert ".module-selector" in styles
+assert ".section-spaced" in styles
 
 openapi = get_json("/api/openapi.json")
 assert openapi["openapi"] == "3.0.3"
@@ -114,6 +136,8 @@ route_paths = {item["path"] for item in routes["routes"]}
 assert "/api/plan" in route_paths
 assert "/api/openapi.json" in route_paths
 assert "/api/routes" in route_paths
+assert "/app.js" in route_paths
+assert "/styles.css" in route_paths
 snapshot_route = next(item for item in routes["routes"] if item["path"] == "/api/snapshot")
 assert snapshot_route["timeout_seconds"] == 15
 assert routes["limits"]["max_output_bytes"] == 1048576

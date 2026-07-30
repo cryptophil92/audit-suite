@@ -1,6 +1,8 @@
 # Interface web locale
 
-`web/index.html` est une première interface locale en lecture seule.
+`web/index.html` est une première interface locale en lecture seule. Le style
+et le comportement sont servis par `web/styles.css` et `web/app.js`, sans
+dépendance front-end externe.
 
 ## Lancement
 
@@ -61,6 +63,16 @@ Le panneau `Routes API locales` lit `/api/routes` et affiche :
 - Lecture seule.
 - Aucune dépendance front-end externe.
 - Compatible avec le serveur local standard library Python.
+- Les valeurs issues de l'API sont insérées avec `textContent` ou des nœuds
+  texte, jamais interprétées comme du HTML.
+- Le sélecteur ne propose que les modules marqués `selectable`.
+- Le serveur applique une CSP sans `unsafe-inline`, interdit les objets et
+  l'intégration en frame, et ajoute des en-têtes `nosniff`, `DENY` et
+  `no-referrer`.
+
+Le test `tests/test_web_safe_rendering.sh` injecte des caractères HTML et des
+balises hostiles dans les helpers de rendu. Il vérifie qu'ils restent du texte
+littéral et qu'aucun nœud HTML n'est créé.
 
 ## Objectif
 

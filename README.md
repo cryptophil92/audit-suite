@@ -233,7 +233,7 @@ Ces données peuvent révéler la topologie, les services et les vulnérabilité
 
 ## Tests
 
-La suite contient actuellement 29 scripts `tests/test_*.sh`, deux suites Python
+La suite contient actuellement 30 scripts `tests/test_*.sh`, deux suites Python
 et un smoke test. Le runner unique les découvre automatiquement :
 
 ```bash
@@ -245,7 +245,8 @@ Le runner continue après un échec pour fournir un bilan complet, puis renvoie
 un code non nul si un contrôle a échoué. Les tests couvrent notamment le
 logging POSIX, les états module, la corruption/concurrence de l’historique,
 les permissions et les signaux, uniquement avec des fixtures ou doubles
-locaux. Aucun scan réseau réel n’est lancé.
+locaux. Le test DOM du dashboard utilise Node.js, uniquement comme outil de
+test. Aucun scan réseau réel n’est lancé.
 
 `.gitattributes` impose LF aux scripts, tests Python, workflows et contrats
 JSON afin que le même checkout reste analysable sous Linux et Windows Git Bash.

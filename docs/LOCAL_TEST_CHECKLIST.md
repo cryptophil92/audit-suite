@@ -23,7 +23,7 @@ bash bin/test_all.sh
 ```
 
 Le runner découvre les tests Bash et Python, puis exécute le smoke sans scan
-réel. Attendu :
+réel. Python 3, `jq` et Node.js sont requis pour la suite complète. Attendu :
 
 ```text
 [SUMMARY] ... checks passed; 0 failed
@@ -96,6 +96,8 @@ Dans le dashboard :
 - vérifier la liste des routes ;
 - produire un aperçu de plan ;
 - confirmer qu'aucun bouton d'exécution réelle n'est présent.
+- vérifier dans les outils réseau que `app.js` et `styles.css` sont chargés et
+  que la réponse HTML contient l'en-tête `Content-Security-Policy`.
 
 ## 7. Test de sécurité basique
 

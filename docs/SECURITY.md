@@ -105,3 +105,17 @@ Les fichiers de `output/`, `logs/` et `history/` peuvent révéler :
 
 Ils doivent rester locaux, être anonymisés avant partage et ne jamais être
 committés. Le `.gitignore` ne retire pas un fichier déjà suivi de l’historique.
+
+## Dashboard local
+
+Le serveur refuse toute écoute hors loopback. Son interface sépare HTML, CSS
+et JavaScript afin d'appliquer une politique CSP stricte sans
+`unsafe-inline`. Les données issues des routes JSON sont rendues avec
+`textContent` et des nœuds texte ; elles ne sont jamais interpolées dans une
+chaîne HTML.
+
+Les réponses ajoutent également `X-Content-Type-Options: nosniff`,
+`X-Frame-Options: DENY`, `Referrer-Policy: no-referrer` et
+`Cross-Origin-Resource-Policy: same-origin`. Ces protections complètent le
+caractère local et en lecture seule de l'API ; elles ne remplacent pas la
+validation des données ni l'autorisation explicite d'un audit.
