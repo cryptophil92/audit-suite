@@ -1,1 +1,0 @@
-TODO SNMP enum

@@ -8,3 +8,10 @@
 .gitattributes text eol=lf
 .gitignore text eol=lf
 VERSION text eol=lf
+
+# Runtime audit data may contain environment-specific or sensitive details.
+# Keep cleanup commits reviewable without rendering removed artifact contents.
+logs/** -diff
+output/** -diff
+tmp/** -diff
+history/** -diff
