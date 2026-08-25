@@ -1,6 +1,6 @@
 # Faisabilité multiplateforme
 
-État technique actualisé le 29 juillet 2026. Les mesures de l’audit initial du
+État technique actualisé le 25 août 2026. Les mesures de l’audit initial du
 28 juillet sont conservées dans
 [`audit/TEST_RESULTS_2026-07-28.md`](audit/TEST_RESULTS_2026-07-28.md).
 
@@ -17,6 +17,30 @@ Ordre recommandé :
 5. macOS ;
 6. Windows natif ;
 7. mobile uniquement après preuve de valeur.
+
+## Validation Kali sous WSL2 du 25 août 2026
+
+Une installation neuve a été validée sur Kali GNU/Linux Rolling sous WSL2,
+avec systemd actif et les versions suivantes : Bash 5.3.9, Git 2.53.0,
+Python 3.13.12, jq 1.8.1 et Nmap 7.99.
+
+Preuves obtenues sans lancer de scan réseau réel :
+
+- le diagnostic de dépendances déclare le socle prêt ;
+- `ip`, GNU `timeout`, Nmap, jq, tar, gzip, mktemp, tmux, whiptail et WhatWeb
+  sont disponibles ;
+- les outils facultatifs absents sont signalés en mode dégradé explicite ;
+- le smoke test local passe ;
+- la suite complète passe avec 34 contrôles sur 34 ;
+- les commandes JSON et l’API locale sont validées ;
+- les chemins Linux situés dans le système de fichiers WSL fonctionnent ;
+- Git et GitHub sont utilisables depuis WSL pour le workflow de contribution.
+
+Cette preuve valide l’environnement de développement et les chemins non
+destructifs. Elle ne valide pas encore les scans réels, les raw sockets, la
+détection de toutes les interfaces Windows ni les modules nécessitant des
+privilèges. `sudo` exige un mot de passe et ne doit pas être supposé disponible
+pour une automatisation non interactive.
 
 ## Dépendances OS actuelles
 
@@ -36,9 +60,9 @@ Ordre recommandé :
 
 | Dimension | Évaluation |
 |---|---|
-| Compatibilité actuelle | Cible principale |
-| Blocages | préflight incomplet, privilèges non diagnostiqués, adaptateurs réels de constats incomplets |
-| Permissions | Root/capabilities possibles selon profil |
+| Compatibilité actuelle | Cible principale ; développement et tests validés sur Kali Rolling sous WSL2 |
+| Blocages | scans réels privilégiés non validés, adaptateurs réels de constats encore incomplets |
+| Permissions | Root/capabilities possibles selon profil ; aucun `sudo` sans mot de passe dans la validation |
 | Packaging | Aucun |
 | Mise à jour | Git manuel |
 | Effort | M pour stabiliser, L pour packager |
@@ -65,10 +89,11 @@ Introduire un diagnostic de capacités et documenter les versions minimales avan
 
 | Dimension | Évaluation |
 |---|---|
-| Compatibilité actuelle | Non testée dans cet audit |
-| Blocages | accès interface réseau, raw sockets, intégration fichiers Windows |
-| Permissions | WSL et élévation Linux |
-| Packaging | script de préparation ou distribution WSL |
+| Compatibilité actuelle | Validée pour développement, tests, API locale et builds sur Kali WSL2 |
+| Faits observés | Diagnostic prêt, smoke local et 34/34 contrôles réussis ; systemd et interop Windows actifs |
+| Blocages | scans réseau réels, raw sockets, correspondance des interfaces et modules privilégiés non validés |
+| Permissions | Élévation Linux fonctionnelle mais interactive ; pas de `sudo` sans mot de passe |
+| Packaging | Installation WSL et script de préparation à formaliser dans le dépôt |
 | Effort | M |
 | Valeur | Élevée pour utilisateurs Windows |
 | Priorité | P2 |
@@ -159,4 +184,9 @@ Outils externes et capacités système
 
 ## Décision recommandée
 
-Concentrer les prochains lots sur Kali/Linux et l’UX Web locale. Ouvrir uniquement des issues d’étude P2/P3 pour Windows natif, macOS et mobile. WSL peut devenir la voie Windows officielle si une validation réseau autorisée confirme les capacités nécessaires.
+Concentrer les prochains lots sur Kali/Linux et l’UX Web locale. WSL2 est
+désormais une voie Windows validée pour développer, tester et utiliser les
+fonctions locales non privilégiées. Son support de scan doit rester
+conditionnel tant qu’une validation réseau autorisée n’a pas confirmé les
+interfaces, raw sockets et privilèges nécessaires. Windows natif, macOS et
+mobile restent des études P2/P3 sans engagement de port.
