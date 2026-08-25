@@ -6,6 +6,17 @@ SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 REPO_DIR="$(cd -- "$SCRIPT_DIR/.." && pwd)"
 GUARD="$REPO_DIR/bin/check_no_new_runtime_artifacts.sh"
 
+tracked_runtime_categories="$({
+  git -C "$REPO_DIR" ls-files -- output logs tmp history \
+    | awk -F/ 'NF { print $1 }' \
+    | sort -u
+} || true)"
+if [[ -n "$tracked_runtime_categories" ]]; then
+  printf '[FAIL] repository HEAD still tracks runtime artifact categories: %s\n' \
+    "$(tr '\n' ' ' <<<"$tracked_runtime_categories" | sed 's/[[:space:]]*$//')" >&2
+  exit 1
+fi
+
 tmp_repo="$(mktemp -d)"
 trap 'rm -rf "$tmp_repo"' EXIT
 
